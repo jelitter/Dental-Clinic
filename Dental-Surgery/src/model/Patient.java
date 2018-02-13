@@ -2,14 +2,11 @@ package model;
 
 import java.util.ArrayList;
 
-public class Patient {
+public class Patient extends Person {
 	
-	private static int _id;
-	
+	private static int _id = 0;
 	private int id;
-	private String name, address, phoneNumber;
 	private ArrayList<Invoice> invoices;
-	
 
 	//  Constructor  ------------------------------------------------------
 	
@@ -21,21 +18,11 @@ public class Patient {
 		this.setInvoices(new ArrayList<Invoice> ());
 	}
 	//  -------------------------------------------------------------------
-
 	
 	
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }
 
-	public String getName() { return name; }
-	public void setName(String name) { this.name = name;	}
-
-	public String getAddress() { return address;	}
-	public void setAddress(String address) { this.address = address;	}
-
-	public String getPhoneNumber() { return phoneNumber;	}
-	public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-	
 	
 	//  Invoices  ---------------------------------------------------------
 	public ArrayList<Invoice> getInvoices() {

@@ -1,15 +1,66 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Invoice {
 
+	private static int _id = 0;
 	
+	private int id;
+	private double amount;
+	private Calendar date; 
+	private boolean isPaid;
 	private ArrayList<Procedure> procedures;
 	private ArrayList<Payment> payments;
 	
-	public Invoice() {
-		
+	public Invoice(ArrayList<Procedure> procedures, ArrayList<Payment> payments) {
+		this.setId(++_id);
+		this.setAmount(this.getTotalAmount());
+		this.date = Calendar.getInstance();
+		this.setPaid(false);
+		this.setProcedures(procedures);
+		this.setPayments(payments);
+	}
+
+	private double getTotalAmount() {
+		double total = 0.;
+		for (Procedure p: this.getProcedures()) {
+			total += p.getPrice();
+		}
+		return total;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public Calendar getDate() {
+		return date;
+	}
+
+	public void setDate(Calendar date) {
+		this.date = date;
+	}
+
+	public boolean isPaid() {
+		return isPaid;
+	}
+
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
 	}
 
 	public ArrayList<Procedure> getProcedures() {
@@ -27,6 +78,5 @@ public class Invoice {
 	public void setPayments(ArrayList<Payment> payments) {
 		this.payments = payments;
 	}
-	
-	
+
 }
