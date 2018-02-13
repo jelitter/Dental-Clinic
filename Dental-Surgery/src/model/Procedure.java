@@ -6,7 +6,9 @@ public class Procedure {
 	private double price;
 	
 	public Procedure(String name, String description, double price) {
-		
+		this.setName(name);
+		this.setDescription(description);
+		this.setPrice(price);
 	}
 
 	public String getName() { return name; }

@@ -17,7 +17,7 @@ public class Invoice {
 	public Invoice(ArrayList<Procedure> procedures, ArrayList<Payment> payments) {
 		this.setId(++_id);
 		this.setAmount(this.getTotalAmount());
-		this.date = Calendar.getInstance();
+		this.setDate(Calendar.getInstance());;
 		this.setPaid(false);
 		this.setProcedures(procedures);
 		this.setPayments(payments);
