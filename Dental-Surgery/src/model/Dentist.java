@@ -1,7 +1,10 @@
 package model;
 
-public class Dentist extends Person {
+import java.io.Serializable;
+
+public class Dentist extends Person implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private String username, password;
 
 	public Dentist(String name, String address, String phoneNumber, String username, String password) {

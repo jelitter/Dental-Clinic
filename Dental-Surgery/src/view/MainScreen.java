@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import view.elements.MyButton;
 
 public class MainScreen {
+	
+	private static final int WIDTH = 1200;
+	private static final int HEIGHT = 800;
 
 	private Stage primaryStage;
 	private static MainScreen instance;
@@ -36,12 +39,19 @@ public class MainScreen {
 		BorderPane root = new BorderPane();
 		root.setPadding(new Insets(40));
 
+		primaryStage.setMinWidth(WIDTH);
+		primaryStage.setMinHeight(HEIGHT);
+		primaryStage.setWidth(WIDTH);
+		primaryStage.setHeight(HEIGHT);
+		
+		
 		double screenWidth  = Screen.getPrimary().getVisualBounds().getWidth();
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
+		
 
-		Scene scene = new Scene(root,4*screenWidth/5,4*screenHeight/5);
-		primaryStage.setX(screenWidth/10);
-		primaryStage.setY(screenHeight/10);
+		Scene scene = new Scene(root, WIDTH, HEIGHT);
+		primaryStage.setX(screenWidth/2 - WIDTH/2);
+		primaryStage.setY(screenHeight/2 - HEIGHT/2);
 		Text title = new Text("Dental Surgery Management");
 
 		title.setStyle("-fx-font: 22 Georgia; -fx-base: #dd8800;"); 

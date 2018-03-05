@@ -1,7 +1,10 @@
 package model;
 
-public class Procedure {
+import java.io.Serializable;
 
+public class Procedure implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private String name, description;
 	private double price;
 	

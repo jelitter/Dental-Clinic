@@ -41,6 +41,7 @@ public class LoginScreen {
 	}
 
 	private void go() {
+		
 		primaryStage = new Stage();
 		primaryStage.setMinWidth(WIDTH);
 		primaryStage.setMinHeight(HEIGHT);
@@ -67,7 +68,7 @@ public class LoginScreen {
 		fldUserName.setPromptText("User name");
 		fldPassword.setPromptText("Password");
 		
-		HBox myButtons = new HBox(2);
+		HBox myButtons = new HBox(20);
 		myButtons.setAlignment(Pos.CENTER);
 		myButtons.setPadding(new Insets(10));
 		myButtons.getChildren().addAll(btnLogin, btnExit);

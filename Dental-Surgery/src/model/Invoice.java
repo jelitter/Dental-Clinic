@@ -1,10 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Invoice {
+public class Invoice implements Serializable  {
 
+	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
 	
 	private int id;

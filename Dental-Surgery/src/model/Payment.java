@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class Payment {
+public class Payment implements Serializable  {
 
+	private static final long serialVersionUID = 1L;
 	private Calendar date;
 	private double amount;
 
