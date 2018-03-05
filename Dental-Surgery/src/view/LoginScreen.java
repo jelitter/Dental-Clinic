@@ -54,7 +54,7 @@ public class LoginScreen {
 
 
 		VBox root = new VBox(10);
-		root.setPadding(new Insets(10));
+		root.setPadding(new Insets(20));
 		Scene scene = new Scene(root,WIDTH,HEIGHT);
 
 		fldUserName = new MyTextField();
@@ -62,6 +62,7 @@ public class LoginScreen {
 		Label lblTitle = new Label("Please login");
 		
 		btnLogin = new MyButton("Login");
+		btnLogin.setDisable(true);
 		btnExit = new MyButton("Exit");
 
 		
@@ -70,7 +71,7 @@ public class LoginScreen {
 		
 		HBox myButtons = new HBox(20);
 		myButtons.setAlignment(Pos.CENTER);
-		myButtons.setPadding(new Insets(10));
+		myButtons.setPadding(new Insets(40,10,10,10));
 		myButtons.getChildren().addAll(btnLogin, btnExit);
 
 		root.getChildren().addAll(lblTitle, fldUserName, fldPassword, myButtons);
@@ -103,28 +104,39 @@ public class LoginScreen {
 		});
 	}
 	
+	public void end() {
+		this.getStage().close();
+	}
+	
 	private boolean isLoginAllowed() {
 		String user, pwd;
 		
 		user = fldUserName.getText();
 		pwd = fldPassword.getText();
 		
-		System.out.println("User: " + user);
-		System.out.println("Pass: " + pwd);
+//		System.out.println("User: " + user);
+//		System.out.println("Pass: " + pwd);
 		
 		return (!user.isEmpty() && !pwd.isEmpty());
 	}
 	
 	private void updateButtons(KeyEvent e) {
-		System.out.println("Key pressed: " + e.getCode());
+//		System.out.println("Key pressed: " + e.getCode());
+		
 		if (e.getCode() == KeyCode.ENTER) {
-			launchLogin();
+			if (isLoginAllowed()) 
+				launchLogin();
 		} else {
 			btnLogin.setDisable(!isLoginAllowed());			
 		}
 	}
 	
 	private void launchLogin() {
+		this.end();
 		MainScreen.getInstance();
+	}
+	
+	private Stage getStage() {
+		return this.primaryStage;
 	}
 }
