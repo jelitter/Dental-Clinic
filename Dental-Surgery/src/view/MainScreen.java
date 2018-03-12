@@ -1,17 +1,25 @@
 package view;
 
+import java.util.Optional;
+
+import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import view.elements.MyButton;
 
 public class MainScreen {
-	
+
 	private static final int WIDTH = 1200;
 	private static final int HEIGHT = 800;
 
@@ -24,7 +32,7 @@ public class MainScreen {
 	}
 
 	public static MainScreen getInstance() {
-		if (instance == null) 
+		if (instance == null)
 			return new MainScreen();
 		else {
 			instance.show();
@@ -35,47 +43,81 @@ public class MainScreen {
 	private void go() {
 
 		primaryStage = new Stage();
+		VBox root = new VBox();
 
-		BorderPane root = new BorderPane();
-		root.setPadding(new Insets(40));
+		SplitPane mainArea = new SplitPane();
+		mainArea.setPadding(new Insets(10));
 
 		primaryStage.setMinWidth(WIDTH);
 		primaryStage.setMinHeight(HEIGHT);
 		primaryStage.setWidth(WIDTH);
 		primaryStage.setHeight(HEIGHT);
-		
-		
-		double screenWidth  = Screen.getPrimary().getVisualBounds().getWidth();
+		double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-		
+		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
+		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
 
-		Scene scene = new Scene(root, WIDTH, HEIGHT);
-		primaryStage.setX(screenWidth/2 - WIDTH/2);
-		primaryStage.setY(screenHeight/2 - HEIGHT/2);
-		Text title = new Text("Dental Surgery Management");
-
-		title.setStyle("-fx-font: 22 Georgia; -fx-base: #dd8800;"); 
+		final Menu menu1 = new Menu("File");
+		final Menu menu2 = new Menu("Options");
+		final Menu menu3 = new Menu("Help");
+		MenuBar menuBar = new MenuBar();
+		menuBar.getMenus().addAll(menu1, menu2, menu3);
 
 		VBox options = new VBox(10);
 
-		MyButton b1 = new MyButton("Patients");
-		MyButton b2 = new MyButton("Procedures");
-		MyButton b3 = new MyButton("Invoices");
+		final MyButton btnPatients = new MyButton("Patients");
+		final MyButton btnProcedures = new MyButton("Procedures");
+		final MyButton btnInvoices = new MyButton("Invoices");
+		final MyButton btnReports = new MyButton("Reports", "Info");
+		final MyButton btnSave = new MyButton("Save");
+		final MyButton btnExit = new MyButton("Exit", "Warning");
 
-		options.getChildren().addAll(b1,b2,b3);
+		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
-		BorderPane.setAlignment(title, Pos.CENTER);
-		root.setTop(title);
-		root.setLeft(options);		
+		mainArea.getItems().add(options);
+		// mainArea.setLeft(options);
+		mainArea.setStyle("-fx-base: #CCCCCC;");
+
+		root.getChildren().add(menuBar);
+		root.getChildren().add(mainArea);
+
+		Scene scene = new Scene(root, WIDTH, HEIGHT);
 
 		primaryStage.setTitle("Dental Surgery Management");
 		primaryStage.setScene(scene);
-//		primaryStage.show();
+
+		btnExit.setOnMouseClicked(e -> quit());
+		primaryStage.setOnCloseRequest(e -> quit());
+
 		show();
 
 	}
-	
+
 	public void show() {
 		primaryStage.show();
+	}
+
+	public void quit() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Quit Dental Surgery Management");
+		alert.setHeaderText("Quit program");
+		alert.setContentText("Are you sure you want to quit without saving changes?");
+
+		ButtonType buttonTypeOne = new ButtonType("Quit without saving");
+		ButtonType buttonTypeTwo = new ButtonType("Save and quit");
+		ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == buttonTypeOne) {
+			Platform.exit();
+
+		} else if (result.get() == buttonTypeTwo) {
+			// Save here.
+			Platform.exit();
+		} else {
+			new Alert(AlertType.INFORMATION).setTitle("Cancelled");
+		}
 	}
 }

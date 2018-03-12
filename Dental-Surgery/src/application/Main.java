@@ -4,14 +4,12 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import view.LoginScreen;
 
-
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			LoginScreen.getInstance();
-			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -21,7 +19,7 @@ public class Main extends Application {
 	}
 }
 
-
-//  TO-DO List:
-//  Dialog
-//  Menu
+//     TO-DO List:
+// [ ] Dialog
+// [x] Menu  
+// [ ] allow user to remember login on system and bypass login
