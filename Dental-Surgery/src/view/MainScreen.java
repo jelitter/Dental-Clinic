@@ -3,6 +3,8 @@ package view;
 import java.util.Optional;
 
 import application.Main;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -15,10 +17,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import view.elements.MyButton;
 
 public class MainScreen {
@@ -28,6 +32,7 @@ public class MainScreen {
 
 	private Stage primaryStage;
 	private static MainScreen instance;
+	private MyButton btnSave;
 
 	public MainScreen() {
 		instance = this;
@@ -50,7 +55,7 @@ public class MainScreen {
 
 		VBox root = new VBox();
 
-		SplitPane mainArea = new SplitPane();
+		HBox mainArea = new HBox(10);
 		mainArea.setPadding(new Insets(10));
 
 		primaryStage.setMinWidth(WIDTH);
@@ -77,20 +82,24 @@ public class MainScreen {
 		final MyButton btnProcedures = new MyButton("Procedures");
 		final MyButton btnInvoices = new MyButton("Invoices");
 		final MyButton btnReports = new MyButton("Reports", "Info");
-		final MyButton btnSave = new MyButton("Save");
+		// final MyButton btnSave = new MyButton("Save");
+		btnSave = new MyButton("Save");
 		final MyButton btnExit = new MyButton("Exit", "Warning");
-		
-		btnPatients.setIcon("patient");
-		btnProcedures.setIcon("procedure");
-		btnInvoices.setIcon("invoice");
-		btnReports.setIcon("report");
-		btnSave.setIcon("save");
-		btnExit.setIcon("exit");
-		
+
+		btnPatients.setIcon("patient.png");
+		btnProcedures.setIcon("procedure.png");
+		btnInvoices.setIcon("invoice.png");
+		btnReports.setIcon("report.png");
+		btnSave.setIcon("save.png");
+		btnExit.setIcon("exit.png");
+
 		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
-		mainArea.getItems().add(options);
-		// mainArea.setLeft(options);
+		VBox mainAreaRight = new VBox(10);
+		mainAreaRight.getChildren().add(new Label("Test Main Area"));
+
+		mainArea.getChildren().add(options);
+		mainArea.getChildren().add(mainAreaRight);
 		mainArea.setStyle("-fx-base: #CCCCCC;");
 
 		root.getChildren().add(menuBar);
@@ -103,6 +112,10 @@ public class MainScreen {
 
 		primaryStage.setTitle("Dental Surgery Management");
 		primaryStage.setScene(scene);
+
+		btnSave.setOnMouseClicked(e -> {
+			save();
+		});
 
 		btnExit.setOnMouseClicked(e -> {
 			quit();
@@ -143,5 +156,20 @@ public class MainScreen {
 			// Save here.
 			Platform.exit();
 		}
+	}
+
+	public void save() {
+		btnSave.setIcon("spinner.gif");
+		btnSave.setText("Saving...");
+		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
+			// setStatus("Preparing stuff...");
+			btnSave.setIcon("done.png");
+			btnSave.setText("Saved!");
+		})).play();
+		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
+			// setStatus("Preparing stuff...");
+			btnSave.setIcon("save.png");
+			btnSave.setText("Save");
+		})).play();
 	}
 }

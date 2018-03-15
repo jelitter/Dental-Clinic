@@ -49,7 +49,7 @@ public class MyButton extends Button {
 	}
 
 	public void setIcon(String iconName) {
-		Image img = new Image("/assets/" + iconName + ".png");
+		Image img = new Image("/assets/" + iconName);
 		ImageView imgv = new ImageView();
 		StackPane pane = new StackPane();
 		imgv.setImage(img);
