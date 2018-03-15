@@ -2,17 +2,23 @@ package view;
 
 import java.util.Optional;
 
+import application.Main;
+import javafx.animation.Animation.Status;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -43,7 +49,11 @@ public class MainScreen {
 	private void go() {
 
 		primaryStage = new Stage();
+		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "/assets/icon.png" )));
+
+		
 		VBox root = new VBox();
+		
 
 		SplitPane mainArea = new SplitPane();
 		mainArea.setPadding(new Insets(10));
@@ -62,7 +72,11 @@ public class MainScreen {
 		final Menu menu3 = new Menu("Help");
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().addAll(menu1, menu2, menu3);
-
+		
+		Label statusBar = new Label("Status text");
+		statusBar.setPadding(new Insets(5, 0, 5, 10));
+		
+		 
 		VBox options = new VBox(10);
 
 		final MyButton btnPatients = new MyButton("Patients");
@@ -80,6 +94,10 @@ public class MainScreen {
 
 		root.getChildren().add(menuBar);
 		root.getChildren().add(mainArea);
+		root.getChildren().add(statusBar);
+		
+		VBox.setVgrow(mainArea, Priority.ALWAYS);
+
 
 		Scene scene = new Scene(root, WIDTH, HEIGHT);
 
@@ -116,8 +134,6 @@ public class MainScreen {
 		} else if (result.get() == buttonTypeTwo) {
 			// Save here.
 			Platform.exit();
-		} else {
-			new Alert(AlertType.INFORMATION).setTitle("Cancelled");
-		}
+		} 
 	}
 }

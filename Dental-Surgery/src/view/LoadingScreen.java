@@ -1,10 +1,12 @@
 package view;
 
+import application.Main;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -39,6 +41,8 @@ public class LoadingScreen {
 	private void go() {
 
 		primaryStage = new Stage();
+		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "/assets/icon.png" )));
+
 
 		BorderPane root = new BorderPane();
 		root.setPadding(new Insets(40));

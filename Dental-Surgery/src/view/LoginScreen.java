@@ -1,11 +1,13 @@
 package view;
 
+import application.Main;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -44,6 +46,8 @@ public class LoginScreen {
 		primaryStage = new Stage();
 		primaryStage.setMinWidth(WIDTH);
 		primaryStage.setMinHeight(HEIGHT);
+		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "/assets/icon.png" )));
+
 
 		double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
