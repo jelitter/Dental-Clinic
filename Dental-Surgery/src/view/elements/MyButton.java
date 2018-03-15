@@ -9,8 +9,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 public class MyButton extends Button {
+
+	static final private String FONT = "\"Century Gothic\"";
 
 	public MyButton(String string) {
 		this(string, "Generic");
@@ -37,15 +40,18 @@ public class MyButton extends Button {
 	}
 
 	private void setType(String type) {
+		String style = "-fx-font: 18 " + FONT + "; ";
+
 		if (type.equals("Generic")) {
-			this.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
-		} else if (type.equals("Info")) {
-			this.setStyle("-fx-font: 22 arial; -fx-base: #b6c9e7;");
+			style += "-fx-base: DEEPSKYBLUE;";
+		} else if (type.equals("Success")) {
+			style += "-fx-base: LIGHTSEAGREEN;";
 		} else if (type.equals("Warning")) {
-			this.setStyle("-fx-font: 22 arial; -fx-base: #e7b6c9;");
+			style += "-fx-base: LIGHTCORAL;";
 		} else {
-			this.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
+			style += "-fx-base: DEEPSKYBLUE;";
 		}
+		this.setStyle(style);
 	}
 
 	public void setIcon(String iconName) {

@@ -32,7 +32,8 @@ public class MainScreen {
 
 	private Stage primaryStage;
 	private static MainScreen instance;
-	private MyButton btnSave;
+	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit;
+	private Label statusBar;
 
 	public MainScreen() {
 		instance = this;
@@ -73,25 +74,12 @@ public class MainScreen {
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().addAll(menu1, menu2, menu3);
 
-		Label statusBar = new Label("Status text");
+		statusBar = new Label("Status text");
 		statusBar.setPadding(new Insets(5, 0, 5, 10));
 
 		VBox options = new VBox(10);
 
-		final MyButton btnPatients = new MyButton("Patients");
-		final MyButton btnProcedures = new MyButton("Procedures");
-		final MyButton btnInvoices = new MyButton("Invoices");
-		final MyButton btnReports = new MyButton("Reports", "Info");
-		// final MyButton btnSave = new MyButton("Save");
-		btnSave = new MyButton("Save");
-		final MyButton btnExit = new MyButton("Exit", "Warning");
-
-		btnPatients.setIcon("patient.png");
-		btnProcedures.setIcon("procedure.png");
-		btnInvoices.setIcon("invoice.png");
-		btnReports.setIcon("report.png");
-		btnSave.setIcon("save.png");
-		btnExit.setIcon("exit.png");
+		setupButtons();
 
 		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
@@ -112,24 +100,9 @@ public class MainScreen {
 
 		primaryStage.setTitle("Dental Surgery Management");
 		primaryStage.setScene(scene);
-
-		btnSave.setOnMouseClicked(e -> {
-			save();
-		});
-
-		btnExit.setOnMouseClicked(e -> {
-			quit();
-		});
-
-		primaryStage.setOnCloseRequest(e -> {
-			quit();
-			// Consuming the event to avoid it bubbling to application if Quit dialog is
-			// cancelled.
-			e.consume();
-		});
-
+		
+		setEventHandlers();
 		show();
-
 	}
 
 	public void show() {
@@ -147,6 +120,12 @@ public class MainScreen {
 		ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 
 		alert.getButtonTypes().setAll(buttonSaveAndQuit, buttonQuit, buttonTypeCancel);
+		
+		// Adding icon to Quit dialog
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+		
+
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == buttonQuit) {
@@ -158,18 +137,59 @@ public class MainScreen {
 		}
 	}
 
-	public void save() {
+	private void save() {
+		btnSave.setDisable(true);
 		btnSave.setIcon("spinner.gif");
 		btnSave.setText("Saving...");
+		setStatusText("Saving to database...");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			// setStatus("Preparing stuff...");
 			btnSave.setIcon("done.png");
 			btnSave.setText("Saved!");
+			setStatusText("Saving to database done!");
 		})).play();
 		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
 			// setStatus("Preparing stuff...");
 			btnSave.setIcon("save.png");
 			btnSave.setText("Save");
+			setStatusText("App Ready");
+			btnSave.setDisable(false);
 		})).play();
+	}
+	
+	private void setupButtons() {
+		btnPatients = new MyButton("Patients");
+		btnProcedures = new MyButton("Procedures");
+		btnInvoices = new MyButton("Invoices");
+		btnReports = new MyButton("Reports");
+		btnSave = new MyButton("Save", "Success");
+		btnExit = new MyButton("Exit", "Warning");
+
+		btnPatients.setIcon("patient.png");
+		btnProcedures.setIcon("procedure.png");
+		btnInvoices.setIcon("invoice.png");
+		btnReports.setIcon("report.png");
+		btnSave.setIcon("save.png");
+		btnExit.setIcon("exit.png");		
+	}
+	
+	private void setEventHandlers() {
+		btnSave.setOnMouseClicked(e -> {
+			save();
+		});
+
+		btnExit.setOnMouseClicked(e -> {
+			quit();
+		});
+
+		primaryStage.setOnCloseRequest(e -> {
+			quit();
+			// Consuming the event to avoid it bubbling to application if Quit dialog is cancelled.
+			e.consume();
+		});
+	}
+	
+	private void setStatusText(String text) {
+		statusBar.setText(text);
 	}
 }
