@@ -46,11 +46,9 @@ public class MainScreen {
 	private void go() {
 
 		primaryStage = new Stage();
-		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "/assets/icon.png" )));
+		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
 
-		
 		VBox root = new VBox();
-		
 
 		SplitPane mainArea = new SplitPane();
 		mainArea.setPadding(new Insets(10));
@@ -69,11 +67,10 @@ public class MainScreen {
 		final Menu menu3 = new Menu("Help");
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().addAll(menu1, menu2, menu3);
-		
+
 		Label statusBar = new Label("Status text");
 		statusBar.setPadding(new Insets(5, 0, 5, 10));
-		
-		 
+
 		VBox options = new VBox(10);
 
 		final MyButton btnPatients = new MyButton("Patients");
@@ -82,7 +79,14 @@ public class MainScreen {
 		final MyButton btnReports = new MyButton("Reports", "Info");
 		final MyButton btnSave = new MyButton("Save");
 		final MyButton btnExit = new MyButton("Exit", "Warning");
-
+		
+		btnPatients.setIcon("patient");
+		btnProcedures.setIcon("procedure");
+		btnInvoices.setIcon("invoice");
+		btnReports.setIcon("report");
+		btnSave.setIcon("save");
+		btnExit.setIcon("exit");
+		
 		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
 		mainArea.getItems().add(options);
@@ -92,17 +96,24 @@ public class MainScreen {
 		root.getChildren().add(menuBar);
 		root.getChildren().add(mainArea);
 		root.getChildren().add(statusBar);
-		
-		VBox.setVgrow(mainArea, Priority.ALWAYS);
 
+		VBox.setVgrow(mainArea, Priority.ALWAYS);
 
 		Scene scene = new Scene(root, WIDTH, HEIGHT);
 
 		primaryStage.setTitle("Dental Surgery Management");
 		primaryStage.setScene(scene);
 
-		btnExit.setOnMouseClicked(e -> quit());
-		primaryStage.setOnCloseRequest(e -> quit());
+		btnExit.setOnMouseClicked(e -> {
+			quit();
+		});
+
+		primaryStage.setOnCloseRequest(e -> {
+			quit();
+			// Consuming the event to avoid it bubbling to application if Quit dialog is
+			// cancelled.
+			e.consume();
+		});
 
 		show();
 
@@ -118,19 +129,19 @@ public class MainScreen {
 		alert.setHeaderText("Quit program");
 		alert.setContentText("Are you sure you want to quit without saving changes?");
 
-		ButtonType buttonTypeOne = new ButtonType("Quit without saving");
-		ButtonType buttonTypeTwo = new ButtonType("Save and quit");
+		ButtonType buttonSaveAndQuit = new ButtonType("Save and quit");
+		ButtonType buttonQuit = new ButtonType("Quit without saving");
 		ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 
-		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+		alert.getButtonTypes().setAll(buttonSaveAndQuit, buttonQuit, buttonTypeCancel);
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == buttonTypeOne) {
+		if (result.get() == buttonQuit) {
 			Platform.exit();
 
-		} else if (result.get() == buttonTypeTwo) {
+		} else if (result.get() == buttonSaveAndQuit) {
 			// Save here.
 			Platform.exit();
-		} 
+		}
 	}
 }

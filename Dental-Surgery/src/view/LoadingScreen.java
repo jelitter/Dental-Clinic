@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -46,8 +47,8 @@ public class LoadingScreen {
 	private void go() {
 
 		primaryStage = new Stage();
-		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "/assets/icon.png" )));
-		
+		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+
 		// Image
 		Image icon = new Image("/assets/icon.png");
 		ImageView imgv = new ImageView();
@@ -56,12 +57,16 @@ public class LoadingScreen {
 		imgv.setPreserveRatio(true);
 		imgv.setSmooth(true);
 		imgv.setCache(true);
-				
-		
-		VBox root = new VBox(10);
+
+		BorderPane root = new BorderPane();
+		VBox vbox = new VBox(10);
+
+		root.setPrefWidth(WIDTH -80);
+		root.setTop(vbox);
+		root.setBottom(progress);
+
 		VBox.setVgrow(root, Priority.ALWAYS);
 		root.setMinWidth(WIDTH);
-		
 		root.setPadding(new Insets(40));
 
 		primaryStage.setMinWidth(WIDTH);
@@ -81,21 +86,16 @@ public class LoadingScreen {
 
 		lblStatus.setText("Loading database...");
 		lblStatus.autosize();
-		
-		progress.setProgress(0.0F);
-		progress.minWidth(WIDTH);
-		
 
-		root.getChildren().add(title);
-		root.getChildren().add(imgv);
-		
-		root.getChildren().add(new Label("(Simulating DB connection)"));
-		root.getChildren().add(lblStatus);
-		root.getChildren().add(progress);
-		
-		
-		root.setAlignment(Pos.TOP_CENTER);
+		progress.getParent().minWidth(WIDTH);
 
+		vbox.getChildren().add(title);
+		vbox.getChildren().add(imgv);
+
+		vbox.getChildren().add(new Label("(Simulating DB connection)"));
+		vbox.getChildren().add(lblStatus);
+
+		vbox.setAlignment(Pos.TOP_CENTER);
 
 		primaryStage.setTitle("Dental Surgery Management");
 		primaryStage.setScene(scene);
@@ -108,21 +108,18 @@ public class LoadingScreen {
 
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			setStatus("Organizing data...");
-			setProgress(0.25F);
 		})).play();
 
 		new Timeline(new KeyFrame(Duration.millis(4000), ae -> {
 			setStatus("Preparing stuff...");
-			setProgress(0.5F);
 		})).play();
-		
+
 		new Timeline(new KeyFrame(Duration.millis(6000), ae -> {
-			setStatus("Almost done...");
+			setStatus("Ready!");
 			setProgress(1F);
 		})).play();
 
 		new Timeline(new KeyFrame(Duration.millis(7000), ae -> {
-			setProgress(1F);
 			primaryStage.close();
 			MainScreen.getInstance();
 		})).play();
@@ -131,7 +128,7 @@ public class LoadingScreen {
 	public void setStatus(String text) {
 		this.lblStatus.setText(text);
 	}
-	
+
 	public void setProgress(double val) {
 		this.progress.setProgress(val);
 	}
