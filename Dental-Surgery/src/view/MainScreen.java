@@ -17,6 +17,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -71,7 +73,6 @@ public class MainScreen {
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
 
 		setupMenu();
-		
 
 		statusBar = new Label("Status text");
 		statusBar.setPadding(new Insets(5, 0, 5, 10));
@@ -84,7 +85,18 @@ public class MainScreen {
 
 		mainAreaRight = new VBox(10);
 		mainAreaRight.setStyle("-fx-font-smoothing-type: gray;");
-//		mainAreaRight.getChildren().add(new Label("Test Main Area"));
+
+		mainArea.maxWidthProperty().bind(primaryStage.widthProperty());
+		mainArea.minWidthProperty().bind(primaryStage.widthProperty());
+		mainArea.maxHeightProperty().bind(primaryStage.heightProperty());
+		mainArea.minHeightProperty().bind(primaryStage.heightProperty());
+
+		root.setBackground(
+				new Background(
+						new BackgroundImage(new Image("/assets/background.png"), null, null, null, null)
+				)
+		);
+		// mainAreaRight.getChildren().add(new Label("Test Main Area"));
 
 		mainArea.getChildren().add(options);
 		mainArea.getChildren().add(mainAreaRight);
@@ -100,7 +112,7 @@ public class MainScreen {
 
 		primaryStage.setTitle("Dental Surgery Management");
 		primaryStage.setScene(scene);
-		
+
 		setEventHandlers();
 		show();
 		PatientsScreen.getInstance();
@@ -121,12 +133,10 @@ public class MainScreen {
 		ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 
 		alert.getButtonTypes().setAll(buttonSaveAndQuit, buttonQuit, buttonTypeCancel);
-		
+
 		// Adding icon to Quit dialog
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
-		
-
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == buttonQuit) {
@@ -157,7 +167,7 @@ public class MainScreen {
 			btnSave.setDisable(false);
 		})).play();
 	}
-	
+
 	private void setupButtons() {
 		btnPatients = new MyButton("Patients");
 		btnProcedures = new MyButton("Procedures");
@@ -171,11 +181,11 @@ public class MainScreen {
 		btnInvoices.setIcon("invoice.png");
 		btnReports.setIcon("report.png");
 		btnSave.setIcon("save.png");
-		btnExit.setIcon("exit.png");		
+		btnExit.setIcon("exit.png");
 	}
-	
+
 	private void setupMenu() {
-		final ArrayList<Menu> menuItems = new ArrayList<Menu>(); 
+		final ArrayList<Menu> menuItems = new ArrayList<Menu>();
 		final Menu menuFile = new Menu("File");
 		final Menu menuPatients = new Menu("Patients");
 		final Menu menuProcedures = new Menu("Procedures");
@@ -183,7 +193,7 @@ public class MainScreen {
 		final Menu menuReports = new Menu("Reports");
 		final Menu menuOptions = new Menu("Options");
 		final Menu menuHelp = new Menu("Help");
-		
+
 		menuItems.add(menuFile);
 		menuItems.add(menuPatients);
 		menuItems.add(menuProcedures);
@@ -191,36 +201,36 @@ public class MainScreen {
 		menuItems.add(menuReports);
 		menuItems.add(menuOptions);
 		menuItems.add(menuHelp);
-		
+
 		menuBar = new MenuBar();
-		
-		for (Menu m: menuItems) {
+
+		for (Menu m : menuItems) {
 			menuBar.getMenus().add(m);
 		}
 	}
-	
+
 	private void setEventHandlers() {
-		
+
 		btnPatients.setOnMouseClicked(e -> {
 			mainAreaRight.getChildren().clear();
 			PatientsScreen.getInstance();
 		});
-		
+
 		btnProcedures.setOnMouseClicked(e -> {
 			mainAreaRight.getChildren().clear();
 			ProceduresScreen.getInstance();
 		});
-		
+
 		btnInvoices.setOnMouseClicked(e -> {
 			mainAreaRight.getChildren().clear();
 			InvoicesScreen.getInstance();
 		});
-		
+
 		btnReports.setOnMouseClicked(e -> {
 			mainAreaRight.getChildren().clear();
 			ReportsScreen.getInstance();
 		});
-		
+
 		btnSave.setOnMouseClicked(e -> {
 			save();
 		});
@@ -231,15 +241,16 @@ public class MainScreen {
 
 		primaryStage.setOnCloseRequest(e -> {
 			quit();
-			// Consuming the event to avoid it bubbling to application if Quit dialog is cancelled.
+			// Consuming the event to avoid it bubbling to application if Quit dialog is
+			// cancelled.
 			e.consume();
 		});
 	}
-	
+
 	private void setStatusText(String text) {
 		statusBar.setText(text);
 	}
-	
+
 	public VBox getLayout() {
 		return this.mainAreaRight;
 	}
