@@ -18,10 +18,17 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -77,28 +84,32 @@ public class MainScreen {
 		statusBar = new Label("Status text");
 		statusBar.setPadding(new Insets(5, 0, 5, 10));
 
-		VBox options = new VBox(10);
-
+		VBox mainAreaLeft = new VBox(10);
 		setupButtons();
 
-		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
+		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
 		mainAreaRight = new VBox(10);
-		mainAreaRight.setStyle("-fx-font-smoothing-type: gray;");
+		mainAreaRight.setStyle("-fx-font-smoothing-type: gray; -fx-base: #CCCCDD;");
+		mainAreaRight.setPrefWidth(WIDTH - mainAreaLeft.getWidth() -60);
 
-		mainArea.maxWidthProperty().bind(primaryStage.widthProperty());
-		mainArea.minWidthProperty().bind(primaryStage.widthProperty());
-		mainArea.maxHeightProperty().bind(primaryStage.heightProperty());
-		mainArea.minHeightProperty().bind(primaryStage.heightProperty());
+//		mainArea.maxWidthProperty().bind(primaryStage.widthProperty());
+//		mainArea.minWidthProperty().bind(primaryStage.widthProperty());
+//		mainArea.maxHeightProperty().bind(primaryStage.heightProperty());
+//		mainArea.minHeightProperty().bind(primaryStage.heightProperty());
 
-		root.setBackground(
-				new Background(
-						new BackgroundImage(new Image("/assets/background.png"), null, null, null, null)
-				)
-		);
-		// mainAreaRight.getChildren().add(new Label("Test Main Area"));
+		BackgroundImage bgImage = new BackgroundImage(
+				new Image("/assets/background.png"), 
+				BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+				BackgroundPosition.CENTER, 
+				BackgroundSize.DEFAULT
+				);
+		
+		Background bg = new Background(bgImage);
+		mainAreaRight.setBackground(bg);
 
-		mainArea.getChildren().add(options);
+		mainArea.getChildren().add(mainAreaLeft);
 		mainArea.getChildren().add(mainAreaRight);
 		mainArea.setStyle("-fx-base: #CCCCCC;");
 
@@ -107,6 +118,7 @@ public class MainScreen {
 		root.getChildren().add(statusBar);
 
 		VBox.setVgrow(mainArea, Priority.ALWAYS);
+		HBox.setHgrow(mainArea, Priority.ALWAYS);
 
 		Scene scene = new Scene(root, WIDTH, HEIGHT);
 
@@ -154,13 +166,11 @@ public class MainScreen {
 		btnSave.setText("Saving...");
 		setStatusText("Saving to database...");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
-			// setStatus("Preparing stuff...");
 			btnSave.setIcon("done.png");
 			btnSave.setText("Saved!");
 			setStatusText("Saving to database done!");
 		})).play();
 		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
-			// setStatus("Preparing stuff...");
 			btnSave.setIcon("save.png");
 			btnSave.setText("Save");
 			setStatusText("App Ready");
