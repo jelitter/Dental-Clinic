@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -33,6 +32,7 @@ public class MainScreen {
 	private Stage primaryStage;
 	private static MainScreen instance;
 	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit;
+	private VBox mainAreaRight;
 	private Label statusBar;
 
 	public MainScreen() {
@@ -52,7 +52,7 @@ public class MainScreen {
 	private void go() {
 
 		primaryStage = new Stage();
-		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+		primaryStage.getIcons().add(new Image("/assets/icon.png"));
 
 		VBox root = new VBox();
 
@@ -83,7 +83,7 @@ public class MainScreen {
 
 		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
-		VBox mainAreaRight = new VBox(10);
+		mainAreaRight = new VBox(10);
 		mainAreaRight.getChildren().add(new Label("Test Main Area"));
 
 		mainArea.getChildren().add(options);
@@ -174,6 +174,27 @@ public class MainScreen {
 	}
 	
 	private void setEventHandlers() {
+		
+		btnPatients.setOnMouseClicked(e -> {
+			mainAreaRight.getChildren().clear();
+			PatientsScreen.getInstance();
+		});
+		
+		btnProcedures.setOnMouseClicked(e -> {
+			mainAreaRight.getChildren().clear();
+			ProceduresScreen.getInstance();
+		});
+		
+		btnInvoices.setOnMouseClicked(e -> {
+			mainAreaRight.getChildren().clear();
+			InvoicesScreen.getInstance();
+		});
+		
+		btnReports.setOnMouseClicked(e -> {
+			mainAreaRight.getChildren().clear();
+			ReportsScreen.getInstance();
+		});
+		
 		btnSave.setOnMouseClicked(e -> {
 			save();
 		});
@@ -191,5 +212,9 @@ public class MainScreen {
 	
 	private void setStatusText(String text) {
 		statusBar.setText(text);
+	}
+	
+	public VBox getLayout() {
+		return this.mainAreaRight;
 	}
 }

@@ -1,6 +1,5 @@
 package view;
 
-import application.Main;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -47,7 +46,7 @@ public class LoadingScreen {
 	private void go() {
 
 		primaryStage = new Stage();
-		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+		primaryStage.getIcons().add(new Image("/assets/icon.png" ));
 
 		// Image
 		Image icon = new Image("/assets/icon.png");

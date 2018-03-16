@@ -1,6 +1,5 @@
 package view;
 
-import application.Main;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -46,7 +45,7 @@ public class LoginScreen {
 		primaryStage = new Stage();
 		primaryStage.setMinWidth(WIDTH);
 		primaryStage.setMinHeight(HEIGHT);
-		primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream( "/assets/icon.png" )));
+		primaryStage.getIcons().add(new Image("/assets/icon.png" ));
 
 
 		double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
