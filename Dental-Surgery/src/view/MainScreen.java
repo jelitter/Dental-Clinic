@@ -1,5 +1,6 @@
 package view;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import application.Main;
@@ -34,6 +35,7 @@ public class MainScreen {
 	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit;
 	private VBox mainAreaRight;
 	private Label statusBar;
+	private MenuBar menuBar;
 
 	public MainScreen() {
 		instance = this;
@@ -68,11 +70,8 @@ public class MainScreen {
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
 
-		final Menu menu1 = new Menu("File");
-		final Menu menu2 = new Menu("Options");
-		final Menu menu3 = new Menu("Help");
-		MenuBar menuBar = new MenuBar();
-		menuBar.getMenus().addAll(menu1, menu2, menu3);
+		setupMenu();
+		
 
 		statusBar = new Label("Status text");
 		statusBar.setPadding(new Insets(5, 0, 5, 10));
@@ -84,7 +83,8 @@ public class MainScreen {
 		options.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
 
 		mainAreaRight = new VBox(10);
-		mainAreaRight.getChildren().add(new Label("Test Main Area"));
+		mainAreaRight.setStyle("-fx-font-smoothing-type: gray;");
+//		mainAreaRight.getChildren().add(new Label("Test Main Area"));
 
 		mainArea.getChildren().add(options);
 		mainArea.getChildren().add(mainAreaRight);
@@ -103,6 +103,7 @@ public class MainScreen {
 		
 		setEventHandlers();
 		show();
+		PatientsScreen.getInstance();
 	}
 
 	public void show() {
@@ -171,6 +172,31 @@ public class MainScreen {
 		btnReports.setIcon("report.png");
 		btnSave.setIcon("save.png");
 		btnExit.setIcon("exit.png");		
+	}
+	
+	private void setupMenu() {
+		final ArrayList<Menu> menuItems = new ArrayList<Menu>(); 
+		final Menu menuFile = new Menu("File");
+		final Menu menuPatients = new Menu("Patients");
+		final Menu menuProcedures = new Menu("Procedures");
+		final Menu menuInvoices = new Menu("Invoices");
+		final Menu menuReports = new Menu("Reports");
+		final Menu menuOptions = new Menu("Options");
+		final Menu menuHelp = new Menu("Help");
+		
+		menuItems.add(menuFile);
+		menuItems.add(menuPatients);
+		menuItems.add(menuProcedures);
+		menuItems.add(menuInvoices);
+		menuItems.add(menuReports);
+		menuItems.add(menuOptions);
+		menuItems.add(menuHelp);
+		
+		menuBar = new MenuBar();
+		
+		for (Menu m: menuItems) {
+			menuBar.getMenus().add(m);
+		}
 	}
 	
 	private void setEventHandlers() {

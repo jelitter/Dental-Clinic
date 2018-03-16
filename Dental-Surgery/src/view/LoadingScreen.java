@@ -26,6 +26,7 @@ public class LoadingScreen {
 	private static LoadingScreen instance;
 	private Label lblStatus;
 	private ProgressBar progress;
+	private ImageView imgv;
 
 	public LoadingScreen() {
 		instance = this;
@@ -50,7 +51,7 @@ public class LoadingScreen {
 
 		// Image
 		Image icon = new Image("/assets/icon.png");
-		ImageView imgv = new ImageView();
+		imgv = new ImageView();
 		imgv.setImage(icon);
 		imgv.setFitWidth(100);
 		imgv.setPreserveRatio(true);
@@ -104,6 +105,12 @@ public class LoadingScreen {
 
 	public void show() {
 		primaryStage.show();
+		
+		Timeline tl = new Timeline(new KeyFrame(Duration.millis(33), ae -> {
+			imgv.setRotate(imgv.getRotate() + 2);
+		}));
+		tl.setCycleCount(Timeline.INDEFINITE);
+		tl.play();
 
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			setStatus("Organizing data...");
@@ -116,6 +123,8 @@ public class LoadingScreen {
 		new Timeline(new KeyFrame(Duration.millis(6000), ae -> {
 			setStatus("Ready!");
 			setProgress(1F);
+			imgv.setRotate(0);
+			tl.stop();
 		})).play();
 
 		new Timeline(new KeyFrame(Duration.millis(7000), ae -> {
