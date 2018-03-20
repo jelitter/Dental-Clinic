@@ -44,7 +44,7 @@ public class MyButton extends Button {
 		if (type.equals("Generic")) {
 			style += "-fx-base: DEEPSKYBLUE;";
 		} else if (type.equals("Success")) {
-			style += "-fx-base: LIGHTSEAGREEN;";
+			style += "-fx-base: LIMEGREEN;";
 		} else if (type.equals("Warning")) {
 			style += "-fx-base: LIGHTCORAL;";
 		} else {

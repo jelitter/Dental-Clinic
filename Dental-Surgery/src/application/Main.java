@@ -9,9 +9,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			LoginScreen.getInstance();
+//			LoginScreen.getInstance();
 //			LoadingScreen.getInstance();
-//			MainScreen.getInstance();
+			MainScreen.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
