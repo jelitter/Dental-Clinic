@@ -42,9 +42,10 @@ public class MainScreen {
 	private Stage primaryStage;
 	private static MainScreen instance;
 	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit;
-	private VBox mainAreaRight;
+	private VBox mainAreaLeft, mainAreaRight;
 	private Label statusBar;
 	private MenuBar menuBar;
+	VBox root;
 
 	public MainScreen() {
 		instance = this;
@@ -65,7 +66,7 @@ public class MainScreen {
 		primaryStage = new Stage();
 		primaryStage.getIcons().add(new Image("/assets/icon.png"));
 
-		VBox root = new VBox();
+		root = new VBox();
 
 		HBox mainArea = new HBox(10);
 		mainArea.setPadding(new Insets(10));
@@ -84,7 +85,7 @@ public class MainScreen {
 		statusBar = new Label("Status text");
 		statusBar.setPadding(new Insets(5, 0, 5, 10));
 
-		VBox mainAreaLeft = new VBox(10);
+		mainAreaLeft = new VBox(10);
 		setupButtons();
 
 		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
@@ -93,6 +94,7 @@ public class MainScreen {
 		mainAreaRight.setStyle("-fx-font-smoothing-type: gray; -fx-base: #CCCCDD;");
 		mainAreaRight.setPrefWidth(WIDTH - mainAreaLeft.getWidth() -60);
 
+		
 //		mainArea.maxWidthProperty().bind(primaryStage.widthProperty());
 //		mainArea.minWidthProperty().bind(primaryStage.widthProperty());
 //		mainArea.maxHeightProperty().bind(primaryStage.heightProperty());
@@ -112,6 +114,9 @@ public class MainScreen {
 		mainArea.getChildren().add(mainAreaLeft);
 		mainArea.getChildren().add(mainAreaRight);
 		mainArea.setStyle("-fx-base: #CCCCCC;");
+		
+		mainArea.prefWidthProperty().bind(root.widthProperty().multiply(1));
+
 
 		root.getChildren().add(menuBar);
 		root.getChildren().add(mainArea);
@@ -155,13 +160,13 @@ public class MainScreen {
 			Platform.exit();
 
 		} else if (result.get() == buttonSaveAndQuit) {
-			// Save here.
+			save();
 			Platform.exit();
 		}
 	}
 
 	private void save() {
-		btnSave.setDisable(true);
+		root.setDisable(true);
 		btnSave.setIcon("spinner.gif");
 		btnSave.setText("Saving...");
 		setStatusText("Saving to database...");
@@ -174,7 +179,7 @@ public class MainScreen {
 			btnSave.setIcon("save.png");
 			btnSave.setText("Save");
 			setStatusText("App Ready");
-			btnSave.setDisable(false);
+			root.setDisable(false);
 		})).play();
 	}
 

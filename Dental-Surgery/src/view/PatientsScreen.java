@@ -40,7 +40,7 @@ public class PatientsScreen extends Pane {
 		HBox personalFields = new HBox(10);
 
 		Label title = new Label("Personal details");
-		title.setFont(new Font("Arial", 18));
+		title.setFont(new Font("Arial", 22));
 		title.setWrapText(true);
 		TextField fldName = new TextField("");
 		TextField fldLastName = new TextField("");
@@ -50,11 +50,17 @@ public class PatientsScreen extends Pane {
 
 		personalFields.getChildren().addAll(fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
 
-		fldName.setPrefWidth(120);
-		fldLastName.setPrefWidth(120);
-		fldEmail.setPrefWidth(180);
-		fldAddress.setPrefWidth(220);
-		fldPhoneNumber.setPrefWidth(120);
+//		fldName.setPrefWidth(120);
+//		fldLastName.setPrefWidth(120);
+//		fldEmail.setPrefWidth(180);
+//		fldAddress.setPrefWidth(220);
+//		fldPhoneNumber.setPrefWidth(120);
+		
+		fldName.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.15));
+		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.15));
+		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.2));
+		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.3));
+		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.2));
 
 		fldName.setPromptText("First Name");
 		fldLastName.setPromptText("Last Name");
@@ -67,7 +73,8 @@ public class PatientsScreen extends Pane {
 		Button btnAddPatient = new Button("Add Patient");
 		btnSearchPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
-		btnAddPatient.setPrefWidth(120);
+		btnSearchPatient.setPrefWidth(150);
+		btnAddPatient.setPrefWidth(150);
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
 		buttons.getChildren().addAll(btnSearchPatient, btnAddPatient);
 
@@ -87,8 +94,14 @@ public class PatientsScreen extends Pane {
 		TableColumn emailCol = new TableColumn("Email");
 		TableColumn addressCol = new TableColumn("Address");
 		TableColumn phoneCol = new TableColumn("Phone No.");
+		
+		firstNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+		lastNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+		emailCol.prefWidthProperty().bind(table.widthProperty().multiply(0.2));
+		addressCol.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
+		phoneCol.prefWidthProperty().bind(table.widthProperty().multiply(0.2));
 
-		table.getColumns().addAll(firstNameCol, lastNameCol, addressCol, phoneCol);
+		table.getColumns().addAll(firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
 		return table;
 	}
 
