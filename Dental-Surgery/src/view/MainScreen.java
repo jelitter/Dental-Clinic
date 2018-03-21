@@ -18,17 +18,13 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -41,7 +37,7 @@ public class MainScreen {
 
 	private Stage primaryStage;
 	private static MainScreen instance;
-	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit;
+	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnSaveQuit, btnExit;
 	private VBox mainAreaLeft, mainAreaRight;
 	private Label statusBar;
 	private MenuBar menuBar;
@@ -88,7 +84,7 @@ public class MainScreen {
 		mainAreaLeft = new VBox(10);
 		setupButtons();
 
-		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnExit);
+		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnSaveQuit, btnExit);
 
 		mainAreaRight = new VBox(10);
 		mainAreaRight.setStyle("-fx-font-smoothing-type: gray; -fx-base: #CCCCDD;");
@@ -160,25 +156,32 @@ public class MainScreen {
 			Platform.exit();
 
 		} else if (result.get() == buttonSaveAndQuit) {
-			save();
-			Platform.exit();
+			save(btnSaveQuit);
+//			Platform.exit();
 		}
 	}
 
-	private void save() {
+	private void save(MyButton btn) {
 		root.setDisable(true);
-		btnSave.setIcon("spinner.gif");
-		btnSave.setText("Saving...");
+		btn.setIcon("spinner.gif");
+		btn.setText("Saving...");
 		setStatusText("Saving to database...");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			root.setDisable(false);
-			btnSave.setIcon("done.png");
-			btnSave.setText("Saved!");
+			btn.setIcon("done.png");
+			btn.setText("Saved!");
 			setStatusText("Saving to database done!");
 		})).play();
 		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
-			btnSave.setIcon("save.png");
-			btnSave.setText("Save");
+			
+			if (btn == this.btnSave) {
+				btn.setIcon("save.png");
+				btn.setText("Save");
+			} else {
+				new Timeline(new KeyFrame(Duration.millis(500), an -> {
+					Platform.exit();
+				})).play();
+			}
 			setStatusText("App Ready");
 		})).play();
 	}
@@ -189,6 +192,7 @@ public class MainScreen {
 		btnInvoices = new MyButton("Invoices");
 		btnReports = new MyButton("Reports");
 		btnSave = new MyButton("Save", "Success");
+		btnSaveQuit = new MyButton("Save and Exit", "Success");
 		btnExit = new MyButton("Exit", "Warning");
 
 		btnPatients.setIcon("patient.png");
@@ -196,6 +200,7 @@ public class MainScreen {
 		btnInvoices.setIcon("invoice.png");
 		btnReports.setIcon("report.png");
 		btnSave.setIcon("save.png");
+		btnSaveQuit.setIcon("savequit.png");
 		btnExit.setIcon("exit.png");
 	}
 
@@ -247,7 +252,11 @@ public class MainScreen {
 		});
 
 		btnSave.setOnMouseClicked(e -> {
-			save();
+			save(btnSave);
+		});
+		
+		btnSaveQuit.setOnMouseClicked(e -> {
+			save(btnSaveQuit);
 		});
 
 		btnExit.setOnMouseClicked(e -> {

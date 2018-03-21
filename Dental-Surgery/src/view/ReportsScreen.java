@@ -25,7 +25,7 @@ public class ReportsScreen extends Pane {
 
 	public void go() {
 		VBox pane = MainScreen.getInstance().getLayout();
-		Label title = new Label("Reports Screen");
+		Label title = new Label("Reports");
 		title.setFont(new Font("Arial", 22));
 		title.setWrapText(true);
 		Label subtitle = new Label("This is for Report management");

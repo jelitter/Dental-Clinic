@@ -7,13 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import model.Person;
 
 public class PatientsScreen extends Pane {
 
@@ -41,7 +39,7 @@ public class PatientsScreen extends Pane {
 		// PERSONAL
 		HBox personalFields = new HBox(10);
 
-		Label title = new Label("Personal details");
+		Label title = new Label("Patients");
 		title.setFont(new Font("Arial", 22));
 		title.setWrapText(true);
 		TextField fldName = new TextField("");
@@ -51,12 +49,6 @@ public class PatientsScreen extends Pane {
 		TextField fldPhoneNumber = new TextField("");
 
 		personalFields.getChildren().addAll(fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
-
-//		fldName.setPrefWidth(120);
-//		fldLastName.setPrefWidth(120);
-//		fldEmail.setPrefWidth(180);
-//		fldAddress.setPrefWidth(220);
-//		fldPhoneNumber.setPrefWidth(120);
 		
 		fldName.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.15));
 		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.15));
