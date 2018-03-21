@@ -167,7 +167,6 @@ public class MainScreen {
 		btn.setText("Saving...");
 		setStatusText("Saving to database...");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
-			root.setDisable(false);
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
 			setStatusText("Saving to database done!");
@@ -175,10 +174,12 @@ public class MainScreen {
 		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
 			
 			if (btn == this.btnSave) {
+				root.setDisable(false);
 				btn.setIcon("save.png");
 				btn.setText("Save");
 			} else {
-				new Timeline(new KeyFrame(Duration.millis(500), an -> {
+				btn.setText("Closing...");
+				new Timeline(new KeyFrame(Duration.millis(750), an -> {
 					Platform.exit();
 				})).play();
 			}
