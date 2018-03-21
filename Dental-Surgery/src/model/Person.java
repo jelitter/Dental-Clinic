@@ -5,17 +5,21 @@ import java.io.Serializable;
 public class Person implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
-	private String name, address, email, phoneNumber;
+	private String firstName, lastName, address, email, phoneNumber;
 	
-	public Person(String name, String address, String email, String phoneNumber) {
-		this.setName(name);
+	public Person(String firstName, String lastName, String address, String email, String phoneNumber) {
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
 		this.setAddress(address);
 		this.setEmail(email);
 		this.setPhoneNumber(phoneNumber);
 	}
 
-	public String getName() { return name; }
-	public void setName(String name) { this.name = name;	}
+	public String getFirstName() { return firstName; }
+	public void setFirstName(String name) { this.firstName = name;	}
+	
+	public String getLastName() { return lastName; }
+	public void setLastName(String name) { this.lastName = name;	}
 
 	public String getAddress() { return address;	}
 	public void setAddress(String address) { this.address = address;	}

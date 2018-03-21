@@ -7,11 +7,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import model.Person;
 
 public class PatientsScreen extends Pane {
 
@@ -84,7 +86,6 @@ public class PatientsScreen extends Pane {
 
 		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
 		pane.setStyle("-fx-background-color: #C4CFDD");
-
 	}
 
 	private TableView createTable() {
@@ -104,5 +105,4 @@ public class PatientsScreen extends Pane {
 		table.getColumns().addAll(firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
 		return table;
 	}
-
 }

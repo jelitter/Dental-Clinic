@@ -171,6 +171,7 @@ public class MainScreen {
 		btnSave.setText("Saving...");
 		setStatusText("Saving to database...");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
+			root.setDisable(false);
 			btnSave.setIcon("done.png");
 			btnSave.setText("Saved!");
 			setStatusText("Saving to database done!");
@@ -179,7 +180,6 @@ public class MainScreen {
 			btnSave.setIcon("save.png");
 			btnSave.setText("Save");
 			setStatusText("App Ready");
-			root.setDisable(false);
 		})).play();
 	}
 

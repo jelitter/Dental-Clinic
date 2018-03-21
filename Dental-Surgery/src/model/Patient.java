@@ -10,8 +10,8 @@ public class Patient extends Person implements Serializable {
 	private int id;
 	private ArrayList<Invoice> invoices;
 
-	public Patient(String name, String address, String email, String phoneNumber) {
-		super(name, address, email, phoneNumber);
+	public Patient(String firstName, String lastName, String address, String email, String phoneNumber) {
+		super(firstName, lastName, address, email, phoneNumber);
 		this.setId(++_id);
 		this.setInvoices(new ArrayList<Invoice> ());
 	}
@@ -24,8 +24,8 @@ public class Patient extends Person implements Serializable {
 	public void addInvoice(Invoice invoice) { this.invoices.add(invoice); }
 	
 	public String toString() {
-		return String.format("Name: %s\nAddress: %s\nPhone: %s\n", 
-				this.getName(), this.getAddress(), this.getPhoneNumber()); 
+		return String.format("Name: %s %s\nAddress: %s\nPhone: %s\n", 
+				this.getFirstName(), this.getLastName(), this.getAddress(), this.getPhoneNumber()); 
 	}
 	
 	public void print() {
