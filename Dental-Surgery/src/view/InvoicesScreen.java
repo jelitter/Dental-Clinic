@@ -4,6 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import view.elements.MyTitle;
 
 public class InvoicesScreen extends Pane {
 
@@ -26,9 +27,7 @@ public class InvoicesScreen extends Pane {
 	public void go() {
 		VBox pane = MainScreen.getInstance().getLayout();
 		pane.getChildren().clear();
-		Label title = new Label("Invoices");
-		title.setFont(new Font("Arial", 22));
-		title.setWrapText(true);
+		MyTitle title = new MyTitle("Invoices");
 		Label subtitle = new Label("This is for Invoice management");
 		pane.getChildren().addAll(title, subtitle);
 	}

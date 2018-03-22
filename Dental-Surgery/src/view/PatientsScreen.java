@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import model.Patient;
 import model.Person;
+import view.elements.MyTitle;
 
 public class PatientsScreen extends Pane {
 
@@ -43,24 +44,28 @@ public class PatientsScreen extends Pane {
 
 		// PERSONAL
 		HBox personalFields = new HBox(10);
-
-		Label title = new Label("Patients");
-		title.setFont(new Font("Arial", 22));
-		title.setWrapText(true);
+	
+		MyTitle title = new MyTitle("Patients");
+		
+		TextField fldId = new TextField("");
 		TextField fldName = new TextField("");
 		TextField fldLastName = new TextField("");
 		TextField fldEmail = new TextField("");
 		TextField fldAddress = new TextField("");
 		TextField fldPhoneNumber = new TextField("");
 
-		personalFields.getChildren().addAll(fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
+		personalFields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
 		
-		fldName.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.15));
-		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.15));
-		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.2));
-		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.3));
-		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().multiply(0.2));
+		
+		fldId.prefWidthProperty().set(40);
+		fldName.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.15));
+		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.15));
+		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
+		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.3));
+		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
 
+		
+		fldId.setPromptText("Id");
 		fldName.setPromptText("First Name");
 		fldLastName.setPromptText("Last Name");
 		fldEmail.setPromptText("Email");
@@ -88,6 +93,7 @@ public class PatientsScreen extends Pane {
 
 	private TableView<Patient> createTable() {
 		TableView<Patient> table = new TableView<Patient>();
+		TableColumn<Patient, String> idCol = new TableColumn<Patient,String>("Id");
 		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
 		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
 		TableColumn<Patient, String> emailCol = new TableColumn<Patient, String>("Email");
@@ -96,26 +102,35 @@ public class PatientsScreen extends Pane {
 		
 		
 	    ObservableList<Person> personData = FXCollections.observableArrayList();
-		Patient testPatient = new Patient("John", "Smith", "jsmith@gmail.com", "23 Rock Ave.", "555-123-4431");
+		Patient testPatient1 = new Patient("John", "Smith", "jsmith@gmail.com", "23 Rock Ave.", "555-123-4431");
+		Patient testPatient2 = new Patient("Sarah", "Connor", "sconnor@gmail.com", "1 Fate St.", "555-378-0101");
+		Patient testPatient3 = new Patient("James", "Jameson", "jjameson@gmail.com", "12 Lake Road.", "555-199-3187");
 		
+		
+		idCol.setCellValueFactory(cellData -> cellData.getValue().getId());
         firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
         lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
         emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
         addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddress());
-        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
-        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
+        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumber());
+        table.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
         
-        personData.add(testPatient);
+        personData.add(testPatient1);
+        personData.add(testPatient2);
+        personData.add(testPatient3);
      		
 		
-		firstNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
-		lastNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
-		emailCol.prefWidthProperty().bind(table.widthProperty().multiply(0.2));
-		addressCol.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
-		phoneCol.prefWidthProperty().bind(table.widthProperty().multiply(0.195));
+        idCol.prefWidthProperty().set(40);
+		firstNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
+		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
+		emailCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2));
+		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.3));
+		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.195));
 
-		
-		table.getItems().add(testPatient);
+        
+		table.getItems().add(testPatient1);
+		table.getItems().add(testPatient2);
+		table.getItems().add(testPatient3);
 		return table;
 	}
 }
