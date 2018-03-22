@@ -240,7 +240,6 @@ public class MainScreen {
 			activeButton.deActivate();
 			btnPatients.activate();
 			activeButton = btnPatients;
-			mainAreaRight.getChildren().clear();
 			PatientsScreen.getInstance();
 		});
 
@@ -248,7 +247,6 @@ public class MainScreen {
 			activeButton.deActivate();
 			btnProcedures.activate();
 			activeButton = btnProcedures;
-			mainAreaRight.getChildren().clear();
 			ProceduresScreen.getInstance();
 		});
 
@@ -256,7 +254,6 @@ public class MainScreen {
 			activeButton.deActivate();
 			btnInvoices.activate();
 			activeButton = btnInvoices;
-			mainAreaRight.getChildren().clear();
 			InvoicesScreen.getInstance();
 		});
 
@@ -264,7 +261,6 @@ public class MainScreen {
 			activeButton.deActivate();
 			btnReports.activate();
 			activeButton = btnReports;
-			mainAreaRight.getChildren().clear();
 			ReportsScreen.getInstance();
 		});
 

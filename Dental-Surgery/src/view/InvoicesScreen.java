@@ -25,6 +25,7 @@ public class InvoicesScreen extends Pane {
 
 	public void go() {
 		VBox pane = MainScreen.getInstance().getLayout();
+		pane.getChildren().clear();
 		Label title = new Label("Invoices");
 		title.setFont(new Font("Arial", 22));
 		title.setWrapText(true);

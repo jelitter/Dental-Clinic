@@ -38,6 +38,7 @@ public class PatientsScreen extends Pane {
 
 	public void go() {
 		VBox pane = MainScreen.getInstance().getLayout();
+		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
 
 		// PERSONAL

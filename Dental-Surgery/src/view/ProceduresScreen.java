@@ -25,6 +25,7 @@ public class ProceduresScreen extends Pane {
 
 	public void go() {
 		VBox pane = MainScreen.getInstance().getLayout();
+		pane.getChildren().clear();
 		Label title = new Label("Procedures");
 		title.setFont(new Font("Arial", 22));
 		title.setWrapText(true);
