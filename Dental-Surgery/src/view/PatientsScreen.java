@@ -127,6 +127,8 @@ public class PatientsScreen extends Pane {
 		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.3));
 		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.195));
 
+		idCol.setStyle( "-fx-alignment: CENTER;");
+		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
 		table.getItems().add(testPatient1);
 		table.getItems().add(testPatient2);

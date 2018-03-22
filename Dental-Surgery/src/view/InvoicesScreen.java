@@ -3,7 +3,6 @@ package view;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import view.elements.MyTitle;
 
 public class InvoicesScreen extends Pane {
