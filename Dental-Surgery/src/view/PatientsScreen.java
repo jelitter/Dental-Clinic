@@ -81,7 +81,8 @@ public class PatientsScreen extends Pane {
 		tblPatients = createTable();
 
 		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
-		pane.setStyle("-fx-background-color: #C4CFDD");
+//		pane.setStyle("-fx-background-color: #C4CFDD");
+		pane.setStyle("-fx-background-color: #DDEEFF");
 	}
 
 	private TableView<Patient> createTable() {
@@ -98,18 +99,20 @@ public class PatientsScreen extends Pane {
 		
         firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
         lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
+        emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
+        addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddress());
+        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
+        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
         
         personData.add(testPatient);
      		
-		
 		
 		firstNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
 		lastNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
 		emailCol.prefWidthProperty().bind(table.widthProperty().multiply(0.2));
 		addressCol.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
-		phoneCol.prefWidthProperty().bind(table.widthProperty().multiply(0.2));
+		phoneCol.prefWidthProperty().bind(table.widthProperty().multiply(0.195));
 
-		table.getColumns().addAll(firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
 		
 		table.getItems().add(testPatient);
 		return table;

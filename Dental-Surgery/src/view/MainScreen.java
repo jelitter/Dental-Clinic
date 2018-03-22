@@ -14,6 +14,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -38,6 +39,7 @@ public class MainScreen {
 	private Stage primaryStage;
 	private static MainScreen instance;
 	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnSaveQuit, btnExit;
+	private MyButton activeButton;
 	private VBox mainAreaLeft, mainAreaRight;
 	private Label statusBar;
 	private MenuBar menuBar;
@@ -129,6 +131,8 @@ public class MainScreen {
 		setEventHandlers();
 		show();
 		PatientsScreen.getInstance();
+		btnPatients.activate();
+		activeButton = btnPatients;
 	}
 
 	public void show() {
@@ -141,9 +145,9 @@ public class MainScreen {
 		alert.setHeaderText("Quit program");
 		alert.setContentText("Are you sure you want to quit without saving changes?");
 
-		ButtonType buttonSaveAndQuit = new ButtonType("Save and quit");
-		ButtonType buttonQuit = new ButtonType("Quit without saving");
-		ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+		ButtonType buttonSaveAndQuit = new ButtonType("_Save and quit");
+		ButtonType buttonQuit = new ButtonType("_Quit without saving");
+		ButtonType buttonTypeCancel = new ButtonType("_Cancel", ButtonData.CANCEL_CLOSE);
 
 		alert.getButtonTypes().setAll(buttonSaveAndQuit, buttonQuit, buttonTypeCancel);
 
@@ -233,21 +237,33 @@ public class MainScreen {
 	private void setEventHandlers() {
 
 		btnPatients.setOnMouseClicked(e -> {
+			activeButton.deActivate();
+			btnPatients.activate();
+			activeButton = btnPatients;
 			mainAreaRight.getChildren().clear();
 			PatientsScreen.getInstance();
 		});
 
 		btnProcedures.setOnMouseClicked(e -> {
+			activeButton.deActivate();
+			btnProcedures.activate();
+			activeButton = btnProcedures;
 			mainAreaRight.getChildren().clear();
 			ProceduresScreen.getInstance();
 		});
 
 		btnInvoices.setOnMouseClicked(e -> {
+			activeButton.deActivate();
+			btnInvoices.activate();
+			activeButton = btnInvoices;
 			mainAreaRight.getChildren().clear();
 			InvoicesScreen.getInstance();
 		});
 
 		btnReports.setOnMouseClicked(e -> {
+			activeButton.deActivate();
+			btnReports.activate();
+			activeButton = btnReports;
 			mainAreaRight.getChildren().clear();
 			ReportsScreen.getInstance();
 		});
