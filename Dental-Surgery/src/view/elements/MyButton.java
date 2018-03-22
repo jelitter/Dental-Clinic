@@ -59,6 +59,7 @@ public class MyButton extends Button {
 			this.setEffect(null);
 		});
 	}
+	
 
 	private void setType(String type) {
 		this.type = type;
@@ -68,6 +69,10 @@ public class MyButton extends Button {
 		return this.type;
 	}
 
+	/**
+	 * Sets the button icon
+	 * @param iconName Icon file name including extension. E.g. "person.png"
+	 */
 	public void setIcon(String iconName) {
 		Image img = new Image("/assets/" + iconName);
 		ImageView imgv = new ImageView();
