@@ -1,5 +1,7 @@
 package view;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,6 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import model.Patient;
+import model.Person;
 
 public class PatientsScreen extends Pane {
 
@@ -80,13 +84,24 @@ public class PatientsScreen extends Pane {
 		pane.setStyle("-fx-background-color: #C4CFDD");
 	}
 
-	private TableView createTable() {
-		TableView table = new TableView();
-		TableColumn firstNameCol = new TableColumn("First Name");
-		TableColumn lastNameCol = new TableColumn("Last Name");
-		TableColumn emailCol = new TableColumn("Email");
-		TableColumn addressCol = new TableColumn("Address");
-		TableColumn phoneCol = new TableColumn("Phone No.");
+	private TableView<Patient> createTable() {
+		TableView<Patient> table = new TableView<Patient>();
+		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
+		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
+		TableColumn<Patient, String> emailCol = new TableColumn<Patient, String>("Email");
+		TableColumn<Patient, String> addressCol = new TableColumn<Patient, String>("Address");
+		TableColumn<Patient, String> phoneCol = new TableColumn<Patient, String>("Phone No.");
+		
+		
+	    ObservableList<Person> personData = FXCollections.observableArrayList();
+		Patient testPatient = new Patient("John", "Smith", "jsmith@gmail.com", "23 Rock Ave.", "555-123-4431");
+		
+        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
+        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
+        
+        personData.add(testPatient);
+     		
+		
 		
 		firstNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
 		lastNameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
@@ -95,6 +110,8 @@ public class PatientsScreen extends Pane {
 		phoneCol.prefWidthProperty().bind(table.widthProperty().multiply(0.2));
 
 		table.getColumns().addAll(firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
+		
+		table.getItems().add(testPatient);
 		return table;
 	}
 }
