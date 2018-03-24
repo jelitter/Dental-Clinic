@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import model.Patient;
@@ -22,6 +23,9 @@ public class PatientsScreen extends Pane {
 
 	private static PatientsScreen instance;
 	private TableView tblPatients;
+	private Button btnSearchPatient, btnAddPatient, btnClear;
+	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
+	TableView<Patient> table;
 
 	public PatientsScreen() {
 		instance = this;
@@ -47,12 +51,12 @@ public class PatientsScreen extends Pane {
 	
 		MyTitle title = new MyTitle("Patients");
 		
-		TextField fldId = new TextField("");
-		TextField fldName = new TextField("");
-		TextField fldLastName = new TextField("");
-		TextField fldEmail = new TextField("");
-		TextField fldAddress = new TextField("");
-		TextField fldPhoneNumber = new TextField("");
+		fldId = new TextField("");
+		fldName = new TextField("");
+		fldLastName = new TextField("");
+		fldEmail = new TextField("");
+		fldAddress = new TextField("");
+		fldPhoneNumber = new TextField("");
 
 		personalFields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
 		
@@ -73,15 +77,32 @@ public class PatientsScreen extends Pane {
 		fldPhoneNumber.setPromptText("Phone No.");
 
 		HBox buttons = new HBox(10);
-		Button btnSearchPatient = new Button("Search");
-		Button btnAddPatient = new Button("Add Patient");
+		buttons.prefWidthProperty().bind(pane.widthProperty());
+		
+		
+		btnSearchPatient = new Button("🔎  Search");
+		btnAddPatient = new Button("➕  Add Patient");
+		btnClear = new Button("❌  Clear form");
 		btnSearchPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
+		btnClear.setPadding(new Insets(10, 20, 10, 20));
 		btnSearchPatient.setPrefWidth(150);
 		btnAddPatient.setPrefWidth(150);
+		btnClear.setPrefWidth(150);
+		btnSearchPatient.setStyle("-fx-base: DEEPSKYBLUE;");
+		btnAddPatient.setStyle("-fx-base: LIMEGREEN;");
+		btnClear.setStyle("-fx-base: LIGHTCORAL;");
+		
+		Region spacing = new Region();
+        HBox.setHgrow(spacing, Priority.ALWAYS);
+		
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
-		buttons.getChildren().addAll(btnSearchPatient, btnAddPatient);
-
+		buttons.getChildren().addAll(btnClear, spacing, btnSearchPatient, btnAddPatient);
+		
+		setButtonHandlers();
+		setFieldHandlers();
+		updateClearButton();
+		
 		HBox.setHgrow(fldAddress, Priority.ALWAYS);
 
 		tblPatients = createTable();
@@ -91,8 +112,59 @@ public class PatientsScreen extends Pane {
 		pane.setStyle("-fx-background-color: #DDEEFF");
 	}
 
+	private void setButtonHandlers() {
+
+		btnAddPatient.setOnMouseClicked(e -> {
+			String name = fldName.getText();
+			String lastName = fldLastName.getText();
+			String 	email = fldEmail.getText();
+			String address = fldAddress.getText();
+			String phone = fldPhoneNumber.getText();
+			Patient newPatient = new Patient(name, lastName, email, address, phone);
+			table.getItems().add(newPatient);
+		});
+		
+		btnClear.setOnMouseClicked(e -> {
+			fldId.clear();
+			fldName.clear();
+			fldLastName.clear();
+			fldEmail.clear();
+			fldAddress.clear();
+			fldPhoneNumber.clear();
+			updateClearButton();
+		});
+
+	}
+	
+	private void setFieldHandlers() {
+		fldName.setOnKeyReleased(e -> {
+			updateClearButton();
+		});
+		fldLastName.setOnKeyReleased(e -> {
+			updateClearButton();
+		});
+		fldEmail.setOnKeyReleased(e -> {
+			updateClearButton();
+		});
+		fldAddress.setOnKeyReleased(e -> {
+			updateClearButton();
+		});
+		fldPhoneNumber.setOnKeyReleased(e -> {
+			updateClearButton();
+		});
+		fldId.setOnKeyReleased(e -> {
+			updateClearButton();
+		});
+	}
+
+	private void updateClearButton() {
+		btnClear.setDisable(fldId.getText().trim().isEmpty() && fldName.getText().trim().isEmpty()
+				&& fldLastName.getText().trim().isEmpty() && fldEmail.getText().trim().isEmpty()
+				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty());
+	}
+
 	private TableView<Patient> createTable() {
-		TableView<Patient> table = new TableView<Patient>();
+		table = new TableView<Patient>();
 		TableColumn<Patient, String> idCol = new TableColumn<Patient,String>("Id");
 		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
 		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
