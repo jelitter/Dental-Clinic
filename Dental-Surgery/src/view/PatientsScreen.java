@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import model.Patient;
 import model.Person;
@@ -91,7 +92,7 @@ public class PatientsScreen extends Pane {
 		btnClear.setPrefWidth(150);
 		btnSearchPatient.setStyle("-fx-base: DEEPSKYBLUE;");
 		btnAddPatient.setStyle("-fx-base: LIMEGREEN;");
-		btnClear.setStyle("-fx-base: LIGHTCORAL;");
+		btnClear.setStyle("-fx-base: LIGHTGOLDENRODYELLOW;");
 		
 		Region spacing = new Region();
         HBox.setHgrow(spacing, Priority.ALWAYS);
@@ -158,9 +159,12 @@ public class PatientsScreen extends Pane {
 	}
 
 	private void updateClearButton() {
-		btnClear.setDisable(fldId.getText().trim().isEmpty() && fldName.getText().trim().isEmpty()
+		Boolean update = fldId.getText().trim().isEmpty() && fldName.getText().trim().isEmpty()
 				&& fldLastName.getText().trim().isEmpty() && fldEmail.getText().trim().isEmpty()
-				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty());
+				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty();
+	
+		btnClear.setDisable(update);
+		btnClear.setVisible(!update);
 	}
 
 	private TableView<Patient> createTable() {
