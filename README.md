@@ -1,4 +1,4 @@
 # Dental Surgery
 ### Java Project
 
-![alt text](Dental-Surgery.png) "Dental Surgery, by Isaac Sanchez")
+![alt text](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery.png) "Dental Surgery, by Isaac Sanchez")
