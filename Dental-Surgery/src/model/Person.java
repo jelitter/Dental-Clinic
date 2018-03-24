@@ -40,4 +40,14 @@ public class Person implements Serializable  {
 	
 	public StringProperty getPhoneNumber() { return phoneNumber;	}
 	public void setPhoneNumber(String phoneNumber) { this.phoneNumber = new SimpleStringProperty(phoneNumber); 	}
+	
+	public String toString() {
+		return String.format("Name: %s %s\nEmail: %s\nAddress: %s\nPhone: %s\n", 
+//				this.getFirstName().toString(), this.getLastName().toString(), this.getEmail().toString(), this.getAddress().toString(), this.getPhoneNumber().toString()); 
+		this.getFirstName().get(), this.getLastName().get(), this.getEmail().get(), this.getAddress().get(), this.getPhoneNumber().get()); 
+	}
+	
+	public void print() {
+		System.out.println(this);
+	}
 }

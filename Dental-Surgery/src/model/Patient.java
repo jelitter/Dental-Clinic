@@ -32,13 +32,6 @@ public class Patient extends Person implements Serializable {
 	public void setInvoices(ArrayList<Invoice> invoices) { this.invoices = invoices; 	}
 	public void addInvoice(Invoice invoice) { this.invoices.add(invoice); }
 	
-	public String toString() {
-		return String.format("Name: %s %s\nAddress: %s\nPhone: %s\n", 
-				this.getFirstName(), this.getLastName(), this.getAddress(), this.getPhoneNumber()); 
-	}
 	
-	public void print() {
-		System.out.println(this);
-	}
 
 }

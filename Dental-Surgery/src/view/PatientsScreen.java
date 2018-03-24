@@ -1,14 +1,21 @@
 package view;
 
+import java.util.Optional;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -23,8 +30,8 @@ import view.elements.MyTitle;
 public class PatientsScreen extends Pane {
 
 	private static PatientsScreen instance;
-	private TableView tblPatients;
-	private Button btnSearchPatient, btnAddPatient, btnClear;
+	private TableView<Patient> tblPatients;
+	private Button btnSearchPatient, btnRemovePatient, btnAddPatient, btnClear;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	TableView<Patient> table;
 
@@ -82,15 +89,22 @@ public class PatientsScreen extends Pane {
 		
 		
 		btnSearchPatient = new Button("🔎  Search");
+		btnRemovePatient = new Button("➖  Remove Patient");
 		btnAddPatient = new Button("➕  Add Patient");
 		btnClear = new Button("❌  Clear form");
+		
 		btnSearchPatient.setPadding(new Insets(10, 20, 10, 20));
+		btnRemovePatient.setPadding(new Insets(10, 20, 10, 20));
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
+		
 		btnSearchPatient.setPrefWidth(150);
+		btnRemovePatient.setPrefWidth(170);
 		btnAddPatient.setPrefWidth(150);
 		btnClear.setPrefWidth(150);
+		
 		btnSearchPatient.setStyle("-fx-base: DEEPSKYBLUE;");
+		btnRemovePatient.setStyle("-fx-base: LIGHTCORAL;");
 		btnAddPatient.setStyle("-fx-base: LIMEGREEN;");
 		btnClear.setStyle("-fx-base: LIGHTGOLDENRODYELLOW;");
 		
@@ -98,10 +112,11 @@ public class PatientsScreen extends Pane {
         HBox.setHgrow(spacing, Priority.ALWAYS);
 		
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
-		buttons.getChildren().addAll(btnClear, spacing, btnSearchPatient, btnAddPatient);
+		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnSearchPatient, btnAddPatient);
 		
 		setButtonHandlers();
 		setFieldHandlers();
+		updateRemovePatientButton();
 		updateClearButton();
 		
 		HBox.setHgrow(fldAddress, Priority.ALWAYS);
@@ -134,6 +149,10 @@ public class PatientsScreen extends Pane {
 			fldPhoneNumber.clear();
 			updateClearButton();
 		});
+		
+		btnRemovePatient.setOnMouseClicked(e -> {
+			removePatient();
+		});
 
 	}
 	
@@ -156,6 +175,44 @@ public class PatientsScreen extends Pane {
 		fldId.setOnKeyReleased(e -> {
 			updateClearButton();
 		});
+	}
+	
+	private void updateRemovePatientButton() {
+		Patient pat = null;
+		try {
+			pat = table.getSelectionModel().getSelectedItem();
+		} catch (Exception e) {
+			
+		}
+		btnRemovePatient.setDisable(pat == null);
+	}
+ 	
+	private void removePatient() {
+		try {
+			Patient selectedPatient = table.getSelectionModel().getSelectedItem();
+
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Dental Surgery");
+			alert.setHeaderText("Remove Patient from data base?");
+			alert.setContentText(selectedPatient.toString());
+			
+			ButtonType yes = new ButtonType("_Yes, remove", ButtonData.FINISH);
+			ButtonType no = new ButtonType("_No, keep patient", ButtonData.CANCEL_CLOSE);
+			alert.getButtonTypes().setAll(yes, no);
+			
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == yes) {
+			    table.getItems().remove(selectedPatient);
+				System.out.println("Patient removed");
+
+			} else if (result.get() == no) {
+				System.out.println("Patient *not* removed");
+
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			btnRemovePatient.setDisable(true);
+		}
 	}
 
 	private void updateClearButton() {
@@ -209,6 +266,13 @@ public class PatientsScreen extends Pane {
 		table.getItems().add(testPatient1);
 		table.getItems().add(testPatient2);
 		table.getItems().add(testPatient3);
+		
+		
+		table.setOnMouseClicked(e -> {
+			Patient pat = table.getSelectionModel().getSelectedItem();
+			btnRemovePatient.setDisable(pat == null);
+		});
+		
 		return table;
 	}
 }
