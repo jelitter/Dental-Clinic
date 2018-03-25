@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -64,7 +66,7 @@ public class LoginScreen {
 		fldPassword = new MyPasswordTextField();
 		Label lblTitle = new Label("Please login");
 
-		btnLogin = new MyButton("Login", "Info");
+		btnLogin = new MyButton("Login");
 		btnLogin.setDisable(true);
 		btnExit = new MyButton("Exit", "Warning");
 		
@@ -75,9 +77,13 @@ public class LoginScreen {
 		fldPassword.setPromptText("Password");
 
 		HBox myButtons = new HBox(20);
+		
+		Region spacing = new Region();
+        HBox.setHgrow(spacing, Priority.ALWAYS);
+		
 		myButtons.setAlignment(Pos.CENTER);
-		myButtons.setPadding(new Insets(40, 10, 10, 10));
-		myButtons.getChildren().addAll(btnLogin, btnExit);
+		myButtons.setPadding(new Insets(40, 0, 0, 0));
+		myButtons.getChildren().addAll(btnLogin, spacing, btnExit);
 
 		root.getChildren().addAll(lblTitle, fldUserName, fldPassword, myButtons);
 		root.setAlignment(Pos.CENTER);

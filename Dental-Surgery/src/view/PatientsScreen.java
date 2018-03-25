@@ -2,6 +2,7 @@ package view;
 
 import java.util.Optional;
 
+import application.Main;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -23,6 +25,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import model.Patient;
 import model.Person;
 import view.elements.MyTitle;
@@ -137,7 +140,24 @@ public class PatientsScreen extends Pane {
 			String address = fldAddress.getText();
 			String phone = fldPhoneNumber.getText();
 			Patient newPatient = new Patient(name, lastName, email, address, phone);
-			table.getItems().add(newPatient);
+			
+			
+			if (name.isEmpty() || lastName.isEmpty()) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Dental Surgery");
+				alert.setHeaderText("First and last name are required");
+				alert.setContentText("Please provide at least first and last name to add a patient.");
+				
+				ButtonType ok = new ButtonType("_Ok", ButtonData.FINISH);
+				alert.getButtonTypes().setAll(ok);
+				
+				// Adding icon to Quit dialog
+				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+				stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+				alert.showAndWait();
+			} else {
+				table.getItems().add(newPatient);
+			}
 		});
 		
 		btnClear.setOnMouseClicked(e -> {
@@ -199,6 +219,10 @@ public class PatientsScreen extends Pane {
 			ButtonType yes = new ButtonType("_Yes, remove", ButtonData.FINISH);
 			ButtonType no = new ButtonType("_No, keep patient", ButtonData.CANCEL_CLOSE);
 			alert.getButtonTypes().setAll(yes, no);
+			
+			// Adding icon to Quit dialog
+			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+			stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
 			
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {

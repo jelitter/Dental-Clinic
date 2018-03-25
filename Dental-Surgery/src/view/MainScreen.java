@@ -25,6 +25,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -85,8 +86,11 @@ public class MainScreen {
 
 		mainAreaLeft = new VBox(10);
 		setupButtons();
+		
+		Region spacing = new Region();
+        VBox.setVgrow(spacing, Priority.ALWAYS);
 
-		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnSaveQuit, btnExit);
+		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, spacing, btnSave, btnSaveQuit, btnExit);
 
 		mainAreaRight = new VBox(10);
 		mainAreaRight.setStyle("-fx-font-smoothing-type: gray; -fx-base: #CCCCDD;");
