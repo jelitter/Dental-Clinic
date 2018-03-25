@@ -186,6 +186,13 @@ public class MainScreen {
 		// Adding icon to Quit dialog
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+		
+		// Centering dialog
+		Double alertX = primaryStage.getX() + primaryStage.getWidth()/2 - 90;
+		Double alertY = primaryStage.getY() + primaryStage.getHeight()/2 - 112;
+		alert.setX(alertX);
+		alert.setY(alertY);
+
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == buttonQuit) {

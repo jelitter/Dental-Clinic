@@ -147,22 +147,23 @@ public class PatientsScreen extends Pane {
 			Patient newPatient = new Patient(name, lastName, email, address, phone);
 			
 			
-			if (name.isEmpty() || lastName.isEmpty()) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Dental Surgery");
-				alert.setHeaderText("First and last name are required");
-				alert.setContentText("Please provide at least first and last name to add a patient.");
-				
-				ButtonType ok = new ButtonType("_Ok", ButtonData.FINISH);
-				alert.getButtonTypes().setAll(ok);
-				
-				// Adding icon to Quit dialog
-				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-				stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
-				alert.showAndWait();
-			} else {
-				table.getItems().add(newPatient);
-			}
+//			if (name.isEmpty() || lastName.isEmpty()) {
+//				Alert alert = new Alert(AlertType.WARNING);
+//				alert.setTitle("Dental Surgery");
+//				alert.setHeaderText("First and last name are required");
+//				alert.setContentText("Please provide at least first and last name to add a patient.");
+//				
+//				ButtonType ok = new ButtonType("_Ok", ButtonData.FINISH);
+//				alert.getButtonTypes().setAll(ok);
+//				
+//				// Adding icon to Quit dialog
+//				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+//				stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+//				alert.showAndWait();
+//			} else {
+//				table.getItems().add(newPatient);
+//			}
+			table.getItems().add(newPatient);
 		});
 		
 		btnClear.setOnMouseClicked(e -> {
@@ -229,6 +230,13 @@ public class PatientsScreen extends Pane {
 			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 			stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
 			
+
+			// Centering dialog
+			Double alertX = pane.getScene().getWindow().getX() + pane.getScene().getWindow().getWidth()/2 - 90;
+			Double alertY = pane.getScene().getWindow().getY() + pane.getScene().getWindow().getHeight()/2 - 112;
+			alert.setX(alertX);
+			alert.setY(alertY);
+		
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
 			    table.getItems().remove(selectedPatient);
@@ -245,12 +253,16 @@ public class PatientsScreen extends Pane {
 	}
 
 	private void updateClearButton() {
-		Boolean update = fldId.getText().trim().isEmpty() && fldName.getText().trim().isEmpty()
+		
+		Boolean updateAddButton = fldName.getText().trim().isEmpty() || fldLastName.getText().trim().isEmpty();
+		btnAddPatient.setDisable(updateAddButton);
+		
+		Boolean updateClearButton = fldId.getText().trim().isEmpty() && fldName.getText().trim().isEmpty()
 				&& fldLastName.getText().trim().isEmpty() && fldEmail.getText().trim().isEmpty()
 				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty();
 	
-		btnClear.setDisable(update);
-		btnClear.setVisible(!update);
+		btnClear.setDisable(updateClearButton);
+		btnClear.setVisible(!updateClearButton);
 	}
 
 	private TableView<Patient> createTable() {
