@@ -9,22 +9,12 @@ public class PatientList implements Serializable {
 	private ArrayList<Patient> list;
 	
 	public PatientList(ArrayList<Patient> list) {
-		this.setList(list);
+		this.set(list);
 	}
 
-	public ArrayList<Patient> getList() { return list; }
-	public void setList(ArrayList<Patient> list) { this.list = list;	}
-	
-	public void addPatient(Patient patient) {
-		
-	}
+	public void set(ArrayList<Patient> list) { this.list = list;	}
+	public ArrayList<Patient> get() { return this.list;	}
 
-	public void removePatient(Patient patient) {
-		
-	}
-	
-	public void save() {
-		//	TO-DO: Save to serial / DB
-	}
-	
+	public void addPatient(Patient patient) { list.add(patient);	}
+	public void removePatient(Patient patient) { list.remove(patient); }
 }
