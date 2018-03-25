@@ -1,5 +1,6 @@
 package view;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -8,6 +9,9 @@ import view.elements.MyTitle;
 public class ProceduresScreen extends Pane {
 
 	private static ProceduresScreen instance;
+	private VBox pane;
+	private MyTitle title;
+	private Label subtitle;
 
 	public ProceduresScreen() {
 		instance = this;
@@ -24,10 +28,14 @@ public class ProceduresScreen extends Pane {
 	}
 
 	public void go() {
-		VBox pane = MainScreen.getInstance().getLayout();
-		pane.getChildren().clear();
-		MyTitle title = new MyTitle("Procedures");
-		Label subtitle = new Label("This is for procedure management");
+		pane = new VBox(10);
+		pane.setPadding(new Insets(20));
+		pane.setStyle("-fx-background-color: #DDEEFF");
+		title = new MyTitle("Procedures");
+		subtitle = new Label("This is for procedure management");
 		pane.getChildren().addAll(title, subtitle);
+	}
+	public VBox getPane() {
+		return pane;
 	}
 }

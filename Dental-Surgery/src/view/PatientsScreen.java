@@ -3,7 +3,6 @@ package view;
 import java.util.Optional;
 
 import application.Main;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -11,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,8 +21,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Patient;
 import model.Person;
@@ -33,10 +29,15 @@ import view.elements.MyTitle;
 public class PatientsScreen extends Pane {
 
 	private static PatientsScreen instance;
+	private MyTitle title;
 	private TableView<Patient> tblPatients;
+	private HBox buttons;
 	private Button btnSearchPatient, btnRemovePatient, btnAddPatient, btnClear;
+	private Region spacing;
+	private HBox personalFields;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
-	TableView<Patient> table;
+	private VBox pane;
+	private TableView<Patient> table;
 
 	public PatientsScreen() {
 		instance = this;
@@ -47,30 +48,35 @@ public class PatientsScreen extends Pane {
 		if (instance == null) {
 			return new PatientsScreen();
 		} else {
-			instance.go();
+//			instance.go();
 			return instance;
 		}
 	}
 
 	public void go() {
-		VBox pane = MainScreen.getInstance().getLayout();
+		
+//		pane = MainScreen.getInstance().getLayout();
+		pane = new VBox(10);
+		System.out.println("Patient pane created");
 		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
 
-		// PERSONAL
-		HBox personalFields = new HBox(10);
-	
-		MyTitle title = new MyTitle("Patients");
+		// Title
+		title = new MyTitle("Patients");
 		
+		//Table
+		tblPatients = createTable();
+		
+		// Fields
+		personalFields = new HBox(10);
+
 		fldId = new TextField("");
 		fldName = new TextField("");
 		fldLastName = new TextField("");
 		fldEmail = new TextField("");
 		fldAddress = new TextField("");
 		fldPhoneNumber = new TextField("");
-
 		personalFields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
-		
 		
 		fldId.prefWidthProperty().set(40);
 		fldName.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.15));
@@ -78,7 +84,6 @@ public class PatientsScreen extends Pane {
 		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
 		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.3));
 		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
-
 		
 		fldId.setPromptText("Id");
 		fldName.setPromptText("First Name");
@@ -87,10 +92,10 @@ public class PatientsScreen extends Pane {
 		fldAddress.setPromptText("Address");
 		fldPhoneNumber.setPromptText("Phone No.");
 
-		HBox buttons = new HBox(10);
-		buttons.prefWidthProperty().bind(pane.widthProperty());
+		HBox.setHgrow(fldAddress, Priority.ALWAYS);
+
 		
-		
+		// Buttons
 		btnSearchPatient = new Button("🔎  Search");
 		btnRemovePatient = new Button("➖  Remove Patient");
 		btnAddPatient = new Button("➕  Add Patient");
@@ -111,8 +116,11 @@ public class PatientsScreen extends Pane {
 		btnAddPatient.setStyle("-fx-base: LIMEGREEN;");
 		btnClear.setStyle("-fx-base: LIGHTGOLDENRODYELLOW;");
 		
-		Region spacing = new Region();
+		spacing = new Region();
         HBox.setHgrow(spacing, Priority.ALWAYS);
+        
+        buttons = new HBox(10);
+		buttons.prefWidthProperty().bind(pane.widthProperty());
 		
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
 		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnSearchPatient, btnAddPatient);
@@ -122,11 +130,8 @@ public class PatientsScreen extends Pane {
 		updateRemovePatientButton();
 		updateClearButton();
 		
-		HBox.setHgrow(fldAddress, Priority.ALWAYS);
-
-		tblPatients = createTable();
-
 		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
+		VBox.setVgrow(tblPatients, Priority.ALWAYS);
 //		pane.setStyle("-fx-background-color: #C4CFDD");
 		pane.setStyle("-fx-background-color: #DDEEFF");
 	}
@@ -282,7 +287,7 @@ public class PatientsScreen extends Pane {
 		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
 		emailCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2));
 		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.3));
-		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.195));
+		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2).subtract(2));
 
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
@@ -298,5 +303,9 @@ public class PatientsScreen extends Pane {
 		});
 		
 		return table;
+	}
+
+	public VBox getPane() {
+		return pane;
 	}
 }
