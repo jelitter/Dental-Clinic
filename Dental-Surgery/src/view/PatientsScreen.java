@@ -87,8 +87,8 @@ public class PatientsScreen extends Pane {
 		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
 		
 		fldId.setPromptText("Id");
-		fldName.setPromptText("First Name");
-		fldLastName.setPromptText("Last Name");
+		fldName.setPromptText("First Name *");
+		fldLastName.setPromptText("Last Name *");
 		fldEmail.setPromptText("Email");
 		fldAddress.setPromptText("Address");
 		fldPhoneNumber.setPromptText("Phone No.");
@@ -108,7 +108,7 @@ public class PatientsScreen extends Pane {
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
 		
 		btnSearchPatient.setPrefWidth(150);
-		btnRemovePatient.setPrefWidth(170);
+		btnRemovePatient.setPrefWidth(160);
 		btnAddPatient.setPrefWidth(150);
 		btnClear.setPrefWidth(150);
 		
@@ -124,7 +124,7 @@ public class PatientsScreen extends Pane {
 		buttons.prefWidthProperty().bind(pane.widthProperty());
 		
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
-		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnSearchPatient, btnAddPatient);
+		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnAddPatient, btnSearchPatient);
 		
 		setButtonHandlers();
 		setFieldHandlers();
@@ -165,12 +165,12 @@ public class PatientsScreen extends Pane {
 	}
 	
 	private void setFieldHandlers() {
+		fldId.setOnKeyReleased(e -> updateClearButton());
 		fldName.setOnKeyReleased(e -> updateClearButton());
 		fldLastName.setOnKeyReleased(e -> updateClearButton());
 		fldEmail.setOnKeyReleased(e -> updateClearButton());
 		fldAddress.setOnKeyReleased(e -> updateClearButton());
 		fldPhoneNumber.setOnKeyReleased(e -> updateClearButton());
-		fldId.setOnKeyReleased(e -> updateClearButton());
 	}
 	
 	private void updateRemovePatientButton() {
@@ -224,17 +224,22 @@ public class PatientsScreen extends Pane {
 
 	private void updateClearButton() {
 		
+		Boolean updateIdField = fldName.getText().trim().isEmpty()
+				&& fldLastName.getText().trim().isEmpty() && fldEmail.getText().trim().isEmpty()
+				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty();
+		fldId.setDisable(!updateIdField);
+		
 		Boolean updateAddButton = fldName.getText().trim().isEmpty() || fldLastName.getText().trim().isEmpty();
 		btnAddPatient.setDisable(updateAddButton);
 		
-		Boolean updateClearButton = fldId.getText().trim().isEmpty() && fldName.getText().trim().isEmpty()
-				&& fldLastName.getText().trim().isEmpty() && fldEmail.getText().trim().isEmpty()
-				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty();
+		Boolean updateClearButton = fldId.getText().trim().isEmpty() && updateIdField;
 	
 		btnClear.setDisable(updateClearButton);
+		btnSearchPatient.setDisable(updateClearButton);
 		btnClear.setVisible(!updateClearButton);
 	}
 
+	
 	private TableView<Patient> createTable() {
 		table = new TableView<Patient>();
 		TableColumn<Patient, String> idCol = new TableColumn<Patient,String>("Id");
