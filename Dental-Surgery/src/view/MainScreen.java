@@ -30,13 +30,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import view.elements.MyButton;
 
 public class MainScreen {
 
-	private static final int WIDTH = 1200;
-	private static final int HEIGHT = 800;
+	private static final int WIDTH = 1000;
+	private static final int HEIGHT = 700;
 
 	private Stage primaryStage;
 	private static MainScreen instance;
@@ -82,11 +83,9 @@ public class MainScreen {
 		setEventHandlers();
 		show();
 		
-		patientPane.toFront();
-		btnPatients.activate();
-		activeButton = btnPatients;
+		activatePane(patientPane, btnPatients);
 	}
-
+	
 	/**
 	 * Setup Main Area containing left button bar and right panes
 	 */
@@ -193,14 +192,11 @@ public class MainScreen {
 		alert.setX(alertX);
 		alert.setY(alertY);
 
-
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == buttonQuit) {
 			Platform.exit();
-
 		} else if (result.get() == buttonSaveAndQuit) {
 			save(btnSaveQuit);
-//			Platform.exit();
 		}
 	}
 
@@ -238,6 +234,7 @@ public class MainScreen {
 		btnSave = new MyButton("Save", "Success");
 		btnSaveQuit = new MyButton("Save and Exit", "Success");
 		btnExit = new MyButton("Exit", "Warning");
+		activeButton = btnExit;
 
 		btnPatients.setIcon("patient.png");
 		btnProcedures.setIcon("procedure.png");
@@ -265,53 +262,22 @@ public class MainScreen {
 		}
 	}
 
+	private void activatePane(VBox p, MyButton b) {
+		activeButton.deActivate();
+		b.activate();
+		activeButton = b;
+		p.toFront();
+	}
+
 	private void setEventHandlers() {
+		btnPatients.setOnMouseClicked(e -> activatePane(patientPane, btnPatients));
+		btnProcedures.setOnMouseClicked(e -> activatePane(procedurePane, btnProcedures));
+		btnInvoices.setOnMouseClicked(e -> activatePane(invoicePane, btnInvoices));
+		btnReports.setOnMouseClicked(e -> activatePane(reportPane, btnReports));
 
-		btnPatients.setOnMouseClicked(e -> {
-			activeButton.deActivate();
-			btnPatients.activate();
-			activeButton = btnPatients;
-//			PatientsScreen.getInstance();
-			
-			patientPane.toFront();
-
-		});
-
-		btnProcedures.setOnMouseClicked(e -> {
-			activeButton.deActivate();
-			btnProcedures.activate();
-			activeButton = btnProcedures;
-//			ProceduresScreen.getInstance();
-			procedurePane.toFront();
-		});
-
-		btnInvoices.setOnMouseClicked(e -> {
-			activeButton.deActivate();
-			btnInvoices.activate();
-			activeButton = btnInvoices;
-//			InvoicesScreen.getInstance();
-			invoicePane.toFront();
-		});
-
-		btnReports.setOnMouseClicked(e -> {
-			activeButton.deActivate();
-			btnReports.activate();
-			activeButton = btnReports;
-//			ReportsScreen.getInstance();
-			reportPane.toFront();
-		});
-
-		btnSave.setOnMouseClicked(e -> {
-			save(btnSave);
-		});
-		
-		btnSaveQuit.setOnMouseClicked(e -> {
-			save(btnSaveQuit);
-		});
-
-		btnExit.setOnMouseClicked(e -> {
-			quit();
-		});
+		btnSave.setOnMouseClicked(e -> save(btnSave));
+		btnSaveQuit.setOnMouseClicked(e -> save(btnSaveQuit));
+		btnExit.setOnMouseClicked(e -> quit());
 
 		primaryStage.setOnCloseRequest(e -> {
 			quit();
@@ -324,8 +290,4 @@ public class MainScreen {
 	private void setStatusText(String text) {
 		statusBar.setText(text);
 	}
-
-//	public StackPane getLayout() {
-//		return this.mainAreaRight;
-//	}
 }

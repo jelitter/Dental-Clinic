@@ -38,6 +38,7 @@ public class PatientsScreen extends Pane {
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
 	private TableView<Patient> table;
+	private ObservableList<Patient> personData;
 
 	public PatientsScreen() {
 		instance = this;
@@ -137,70 +138,39 @@ public class PatientsScreen extends Pane {
 	}
 
 	private void setButtonHandlers() {
+		btnAddPatient.setOnMouseClicked(e -> addPatient());
+		btnClear.setOnMouseClicked(e -> clearFields());
+		btnRemovePatient.setOnMouseClicked(e -> removePatient());
+	}
 
-		btnAddPatient.setOnMouseClicked(e -> {
-			String name = fldName.getText();
-			String lastName = fldLastName.getText();
-			String 	email = fldEmail.getText();
-			String address = fldAddress.getText();
-			String phone = fldPhoneNumber.getText();
-			Patient newPatient = new Patient(name, lastName, email, address, phone);
-			
-			
-//			if (name.isEmpty() || lastName.isEmpty()) {
-//				Alert alert = new Alert(AlertType.WARNING);
-//				alert.setTitle("Dental Surgery");
-//				alert.setHeaderText("First and last name are required");
-//				alert.setContentText("Please provide at least first and last name to add a patient.");
-//				
-//				ButtonType ok = new ButtonType("_Ok", ButtonData.FINISH);
-//				alert.getButtonTypes().setAll(ok);
-//				
-//				// Adding icon to Quit dialog
-//				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-//				stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
-//				alert.showAndWait();
-//			} else {
-//				table.getItems().add(newPatient);
-//			}
-			table.getItems().add(newPatient);
-		});
-		
-		btnClear.setOnMouseClicked(e -> {
-			fldId.clear();
-			fldName.clear();
-			fldLastName.clear();
-			fldEmail.clear();
-			fldAddress.clear();
-			fldPhoneNumber.clear();
-			updateClearButton();
-		});
-		
-		btnRemovePatient.setOnMouseClicked(e -> {
-			removePatient();
-		});
+	private void addPatient() {
+		String name = fldName.getText();
+		String lastName = fldLastName.getText();
+		String 	email = fldEmail.getText();
+		String address = fldAddress.getText();
+		String phone = fldPhoneNumber.getText();
+		Patient newPatient = new Patient(name, lastName, email, address, phone);
+		personData.add(newPatient);
+		clearFields();
+	}
 
+	private void clearFields() {
+		fldId.clear();
+		fldName.clear();
+		fldLastName.clear();
+		fldEmail.clear();
+		fldAddress.clear();
+		fldPhoneNumber.clear();
+		updateClearButton();
 	}
 	
 	private void setFieldHandlers() {
-		fldName.setOnKeyReleased(e -> {
-			updateClearButton();
-		});
-		fldLastName.setOnKeyReleased(e -> {
-			updateClearButton();
-		});
-		fldEmail.setOnKeyReleased(e -> {
-			updateClearButton();
-		});
-		fldAddress.setOnKeyReleased(e -> {
-			updateClearButton();
-		});
-		fldPhoneNumber.setOnKeyReleased(e -> {
-			updateClearButton();
-		});
-		fldId.setOnKeyReleased(e -> {
-			updateClearButton();
-		});
+		fldName.setOnKeyReleased(e -> updateClearButton());
+		fldLastName.setOnKeyReleased(e -> updateClearButton());
+		fldEmail.setOnKeyReleased(e -> updateClearButton());
+		fldAddress.setOnKeyReleased(e -> updateClearButton());
+		fldPhoneNumber.setOnKeyReleased(e -> updateClearButton());
+		fldId.setOnKeyReleased(e -> updateClearButton());
 	}
 	
 	private void updateRemovePatientButton() {
@@ -274,13 +244,6 @@ public class PatientsScreen extends Pane {
 		TableColumn<Patient, String> addressCol = new TableColumn<Patient, String>("Address");
 		TableColumn<Patient, String> phoneCol = new TableColumn<Patient, String>("Phone No.");
 		
-		
-	    ObservableList<Person> personData = FXCollections.observableArrayList();
-		Patient testPatient1 = new Patient("John", "Smith", "jsmith@gmail.com", "23 Rock Ave.", "555-123-4431");
-		Patient testPatient2 = new Patient("Sarah", "Connor", "sconnor@gmail.com", "1 Fate St.", "555-378-0101");
-		Patient testPatient3 = new Patient("James", "Jameson", "jjameson@gmail.com", "12 Lake Road.", "555-199-3187");
-		
-		
 		idCol.setCellValueFactory(cellData -> cellData.getValue().getId());
         firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
         lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
@@ -288,12 +251,7 @@ public class PatientsScreen extends Pane {
         addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddress());
         phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumber());
         table.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
-        
-        personData.add(testPatient1);
-        personData.add(testPatient2);
-        personData.add(testPatient3);
-     		
-		
+        		
         idCol.prefWidthProperty().set(40);
 		firstNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
 		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
@@ -304,9 +262,12 @@ public class PatientsScreen extends Pane {
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
-		table.getItems().add(testPatient1);
-		table.getItems().add(testPatient2);
-		table.getItems().add(testPatient3);
+		personData = FXCollections.observableArrayList();
+		Patient testPatient1 = new Patient("John", "Smith", "jsmith@gmail.com", "23 Rock Ave.", "555-123-4431");
+		Patient testPatient2 = new Patient("Sarah", "Connor", "sconnor@gmail.com", "1 Fate St.", "555-378-0101");
+		Patient testPatient3 = new Patient("James", "Jameson", "jjameson@gmail.com", "12 Lake Road.", "555-199-3187");
+		personData.addAll(testPatient1, testPatient2, testPatient3);
+		table.setItems(personData);
 		
 		
 		table.setOnMouseClicked(e -> {
