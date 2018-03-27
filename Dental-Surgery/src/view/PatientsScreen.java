@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Optional;
 import application.Main;
+import controller.FileStorage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -50,12 +51,16 @@ public class PatientsScreen extends Pane {
 	private VBox pane;
 	private TableView<Patient> table;
 
-	private ObservableList<Patient> personData;
+	private ObservableList<Patient> patientsData;
 
 	public PatientsScreen() {
 		instance = this;
 		go();
 	}
+
+	public ObservableList<Patient> getPatientsData() { return patientsData; }
+	public void setPatientsData(ObservableList<Patient> personData) { this.patientsData = personData; }
+
 
 	private void addPatient() {
 		String name = fldName.getText();
@@ -64,7 +69,7 @@ public class PatientsScreen extends Pane {
 		String address = fldAddress.getText();
 		String phone = fldPhoneNumber.getText();
 		Patient newPatient = new Patient(name, lastName, email, address, phone);
-		personData.add(newPatient);
+		patientsData.add(newPatient);
 		clearFields();
 	}
 
@@ -106,9 +111,10 @@ public class PatientsScreen extends Pane {
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
-		personData = FXCollections.observableArrayList();
+		patientsData = FXCollections.observableArrayList();
 		
-		loadFromCSVtoTable();
+		loadDataToTable();
+		
 		
 		table.setOnMouseClicked(e ->tableItemSelected());
 		table.setOnKeyReleased(e -> {
@@ -120,6 +126,23 @@ public class PatientsScreen extends Pane {
 		});
 		
 		return table;
+	}
+
+	private void loadDataToTable() {
+		try {
+			patientsData = (ObservableList<Patient>) FileStorage.readObservableObject("src/data/patientData.ser");
+			System.out.println("Data read from serial file.");
+		} catch (FileNotFoundException a) {
+			System.out.println("Error reading from serial file - " + a.getMessage() + "\nReading from CSV");
+			loadFromCSVtoTable();
+		} finally {
+			System.out.println("Data loaded.");
+		}
+		
+//		catch (Exception ex) {
+//			System.out.println("Error reading from serial file - " + ex.getMessage() + "\nReading from CSV");
+//			loadFromCSVtoTable();
+//		}
 	}
 
 	private void tableItemSelected() {
@@ -145,9 +168,7 @@ public class PatientsScreen extends Pane {
 
 	public void go() {
 		
-//		pane = MainScreen.getInstance().getLayout();
 		pane = new VBox(10);
-		System.out.println("Patient pane created");
 		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
 
@@ -169,7 +190,7 @@ public class PatientsScreen extends Pane {
 		pane.setStyle("-fx-background-color: #DDEEFF");
 	}
 
-	private void loadFromCSVtoTable() {
+	void loadFromCSVtoTable() {
 
 		String CsvFile = "src/data/patients.csv";
 		String FieldDelimiter = ",";
@@ -180,10 +201,13 @@ public class PatientsScreen extends Pane {
 			br = new BufferedReader(new FileReader(CsvFile));
 
 			String line;
+		
 			while ((line = br.readLine()) != null) {
+				System.out.println("Line: " + line); 
 				String[] fields = line.split(FieldDelimiter, -1);
 				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
-				personData.add(record);
+//				patientsData.add(record);
+				getInstance().getPatientsData().add(record);
 			}
 
 		} catch (FileNotFoundException ex) {
@@ -192,7 +216,7 @@ public class PatientsScreen extends Pane {
 			System.out.println("Error - IO exception - " + ex.getMessage());
 		}
 
-		table.setItems(personData);
+		table.setItems(patientsData);
 	}
 	
 	private void removePatient() {

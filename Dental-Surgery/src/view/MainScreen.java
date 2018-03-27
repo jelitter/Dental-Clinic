@@ -1,5 +1,6 @@
 package view;
 
+import controller.FileStorage;
 import java.util.ArrayList;
 import java.util.Optional;
 import application.Main;
@@ -11,6 +12,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -203,6 +205,7 @@ public class MainScreen {
 		btn.setIcon("spinner.gif");
 		btn.setText("Saving...");
 		setStatusText("Saving to database...");
+		FileStorage.storeObservableObject(PatientsScreen.getInstance().getPatientsData(), "src/data/patientData.ser");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
@@ -248,6 +251,14 @@ public class MainScreen {
 		final Menu menuFile = new Menu("File");
 		final Menu menuOptions = new Menu("Options");
 		final Menu menuHelp = new Menu("Help");
+		
+		MenuItem loadFromCSV = new MenuItem("Load data from CSV file");
+		loadFromCSV.setOnAction(e -> PatientsScreen.getInstance().loadFromCSVtoTable());
+
+		MenuItem exit = new MenuItem("Exit");
+		exit.setOnAction(e -> quit());
+		
+		menuFile.getItems().addAll(loadFromCSV, exit);
 
 		menuItems.add(menuFile);
 		menuItems.add(menuOptions);
