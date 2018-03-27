@@ -27,19 +27,40 @@ public class Person implements Serializable  {
 	}
 
 	public StringProperty getFirstName() { return firstName; }
-	public void setFirstName(String name) { this.firstName = new SimpleStringProperty(name);	}
+	public void setFirstName(String name) { 
+		if (this.firstName  == null)
+			this.firstName = new SimpleStringProperty(name);
+		this.firstName.set(name);	
+	}
 	
 	public StringProperty getLastName() { return lastName; }
-	public void setLastName(String name) { this.lastName = new SimpleStringProperty(name);	}
+	public void setLastName(String name) {
+		if (this.lastName  == null)
+			this.lastName = new SimpleStringProperty(name);
+		this.lastName.set(name);
+	}
 	
 	public StringProperty getEmail() { return email;	}
-	public void setEmail(String email) { this.email = new SimpleStringProperty(email);	}
+
+	public void setEmail(String email) {
+		if (this.email == null)
+			this.email = new SimpleStringProperty(email);
+		this.email.set(email);
+	}
 
 	public StringProperty getAddress() { return address;	}
-	public void setAddress(String address) { this.address = new SimpleStringProperty(address);	}
+	public void setAddress(String address) { 
+		if (this.address == null)
+			this.address = new SimpleStringProperty(address);
+		this.address.set(address);
+	}
 	
 	public StringProperty getPhoneNumber() { return phoneNumber;	}
-	public void setPhoneNumber(String phoneNumber) { this.phoneNumber = new SimpleStringProperty(phoneNumber); 	}
+	public void setPhoneNumber(String phoneNumber) { 
+		if (this.phoneNumber == null)
+			this.phoneNumber = new SimpleStringProperty(phoneNumber);
+		this.phoneNumber.set(phoneNumber);
+	}
 	
 	public String toString() {
 		return String.format("Name: %s %s\nEmail: %s\nAddress: %s\nPhone: %s\n", 

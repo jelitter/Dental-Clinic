@@ -99,14 +99,14 @@ public class PatientsScreen extends Pane {
 		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
 		emailCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2));
 		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.3));
-		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2).subtract(2));
+		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2).subtract(16));
 
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
 		personData = FXCollections.observableArrayList();
 		
-		loadDataToTable();
+		loadFromCSVtoTable();
 		
 		table.setOnMouseClicked(e -> {
 			try {
@@ -157,7 +157,7 @@ public class PatientsScreen extends Pane {
 		pane.setStyle("-fx-background-color: #DDEEFF");
 	}
 
-	private void loadDataToTable() {
+	private void loadFromCSVtoTable() {
 
 		String CsvFile = "src/data/patients.csv";
 		String FieldDelimiter = ",";
@@ -170,8 +170,7 @@ public class PatientsScreen extends Pane {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] fields = line.split(FieldDelimiter, -1);
-//				Patient record = new Patient(fields[0], fields[1], fields[2], fields[3], fields[4]);
-				Patient record = new Patient(fields[3], fields[4], fields[2], fields[0], fields[1]);
+				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
 				personData.add(record);
 			}
 
@@ -181,13 +180,6 @@ public class PatientsScreen extends Pane {
 			System.out.println("Error - IO exception - " + ex.getMessage());
 		}
 
-		// Patient testPatient1 = new Patient("John", "Smith", "jsmith@gmail.com", "23
-		// Rock Ave.", "555-123-4431");
-		// Patient testPatient2 = new Patient("Sarah", "Connor", "sconnor@gmail.com", "1
-		// Fate St.", "555-378-0101");
-		// Patient testPatient3 = new Patient("James", "Jameson", "jjameson@gmail.com",
-		// "12 Lake Road.", "555-199-3187");
-		// personData.addAll(testPatient1, testPatient2, testPatient3);
 		table.setItems(personData);
 	}
 	
@@ -331,6 +323,24 @@ public class PatientsScreen extends Pane {
 	private void updatePatient() {
 		try {
 			Patient selectedPatient = table.getSelectionModel().getSelectedItem();
+			
+			String name = fldName.getText();
+			String lastName = fldLastName.getText();
+			String 	email = fldEmail.getText();
+			String address = fldAddress.getText();
+			String phone = fldPhoneNumber.getText();
+			
+			selectedPatient.setFirstName(name);
+			selectedPatient.setLastName(lastName);
+			selectedPatient.setEmail(email);
+			selectedPatient.setAddress(address);
+			selectedPatient.setPhoneNumber(phone);
+			
+//			Patient updatedPatient = new Patient(name, lastName, email, address, phone);
+//			personData.add(newPatient);
+			clearFields();
+			
+			
 		} catch (Exception e) {
 			
 		}
