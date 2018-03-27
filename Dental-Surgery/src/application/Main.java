@@ -23,6 +23,6 @@ public class Main extends Application {
 }
 
 // TO-DO List:
-// [ ] Dialog
+// [x] Dialog
 // [x] Menu
 // [ ] allow user to remember login on system and bypass login

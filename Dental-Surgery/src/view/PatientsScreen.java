@@ -1,5 +1,7 @@
 package view;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Optional;
 
 import application.Main;
@@ -23,8 +25,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Patient;
-import model.Person;
 import view.elements.MyTitle;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class PatientsScreen extends Pane {
 
@@ -32,7 +35,7 @@ public class PatientsScreen extends Pane {
 	private MyTitle title;
 	private TableView<Patient> tblPatients;
 	private HBox buttons;
-	private Button btnSearchPatient, btnRemovePatient, btnAddPatient, btnClear;
+	private Button btnSearchPatient, btnUpdatePatient, btnRemovePatient, btnAddPatient, btnClear;
 	private Region spacing;
 	private HBox personalFields;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
@@ -68,6 +71,19 @@ public class PatientsScreen extends Pane {
 		//Table
 		tblPatients = createTable();
 		
+		setupFields();
+		setupButtons();
+		setButtonHandlers();
+		setFieldHandlers();
+		updateRemovePatientButton();
+		updateClearButton();
+		
+		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
+		VBox.setVgrow(tblPatients, Priority.ALWAYS);
+		pane.setStyle("-fx-background-color: #DDEEFF");
+	}
+
+	private void setupFields() {
 		// Fields
 		personalFields = new HBox(10);
 
@@ -94,26 +110,30 @@ public class PatientsScreen extends Pane {
 		fldPhoneNumber.setPromptText("Phone No.");
 
 		HBox.setHgrow(fldAddress, Priority.ALWAYS);
+	}
 
-		
-		// Buttons
+	private void setupButtons() {
 		btnSearchPatient = new Button("🔎  Search");
-		btnRemovePatient = new Button("➖  Remove Patient");
-		btnAddPatient = new Button("➕  Add Patient");
+		btnRemovePatient = new Button("➖  Remove");
+		btnUpdatePatient = new Button("⌨  Update");
+		btnAddPatient = new Button("➕  Add");
 		btnClear = new Button("❌  Clear form");
 		
 		btnSearchPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnRemovePatient.setPadding(new Insets(10, 20, 10, 20));
+		btnUpdatePatient.setPadding(new Insets(10, 20, 10, 20));
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
 		
-		btnSearchPatient.setPrefWidth(150);
-		btnRemovePatient.setPrefWidth(160);
-		btnAddPatient.setPrefWidth(150);
-		btnClear.setPrefWidth(150);
-		
+		btnSearchPatient.setPrefWidth(100);
+		btnUpdatePatient.setPrefWidth(100);
+		btnRemovePatient.setPrefWidth(110);
+		btnAddPatient.setPrefWidth(100);
+		btnClear.setPrefWidth(100);
+
 		btnSearchPatient.setStyle("-fx-base: DEEPSKYBLUE;");
 		btnRemovePatient.setStyle("-fx-base: LIGHTCORAL;");
+		btnUpdatePatient.setStyle("-fx-base: LIGHTGREEN;");
 		btnAddPatient.setStyle("-fx-base: LIMEGREEN;");
 		btnClear.setStyle("-fx-base: LIGHTGOLDENRODYELLOW;");
 		
@@ -124,23 +144,14 @@ public class PatientsScreen extends Pane {
 		buttons.prefWidthProperty().bind(pane.widthProperty());
 		
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
-		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnAddPatient, btnSearchPatient);
-		
-		setButtonHandlers();
-		setFieldHandlers();
-		updateRemovePatientButton();
-		updateClearButton();
-		
-		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
-		VBox.setVgrow(tblPatients, Priority.ALWAYS);
-//		pane.setStyle("-fx-background-color: #C4CFDD");
-		pane.setStyle("-fx-background-color: #DDEEFF");
+		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnUpdatePatient, btnAddPatient, btnSearchPatient);
 	}
 
 	private void setButtonHandlers() {
+		btnUpdatePatient.setOnMouseClicked(e -> updatePatient());
+		btnRemovePatient.setOnMouseClicked(e -> removePatient());
 		btnAddPatient.setOnMouseClicked(e -> addPatient());
 		btnClear.setOnMouseClicked(e -> clearFields());
-		btnRemovePatient.setOnMouseClicked(e -> removePatient());
 	}
 
 	private void addPatient() {
@@ -181,6 +192,15 @@ public class PatientsScreen extends Pane {
 			
 		}
 		btnRemovePatient.setDisable(pat == null);
+		btnUpdatePatient.setDisable(pat == null);
+	}
+	
+	private void updatePatient() {
+		try {
+			Patient selectedPatient = table.getSelectionModel().getSelectedItem();
+		} catch (Exception e) {
+			
+		}
 	}
  	
 	private void removePatient() {
@@ -268,19 +288,60 @@ public class PatientsScreen extends Pane {
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
 		personData = FXCollections.observableArrayList();
-		Patient testPatient1 = new Patient("John", "Smith", "jsmith@gmail.com", "23 Rock Ave.", "555-123-4431");
-		Patient testPatient2 = new Patient("Sarah", "Connor", "sconnor@gmail.com", "1 Fate St.", "555-378-0101");
-		Patient testPatient3 = new Patient("James", "Jameson", "jjameson@gmail.com", "12 Lake Road.", "555-199-3187");
-		personData.addAll(testPatient1, testPatient2, testPatient3);
-		table.setItems(personData);
 		
+		loadDataToTable();
 		
 		table.setOnMouseClicked(e -> {
-			Patient pat = table.getSelectionModel().getSelectedItem();
-			btnRemovePatient.setDisable(pat == null);
+			try {
+				Patient pat = table.getSelectionModel().getSelectedItem();
+				fldId.setText(pat.getId().get());
+				fldId.setDisable(true);
+				fldName.setText(pat.getFirstName().get());
+				fldLastName.setText(pat.getLastName().get());
+				fldEmail.setText(pat.getEmail().get());
+				fldAddress.setText(pat.getAddress().get());
+				fldPhoneNumber.setText(pat.getPhoneNumber().get());
+				
+				btnRemovePatient.setDisable(pat == null);
+				btnUpdatePatient.setDisable(pat == null);
+			} catch (Exception ex) {};
 		});
 		
 		return table;
+	}
+
+	private void loadDataToTable() {
+
+		String CsvFile = "src/data/patients.csv";
+		String FieldDelimiter = ",";
+
+		BufferedReader br;
+
+		try {
+			br = new BufferedReader(new FileReader(CsvFile));
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] fields = line.split(FieldDelimiter, -1);
+//				Patient record = new Patient(fields[0], fields[1], fields[2], fields[3], fields[4]);
+				Patient record = new Patient(fields[3], fields[4], fields[2], fields[0], fields[1]);
+				personData.add(record);
+			}
+
+		} catch (FileNotFoundException ex) {
+			System.out.println("Error - File not found - " + ex.getMessage());
+		} catch (IOException ex) {
+			System.out.println("Error - IO exception - " + ex.getMessage());
+		}
+
+		// Patient testPatient1 = new Patient("John", "Smith", "jsmith@gmail.com", "23
+		// Rock Ave.", "555-123-4431");
+		// Patient testPatient2 = new Patient("Sarah", "Connor", "sconnor@gmail.com", "1
+		// Fate St.", "555-378-0101");
+		// Patient testPatient3 = new Patient("James", "Jameson", "jjameson@gmail.com",
+		// "12 Lake Road.", "555-199-3187");
+		// personData.addAll(testPatient1, testPatient2, testPatient3);
+		table.setItems(personData);
 	}
 
 	public VBox getPane() {
