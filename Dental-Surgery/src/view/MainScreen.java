@@ -2,7 +2,6 @@ package view;
 
 import java.util.ArrayList;
 import java.util.Optional;
-
 import application.Main;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -30,7 +29,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import view.elements.MyButton;
 
