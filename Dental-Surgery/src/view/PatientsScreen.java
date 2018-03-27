@@ -135,6 +135,7 @@ public class PatientsScreen extends Pane {
 			
 			btnRemovePatient.setDisable(pat == null);
 			btnUpdatePatient.setDisable(pat == null);
+			updateClearButton();
 		} catch (Exception ex) {};
 	}
 
@@ -328,8 +329,8 @@ public class PatientsScreen extends Pane {
 		Boolean updateClearButton = fldId.getText().trim().isEmpty() && updateIdField;
 	
 		btnClear.setDisable(updateClearButton);
-		btnSearchPatient.setDisable(updateClearButton);
 		btnClear.setVisible(!updateClearButton);
+		btnSearchPatient.setDisable(updateClearButton);
 	}
 
 	private void updatePatient() {
