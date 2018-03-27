@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Patient;
 import view.elements.MyButton;
 
 public class MainScreen {
@@ -205,7 +206,7 @@ public class MainScreen {
 		btn.setIcon("spinner.gif");
 		btn.setText("Saving...");
 		setStatusText("Saving to database...");
-		FileStorage.storeObservableObject(PatientsScreen.getInstance().getPatientsData(), "src/data/patientData.ser");
+		FileStorage.storeObservableObject(new ArrayList<Patient>(PatientsScreen.getInstance().getPatientsData()), "src/data/patientData.ser");
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
@@ -299,4 +300,6 @@ public class MainScreen {
 	private void setStatusText(String text) {
 		statusBar.setText(text);
 	}
-}
+	
+	public Stage getStage() { return primaryStage; }
+ }

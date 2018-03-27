@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,7 +12,10 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import model.Patient;
+import view.MainScreen;
 
 public class FileStorage {
 
@@ -50,30 +54,51 @@ public class FileStorage {
 		return obj;
 	}
 
-	public static void storeObservableObject(ObservableList<Patient> o, String filename) {
-		try {
-			ArrayList<Patient> list = new ArrayList<Patient>(o);
-			FileOutputStream fileOut = new FileOutputStream(filename);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(list);
-			out.close();
-			fileOut.close();
-			System.out.println("  Data saved to: " + filename);
-		} catch (IOException i) {
-			//			storeObject(i, "IOException.ser");
-			System.out.println("IO Exception when storing ObservableObject: " + i.getMessage());
+	public static void storeObservableObject(ArrayList<Patient> o, String filename) {
+		// try {
+		// FileOutputStream fileOut = new FileOutputStream(filename);
+		// ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		// out.writeObject(new ArrayList<Patient>(o));
+		// out.close();
+		// fileOut.close();
+		// System.out.println(" Data saved to: " + filename);
+		// } catch (IOException i) {
+		// // storeObject(i, "IOException.ser");
+		// System.out.println("IO Exception when storing ObservableObject: " +
+		// i.getMessage());
+		// }
+
+		
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+			out.writeObject(o);
+		} catch (Exception exc) {
+			exc.printStackTrace();
 		}
+		
+//		FileChooser chooser = new FileChooser();
+//		chooser.getExtensionFilters().add(new ExtensionFilter("Patients files", "*.ser"));
+//
+//		File file = chooser.showSaveDialog(MainScreen.getInstance().getStage());
+//		if (file != null) {
+//			try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+//				out.writeObject(new ArrayList<Patient>(o));
+//			} catch (Exception exc) {
+//				exc.printStackTrace();
+//			}
+//		}
 	}
 	
 	public static Object readObservableObject(String filename) throws FileNotFoundException {
-		List<Patient> list = null;
-		ObservableList<Patient> observableList = null;
+//		List<Patient> list;
+		ObservableList<Patient> obList = FXCollections.observableArrayList() ;
+
 		try {
 
 			FileInputStream fileIn = new FileInputStream(filename);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			list = (List<Patient>) in.readObject();
-			observableList = FXCollections.observableArrayList(list);
+//			list = (List<Patient>) in.readObject();
+			ArrayList<Patient> loadedPatients = (ArrayList<Patient>) in.readObject() ;
+			obList.setAll(loadedPatients);
 			in.close();
 			fileIn.close();
 			
@@ -88,6 +113,6 @@ public class FileStorage {
 			System.out.println(c.getMessage());
 			// storeObject(c,"ClassNotFoundException.ser");
 		}
-		return observableList;
+		return obList;
 	}
 }

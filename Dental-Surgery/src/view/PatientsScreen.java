@@ -192,24 +192,19 @@ public class PatientsScreen extends Pane {
 
 	void loadFromCSVtoTable() {
 
-		String CsvFile = "src/data/patients.csv";
-		String FieldDelimiter = ",";
+		String csvFile = "src/data/patients.csv";
+		String fieldDelimiter = ",";
 
 		BufferedReader br;
 
 		try {
-			br = new BufferedReader(new FileReader(CsvFile));
-
+			br = new BufferedReader(new FileReader(csvFile));
 			String line;
-		
 			while ((line = br.readLine()) != null) {
-				System.out.println("Line: " + line); 
-				String[] fields = line.split(FieldDelimiter, -1);
+				String[] fields = line.split(fieldDelimiter, -1);
 				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
-//				patientsData.add(record);
 				getInstance().getPatientsData().add(record);
 			}
-
 		} catch (FileNotFoundException ex) {
 			System.out.println("Error - File not found - " + ex.getMessage());
 		} catch (IOException ex) {
@@ -279,7 +274,7 @@ public class PatientsScreen extends Pane {
 		btnRemovePatient = new Button("➖  Remove");
 		btnUpdatePatient = new Button("⌨  Update");
 		btnAddPatient = new Button("➕  Add");
-		btnClear = new Button("❌  Clear form");
+		btnClear = new Button("❌  Clear");
 		
 		btnSearchPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnRemovePatient.setPadding(new Insets(10, 20, 10, 20));
@@ -287,11 +282,11 @@ public class PatientsScreen extends Pane {
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
 		
-		btnSearchPatient.setPrefWidth(100);
-		btnUpdatePatient.setPrefWidth(100);
-		btnRemovePatient.setPrefWidth(110);
-		btnAddPatient.setPrefWidth(100);
-		btnClear.setPrefWidth(100);
+		btnSearchPatient.setPrefWidth(USE_COMPUTED_SIZE);
+		btnUpdatePatient.setPrefWidth(USE_COMPUTED_SIZE);
+		btnRemovePatient.setPrefWidth(USE_COMPUTED_SIZE);
+		btnAddPatient.setPrefWidth(USE_COMPUTED_SIZE);
+		btnClear.setPrefWidth(USE_COMPUTED_SIZE);
 
 		btnSearchPatient.setStyle("-fx-base: DEEPSKYBLUE;");
 		btnRemovePatient.setStyle("-fx-base: LIGHTCORAL;");
