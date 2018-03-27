@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -94,12 +95,13 @@ public class PatientsScreen extends Pane {
         phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumber());
         table.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
         		
-        idCol.prefWidthProperty().set(40);
-		firstNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
-		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.15));
-		emailCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2));
-		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.3));
-		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(40).multiply(0.2).subtract(16));
+        idCol.prefWidthProperty().set(50);
+        
+		firstNameCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.15));
+		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.15));
+		emailCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.2));
+		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.3));
+		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.2).subtract(16));
 
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
@@ -108,23 +110,32 @@ public class PatientsScreen extends Pane {
 		
 		loadFromCSVtoTable();
 		
-		table.setOnMouseClicked(e -> {
-			try {
-				Patient pat = table.getSelectionModel().getSelectedItem();
-				fldId.setText(pat.getId().get());
-				fldId.setDisable(true);
-				fldName.setText(pat.getFirstName().get());
-				fldLastName.setText(pat.getLastName().get());
-				fldEmail.setText(pat.getEmail().get());
-				fldAddress.setText(pat.getAddress().get());
-				fldPhoneNumber.setText(pat.getPhoneNumber().get());
-				
-				btnRemovePatient.setDisable(pat == null);
-				btnUpdatePatient.setDisable(pat == null);
-			} catch (Exception ex) {};
+		table.setOnMouseClicked(e ->tableItemSelected());
+		table.setOnKeyReleased(e -> {
+			KeyCode key = e.getCode();
+			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
+					|| key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) || key.equals(KeyCode.END)) {
+				tableItemSelected();
+			}
 		});
 		
 		return table;
+	}
+
+	private void tableItemSelected() {
+		try {
+			Patient pat = table.getSelectionModel().getSelectedItem();
+			fldId.setText(pat.getId().get());
+			fldId.setDisable(true);
+			fldName.setText(pat.getFirstName().get());
+			fldLastName.setText(pat.getLastName().get());
+			fldEmail.setText(pat.getEmail().get());
+			fldAddress.setText(pat.getAddress().get());
+			fldPhoneNumber.setText(pat.getPhoneNumber().get());
+			
+			btnRemovePatient.setDisable(pat == null);
+			btnUpdatePatient.setDisable(pat == null);
+		} catch (Exception ex) {};
 	}
 
 	public VBox getPane() {
@@ -285,12 +296,13 @@ public class PatientsScreen extends Pane {
 		fldPhoneNumber = new TextField("");
 		personalFields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
 		
-		fldId.prefWidthProperty().set(40);
-		fldName.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.15));
-		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.15));
-		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
-		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.3));
-		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(40).multiply(0.2));
+		fldId.prefWidthProperty().set(60);
+				
+		fldName.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.15));
+		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.15));
+		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.2));
+		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.3));
+		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.2).subtract(16));
 		
 		fldId.setPromptText("Id");
 		fldName.setPromptText("First Name *");
