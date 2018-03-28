@@ -1,12 +1,16 @@
 package view;
 
-import controller.FileStorage;
+import controller.ClinicController;
 import java.util.ArrayList;
 import java.util.Optional;
 import application.Main;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableStringValue;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -32,7 +36,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.Patient;
 import view.elements.MyButton;
 
 public class MainScreen {
@@ -85,6 +88,9 @@ public class MainScreen {
 		show();
 		
 		activatePane(patientPane, btnPatients);
+		
+		ObservableStringValue saved = new SimpleStringProperty(String.valueOf(ClinicController.getInstance().isSaved())); 
+		statusBar.textProperty().bind(saved);
 	}
 	
 	/**
@@ -205,12 +211,13 @@ public class MainScreen {
 		root.setDisable(true);
 		btn.setIcon("spinner.gif");
 		btn.setText("Saving...");
-		setStatusText("Saving to database...");
-		FileStorage.storeObservableObject(new ArrayList<Patient>(PatientsScreen.getInstance().getPatientsData()), "src/data/patientData.ser");
+//		setStatusText("Saving to database...");
+//		FileStorage.storeObservableObject(new ArrayList<Patient>(PatientsScreen.getInstance().getPatientsData()), "src/data/patientData.ser");
+		ClinicController.getInstance().save();
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
-			setStatusText("Saving to database done!");
+//			setStatusText("Saving to database done!");
 		})).play();
 		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
 			
@@ -224,7 +231,7 @@ public class MainScreen {
 					Platform.exit();
 				})).play();
 			}
-			setStatusText("App Ready");
+//			setStatusText("App Ready");
 		})).play();
 	}
 
@@ -254,12 +261,15 @@ public class MainScreen {
 		final Menu menuHelp = new Menu("Help");
 		
 		MenuItem loadFromCSV = new MenuItem("Load data from CSV file");
-		loadFromCSV.setOnAction(e -> PatientsScreen.getInstance().loadFromCSVtoTable());
+		MenuItem loadFromSerial = new MenuItem("Load data from Serial file"); 
+		loadFromCSV.setOnAction(e -> ClinicController.getInstance().loadPatientsFromCSV());
+		loadFromCSV.setOnAction(e -> ClinicController.getInstance().loadPatientsFromSerial());
+		
 
 		MenuItem exit = new MenuItem("Exit");
 		exit.setOnAction(e -> quit());
 		
-		menuFile.getItems().addAll(loadFromCSV, exit);
+		menuFile.getItems().addAll(loadFromCSV, loadFromSerial, exit);
 
 		menuItems.add(menuFile);
 		menuItems.add(menuOptions);

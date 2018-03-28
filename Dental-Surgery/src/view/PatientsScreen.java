@@ -1,12 +1,8 @@
 package view;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.Optional;
 import application.Main;
-import controller.FileStorage;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import controller.ClinicController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -27,8 +23,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Patient;
 import view.elements.MyTitle;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class PatientsScreen extends Pane {
 
@@ -51,15 +45,17 @@ public class PatientsScreen extends Pane {
 	private VBox pane;
 	private TableView<Patient> table;
 
-	private ObservableList<Patient> patientsData;
+//	private ObservableList<Patient> patientsData;
+//	ClinicController controller;
+//	private FilteredList<Patient> filteredData;
 
 	public PatientsScreen() {
 		instance = this;
 		go();
 	}
 
-	public ObservableList<Patient> getPatientsData() { return patientsData; }
-	public void setPatientsData(ObservableList<Patient> personData) { this.patientsData = personData; }
+//	public ObservableList<Patient> getPatientsData() { return patientsData; }
+//	public void setPatientsData(ObservableList<Patient> patientsData) { this.patientsData = patientsData; }
 
 
 	private void addPatient() {
@@ -69,7 +65,8 @@ public class PatientsScreen extends Pane {
 		String address = fldAddress.getText();
 		String phone = fldPhoneNumber.getText();
 		Patient newPatient = new Patient(name, lastName, email, address, phone);
-		patientsData.add(newPatient);
+//		patientsData.add(newPatient);
+		ClinicController.getInstance().addPatient(newPatient);
 		clearFields();
 	}
 
@@ -111,10 +108,8 @@ public class PatientsScreen extends Pane {
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
-		patientsData = FXCollections.observableArrayList();
-		
 		loadDataToTable();
-		
+//        setupDataFilter();
 		
 		table.setOnMouseClicked(e ->tableItemSelected());
 		table.setOnKeyReleased(e -> {
@@ -128,16 +123,43 @@ public class PatientsScreen extends Pane {
 		return table;
 	}
 
+//	private void setupDataFilter() {
+//		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+//		filteredData = new FilteredList<Patient>(patientsData, p -> true);
+//		// 2. Set the filter Predicate whenever the filter changes.
+//        fldName.textProperty().addListener((observable, oldValue, newValue) -> {
+//            filteredData.setPredicate(patient -> {
+//                // If filter text is empty, display all persons.
+//                if (newValue == null || newValue.isEmpty()) {
+//                    return true;
+//                }
+//
+//                // Compare first name and last name of every person with filter text.
+//                String lowerCaseFilter = newValue.toLowerCase();
+//
+//                if (patient.getFirstName().get().toLowerCase().contains(lowerCaseFilter)) {
+//                    return true; // Filter matches first name.
+//                } else if (patient.getLastName().get().toLowerCase().contains(lowerCaseFilter)) {
+//                    return true; // Filter matches last name.
+//                }
+//                return false; // Does not match.
+//            });
+//        });
+//        
+//        // 3. Add sorted (and filtered) data to the table.
+//        table.setItems(filteredData);
+//	}
+
 	private void loadDataToTable() {
-		try {
-			patientsData = (ObservableList<Patient>) FileStorage.readObservableObject("src/data/patientData.ser");
-			System.out.println("Data read from serial file.");
-		} catch (FileNotFoundException a) {
-			System.out.println("Error reading from serial file - " + a.getMessage() + "\nReading from CSV");
-			loadFromCSVtoTable();
-		} finally {
-			System.out.println("Data loaded.");
-		}
+		table.setItems(ClinicController.getInstance().getPatients());
+//		try {
+//			System.out.println("Data read from serial file.");
+//		} catch (FileNotFoundException a) {
+//			System.out.println("Error reading from serial file - " + a.getMessage() + "\nReading from CSV");
+//			loadFromCSVtoTable();
+//		} finally {
+//			System.out.println("Data loaded.");
+//		}
 		
 //		catch (Exception ex) {
 //			System.out.println("Error reading from serial file - " + ex.getMessage() + "\nReading from CSV");
@@ -167,7 +189,6 @@ public class PatientsScreen extends Pane {
 	}
 
 	public void go() {
-		
 		pane = new VBox(10);
 		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
@@ -190,30 +211,6 @@ public class PatientsScreen extends Pane {
 		pane.setStyle("-fx-background-color: #DDEEFF");
 	}
 
-	void loadFromCSVtoTable() {
-
-		String csvFile = "src/data/patients.csv";
-		String fieldDelimiter = ",";
-
-		BufferedReader br;
-
-		try {
-			br = new BufferedReader(new FileReader(csvFile));
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] fields = line.split(fieldDelimiter, -1);
-				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
-				getInstance().getPatientsData().add(record);
-			}
-		} catch (FileNotFoundException ex) {
-			System.out.println("Error - File not found - " + ex.getMessage());
-		} catch (IOException ex) {
-			System.out.println("Error - IO exception - " + ex.getMessage());
-		}
-
-		table.setItems(patientsData);
-	}
-	
 	private void removePatient() {
 		try {
 			Patient selectedPatient = table.getSelectionModel().getSelectedItem();
@@ -241,6 +238,7 @@ public class PatientsScreen extends Pane {
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
 			    table.getItems().remove(selectedPatient);
+			    ClinicController.getInstance().setSaved(false);
 				System.out.println("Patient removed");
 
 			} else if (result.get() == no) {
@@ -370,11 +368,13 @@ public class PatientsScreen extends Pane {
 			
 //			Patient updatedPatient = new Patient(name, lastName, email, address, phone);
 //			personData.add(newPatient);
+			ClinicController.getInstance().addPatient(selectedPatient);
+			ClinicController.getInstance().setSaved(false);
 			clearFields();
 			
 			
 		} catch (Exception e) {
-			
+			System.out.println("Error updating patient - " + e.getMessage());
 		}
 	}
 
