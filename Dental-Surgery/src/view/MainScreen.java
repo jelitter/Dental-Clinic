@@ -43,6 +43,7 @@ public class MainScreen {
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 700;
 
+	private ClinicController controller;
 	private Stage primaryStage;
 	private static MainScreen instance;
 	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnSaveQuit, btnExit;
@@ -77,6 +78,7 @@ public class MainScreen {
 
 	private void go() {
 
+		controller = new ClinicController();
 		root = new VBox(0);
 		scene = new Scene(root, WIDTH, HEIGHT);
 		
@@ -90,8 +92,12 @@ public class MainScreen {
 		
 		activatePane(patientPane, btnPatients);
 		
-		saved = new SimpleStringProperty("Saved: " + String.valueOf(ClinicController.getInstance().isSaved())); 
+		saved = new SimpleStringProperty("Saved: " + String.valueOf(controller.isSaved())); 
 		statusBar.textProperty().bind(saved);
+	}
+	
+	public ClinicController getController() {
+		return controller;
 	}
 	
 	/**
@@ -216,7 +222,7 @@ public class MainScreen {
 //		FileStorage.storeObservableObject(new ArrayList<Patient>(PatientsScreen.getInstance().getPatientsData()), "src/data/patientData.ser");
 		
 //		ClinicController.getInstance().save();
-		ClinicController.getInstance().savePatientsToSerial();
+		controller.saveClinicToSerial();
 		
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			btn.setIcon("done.png");
@@ -264,16 +270,16 @@ public class MainScreen {
 		final Menu menuOptions = new Menu("Options");
 		final Menu menuHelp = new Menu("Help");
 		
-		MenuItem loadFromCSV = new MenuItem("Load data from CSV file");
-		MenuItem loadFromSerial = new MenuItem("Load data from Serial file"); 
+		MenuItem loadFromCSV = new MenuItem("Load Clinic data from CSV file");
+		MenuItem loadFromSerial = new MenuItem("Load Clinic data from Serial file"); 
 		loadFromCSV.setOnAction(e -> { 
-			ClinicController.getInstance().loadPatientsFromCSV();
-			PatientsScreen.getInstance().setTable();
+			controller.addPatientsFromCSV();
+//			PatientsScreen.getInstance().setTableItems();
 			
 		});
 		loadFromSerial.setOnAction(e -> {
-			ClinicController.getInstance().loadPatientsFromSerial();
-			PatientsScreen.getInstance().setTable();
+//			controller.loadClinicFromSerial();
+//			PatientsScreen.getInstance().setTableItems();
 		});
 		
 

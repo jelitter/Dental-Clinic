@@ -1,83 +1,70 @@
 package controller;
 
+import model.Clinic;
+import model.Patient;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Clinic;
-import model.Patient;
 
-public class ClinicController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private boolean isSaved;
-	private static ClinicController instance;
+public class ClinicController {
+
+	/* --------------------------------
+	 *       PROPERTIES
+	 * -------------------------------*/
+	private static final String CLINICFILENAME = "src/data/patients.ser";
 	private Clinic clinic;
+	private boolean isSaved;
+	public ObservableList<Patient> patients;
 
-	public static ClinicController getInstance() {
-		if (instance == null) { return new ClinicController(); } 
-		else { return instance; }
-	}
+	
+	/* --------------------------------
+	 *       CONSTRUCTOR
+	 * -------------------------------*/
 	
 	public ClinicController() {
-		instance = this;
-		go();
+		clinic = getClinicFromSerial();
+
+		if (clinic == null) {
+			clinic = Clinic.getInstance();
+			clinic.setList(getPatientListFromCSV());
+			patients = ArrayListToObservableList(clinic.getList());
+			System.out.println("  New database created. Patients: " + patients.size());
+		} else {
+			patients = ArrayListToObservableList(clinic.getList());
+			System.out.println("  Database loaded from serial file. Patients: " + patients.size());
+		}
+		setSaved(true);
 	}
 	
-	public void go() {
-		clinic = Clinic.getInstance(); 
-//		clinic.setList(getPatientsFromCSV());
-	}
 
 	
-	/*
-	 * METHODS
-	 */
+	/* --------------------------------
+	 *       METHODS
+	 * -------------------------------*/
 	
 	public boolean isSaved() { return isSaved; }
 	public void setSaved(Boolean b) { this.isSaved = b; }
 	
 	public void addPatient(Patient newPatient) {
-		clinic.getList().add(newPatient);
+		patients.add(newPatient);
+		setSaved(false);
 	}
-	
-	public ObservableList<Patient> getPatients() {
-		ObservableList<Patient> oList = FXCollections.observableArrayList(clinic.getList());
-		return oList;
-		
-	}
-	private void setPatients(ArrayList<Patient> patients) {
-		clinic.setList(patients);
-	}
-
-
 	
 	/**
 	 * LOADING
 	 */
 	
-	public void loadPatientsFromCSV() {
-		ArrayList<Patient> list = getPatientsFromCSV();
-		clinic.setList(list);
-		System.out.println("Data loaded from CSV file. Items: " + list.size());
-		setSaved(true);
+	public void addPatientsFromCSV() {
+		clinic.getList().addAll(getPatientListFromCSV());
 	}
 	
-	public void loadPatientsFromSerial() {
-		ArrayList<Patient> list = getPatientsFromSerial();
-		setPatients(list);
-		System.out.println("Data loaded from serial file. Items: " + list.size());
-		setSaved(true);
-	}
-	
-	private ArrayList<Patient> getPatientsFromCSV() {
+	private ArrayList<Patient> getPatientListFromCSV() {
 		ArrayList<Patient> plist = new ArrayList<Patient>();
 		String csvFile = "src/data/patients.csv";
 		String fieldDelimiter = ",";
@@ -88,6 +75,7 @@ public class ClinicController implements Serializable {
 			br = new BufferedReader(new FileReader(csvFile));
 			String line;
 			while ((line = br.readLine()) != null) {
+				System.out.println("Line: " + line);
 				String[] fields = line.split(fieldDelimiter, -1);
 				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
 				plist.add(record);
@@ -100,27 +88,41 @@ public class ClinicController implements Serializable {
 		return plist;
 	}
 	
-	private ArrayList<Patient> getPatientsFromSerial() {
-		ArrayList<Patient> list = null;
-		try {
-			list = (ArrayList<Patient>) FileStorage.readObject("src/data/patientData.ser");
-		} catch (Exception ex) {
-			System.out.println("Error reading from serial file - " + ex);
-		} 
-		return list;
+	/**
+	 * Returns serialized Clinic object
+	 * @return clinic: Clinic object
+	 */
+	private Clinic getClinicFromSerial() {
+		Clinic clinic = (Clinic) FileStorage.readObject(CLINICFILENAME);
+		System.out.println("Read clinic from serial file: " + (clinic != null));
+		return clinic;
 	}
 	
 	/**
 	 * SAVING
 	 */
 	
-	public void savePatientsToSerial() {
-		ArrayList<Patient> list = clinic.getList();
-		System.out.println("Tryng to save list with " + list.size() + " items to serial file...");
+	public void saveClinicToSerial() {
+		ArrayList<Patient> list = ObservableListToArrayList(patients);
+		clinic.setList(list);
+		
+		System.out
+				.println("Tryng to save Clinic with a list of " + clinic.getList().size() + " items to serial file...");
 		try {
-			FileStorage.storeObject(list, "src/data/patientData.ser");
+			FileStorage.storeObject(this.clinic, CLINICFILENAME);
 		} catch (Exception ex) {
 			System.out.println("Error writting serial file - " + ex);
 		}
 	}
+	
+	
+	private ObservableList<Patient> ArrayListToObservableList(ArrayList<Patient> alist) {
+			return FXCollections.observableArrayList(alist);
+	}
+	
+	private ArrayList<Patient> ObservableListToArrayList(ObservableList<Patient> olist) {
+		ArrayList<Patient> alist = (ArrayList<Patient>) olist.stream().collect(Collectors.toList());
+		return alist;
+	}
+	
 }

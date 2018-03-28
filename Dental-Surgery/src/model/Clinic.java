@@ -8,12 +8,15 @@ public class Clinic implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static Clinic instance;
 	private ArrayList<Patient> list;
-	
+
 	public static Clinic getInstance() {
-		if (instance == null) { return new Clinic(); } 
-		else { return instance; }
+		if (instance == null) {
+			return new Clinic();
+		} else {
+			return instance;
+		}
 	}
-	
+
 	public Clinic() {
 		instance = this;
 		go();
@@ -21,13 +24,14 @@ public class Clinic implements Serializable {
 
 	public void go() {
 		list = new ArrayList<Patient>();
-//		
+	}
+	
+	public ArrayList<Patient> getList() {
+		return this.list;
 	}
 
-	public ArrayList<Patient> getList() { return list; }
-	public void setList(ArrayList<Patient> list) { this.list = list;	}
+	public void setList(ArrayList<Patient> list) {
+		this.list = list;
+	}
 
-
-	
-	
 }

@@ -16,15 +16,16 @@ public class FileStorage {
 			out.writeObject(o);
 			out.close();
 			fileOut.close();
-			System.out.println("  Data saved to: " + filename);
+			System.out.println("  Data saved to: "+filename);
 		} catch (IOException i) {
-			storeObject(i, "IOException.ser");
+			storeObject(i,"IOException.ser");
 		}
 	}
 
 	public static Object readObject(String filename) {
 		Object obj = null;
 		try {
+		
 			FileInputStream fileIn = new FileInputStream(filename);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			obj = in.readObject();
@@ -32,13 +33,13 @@ public class FileStorage {
 			fileIn.close();
 		} catch (FileNotFoundException a) {
 			System.out.println(a.getMessage());
-			// storeObject(a,"FileNotFound.ser");
+//			storeObject(a,"FileNotFound.ser");
 		} catch (IOException i) {
 			System.out.println(i.getMessage());
-			// storeObject(i,"IOException.ser");
+//			storeObject(i,"IOException.ser");
 		} catch (ClassNotFoundException c) {
 			System.out.println(c.getMessage());
-			// storeObject(c,"ClassNotFoundException.ser");
+//			storeObject(c,"ClassNotFoundException.ser");
 		}
 		return obj;
 	}

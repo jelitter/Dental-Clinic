@@ -44,6 +44,7 @@ public class PatientsScreen extends Pane {
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
 	private TableView<Patient> table;
+	private ClinicController controller;
 
 //	private ObservableList<Patient> patientsData;
 //	ClinicController controller;
@@ -66,8 +67,7 @@ public class PatientsScreen extends Pane {
 		String phone = fldPhoneNumber.getText();
 		Patient newPatient = new Patient(name, lastName, email, address, phone);
 //		patientsData.add(newPatient);
-		ClinicController.getInstance().addPatient(newPatient);
-		setTable();
+		controller.addPatient(newPatient);
 		clearFields();
 	}
 
@@ -90,12 +90,12 @@ public class PatientsScreen extends Pane {
 		TableColumn<Patient, String> addressCol = new TableColumn<Patient, String>("Address");
 		TableColumn<Patient, String> phoneCol = new TableColumn<Patient, String>("Phone No.");
 		
-		idCol.setCellValueFactory(cellData -> cellData.getValue().getId());
-        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
-        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
-        emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
-        addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddress());
-        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumber());
+//		idCol.setCellValueFactory(cellData -> cellData.getValue().getId());
+//        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
+//        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
+//        emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
+//        addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddress());
+//        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumber());
         table.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
         		
         idCol.prefWidthProperty().set(50);
@@ -109,7 +109,7 @@ public class PatientsScreen extends Pane {
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
-		loadDataToTable();
+		setTableItems();
 //        setupDataFilter();
 		
 		table.setOnMouseClicked(e ->tableItemSelected());
@@ -151,20 +151,20 @@ public class PatientsScreen extends Pane {
 //        table.setItems(filteredData);
 //	}
 
-	private void loadDataToTable() {
-		table.setItems(ClinicController.getInstance().getPatients());
+	public void setTableItems() {
+		table.setItems(controller.patients);
 	}
-
+	
 	private void tableItemSelected() {
 		try {
 			Patient pat = table.getSelectionModel().getSelectedItem();
 			fldId.setText(pat.getId().get());
 			fldId.setDisable(true);
-			fldName.setText(pat.getFirstName().get());
-			fldLastName.setText(pat.getLastName().get());
-			fldEmail.setText(pat.getEmail().get());
-			fldAddress.setText(pat.getAddress().get());
-			fldPhoneNumber.setText(pat.getPhoneNumber().get());
+			fldName.setText(pat.getFirstName());
+			fldLastName.setText(pat.getLastName());
+			fldEmail.setText(pat.getEmail());
+			fldAddress.setText(pat.getAddress());
+			fldPhoneNumber.setText(pat.getPhoneNumber());
 			
 			btnRemovePatient.setDisable(pat == null);
 			btnUpdatePatient.setDisable(pat == null);
@@ -177,6 +177,7 @@ public class PatientsScreen extends Pane {
 	}
 
 	public void go() {
+		controller = MainScreen.getInstance().getController();
 		pane = new VBox(10);
 		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
@@ -226,7 +227,7 @@ public class PatientsScreen extends Pane {
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
 			    table.getItems().remove(selectedPatient);
-			    ClinicController.getInstance().setSaved(false);
+			    controller.setSaved(false);
 				System.out.println("Patient removed");
 
 			} else if (result.get() == no) {
@@ -356,8 +357,7 @@ public class PatientsScreen extends Pane {
 			
 //			Patient updatedPatient = new Patient(name, lastName, email, address, phone);
 //			personData.add(newPatient);
-			ClinicController.getInstance().addPatient(selectedPatient);
-			ClinicController.getInstance().setSaved(false);
+			controller.addPatient(selectedPatient);
 			clearFields();
 			
 			
@@ -377,7 +377,5 @@ public class PatientsScreen extends Pane {
 		btnUpdatePatient.setDisable(pat == null);
 	}
 
-	public void setTable() {
-		table.setItems(ClinicController.getInstance().getPatients());
-	}
+
 }
