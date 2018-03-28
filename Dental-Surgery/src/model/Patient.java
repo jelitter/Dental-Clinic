@@ -25,8 +25,10 @@ public class Patient extends Person implements Serializable {
 		this.setInvoices(new ArrayList<Invoice> ());
 	}
 	
-	public StringProperty getId() { return new SimpleStringProperty(Integer.toString(id)); }
+	public int getId() { return id; }
+	public StringProperty getIdProperty() { return new SimpleStringProperty(Integer.toString(id)); }
 	public void setId(int _id2) { this.id = _id2; } 
+	public static void setMaxId(int i) { _id = i; }
 	
 	public ArrayList<Invoice> getInvoices() { return invoices; }
 	public void setInvoices(ArrayList<Invoice> invoices) { this.invoices = invoices; 	}

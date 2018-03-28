@@ -270,7 +270,7 @@ public class MainScreen {
 		final Menu menuOptions = new Menu("Options");
 		final Menu menuHelp = new Menu("Help");
 		
-		MenuItem loadFromCSV = new MenuItem("Load Clinic data from CSV file");
+		MenuItem loadFromCSV = new MenuItem("Add patients from CSV file");
 		MenuItem loadFromSerial = new MenuItem("Load Clinic data from Serial file"); 
 		loadFromCSV.setOnAction(e -> { 
 			controller.addPatientsFromCSV();

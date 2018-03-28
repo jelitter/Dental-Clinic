@@ -2,6 +2,9 @@ package model;
 
 import java.io.Serializable;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -23,6 +26,8 @@ public class Person implements Serializable {
 		this.setPhoneNumber("");
 	}
 
+	public StringProperty getFirstNameProperty() { return new SimpleStringProperty(firstName); }
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -31,6 +36,7 @@ public class Person implements Serializable {
 		this.firstName = firstName;
 	}
 
+	public StringProperty getLastNameProperty() { return new SimpleStringProperty(lastName); }
 	public String getLastName() {
 		return lastName;
 	}
@@ -39,6 +45,7 @@ public class Person implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public StringProperty getEmailProperty() { return new SimpleStringProperty(email); }
 	public String getEmail() {
 		return email;
 	}
@@ -47,6 +54,7 @@ public class Person implements Serializable {
 		this.email = email;
 	}
 
+	public StringProperty getAddressProperty() { return new SimpleStringProperty(address); }
 	public String getAddress() {
 		return address;
 	}
@@ -55,6 +63,7 @@ public class Person implements Serializable {
 		this.address = address;
 	}
 
+	public StringProperty getPhoneNumberProperty() { return new SimpleStringProperty(phoneNumber); }
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}

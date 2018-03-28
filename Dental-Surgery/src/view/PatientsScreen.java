@@ -66,7 +66,6 @@ public class PatientsScreen extends Pane {
 		String address = fldAddress.getText();
 		String phone = fldPhoneNumber.getText();
 		Patient newPatient = new Patient(name, lastName, email, address, phone);
-//		patientsData.add(newPatient);
 		controller.addPatient(newPatient);
 		clearFields();
 	}
@@ -82,7 +81,9 @@ public class PatientsScreen extends Pane {
 	}
 
 	private TableView<Patient> createTable() {
+		
 		table = new TableView<Patient>();
+		
 		TableColumn<Patient, String> idCol = new TableColumn<Patient,String>("Id");
 		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
 		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
@@ -90,12 +91,12 @@ public class PatientsScreen extends Pane {
 		TableColumn<Patient, String> addressCol = new TableColumn<Patient, String>("Address");
 		TableColumn<Patient, String> phoneCol = new TableColumn<Patient, String>("Phone No.");
 		
-//		idCol.setCellValueFactory(cellData -> cellData.getValue().getId());
-//        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
-//        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastName());
-//        emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmail());
-//        addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddress());
-//        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumber());
+		idCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
+        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstNameProperty());
+        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastNameProperty());
+        emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmailProperty());
+        addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
+        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumberProperty());
         table.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
         		
         idCol.prefWidthProperty().set(50);
@@ -158,7 +159,7 @@ public class PatientsScreen extends Pane {
 	private void tableItemSelected() {
 		try {
 			Patient pat = table.getSelectionModel().getSelectedItem();
-			fldId.setText(pat.getId().get());
+			fldId.setText(pat.getIdProperty().get());
 			fldId.setDisable(true);
 			fldName.setText(pat.getFirstName());
 			fldLastName.setText(pat.getLastName());
@@ -357,7 +358,12 @@ public class PatientsScreen extends Pane {
 			
 //			Patient updatedPatient = new Patient(name, lastName, email, address, phone);
 //			personData.add(newPatient);
-			controller.addPatient(selectedPatient);
+			
+			table.getColumns().get(0).setVisible(false);
+			table.getColumns().get(0).setVisible(true);
+			 
+//			controller.addPatient(selectedPatient);
+			
 			clearFields();
 			
 			

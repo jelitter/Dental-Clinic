@@ -39,6 +39,8 @@ public class ClinicController {
 			patients = ArrayListToObservableList(clinic.getList());
 			System.out.println("  Database loaded from serial file. Patients: " + patients.size());
 		}
+		Patient.setMaxId(getMaxId());
+		System.out.println("Patient max Id: " + getMaxId());
 		setSaved(true);
 	}
 	
@@ -56,12 +58,17 @@ public class ClinicController {
 		setSaved(false);
 	}
 	
-	/**
-	 * LOADING
-	 */
+	private int getMaxId() {
+		int id = -1;
+		for (Patient p : patients) {
+			if (p.getId() > id) { id = p.getId(); }
+		}
+		return id;
+	}
 	
 	public void addPatientsFromCSV() {
 		clinic.getList().addAll(getPatientListFromCSV());
+		patients = ArrayListToObservableList(clinic.getList());
 	}
 	
 	private ArrayList<Patient> getPatientListFromCSV() {
@@ -75,7 +82,7 @@ public class ClinicController {
 			br = new BufferedReader(new FileReader(csvFile));
 			String line;
 			while ((line = br.readLine()) != null) {
-				System.out.println("Line: " + line);
+//				System.out.println("Line: " + line);
 				String[] fields = line.split(fieldDelimiter, -1);
 				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
 				plist.add(record);
