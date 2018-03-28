@@ -4,14 +4,19 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Clinic;
 import model.Patient;
 
-public class ClinicController {
+public class ClinicController implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private boolean isSaved;
 	private static ClinicController instance;
 	private Clinic clinic;
@@ -28,7 +33,7 @@ public class ClinicController {
 	
 	public void go() {
 		clinic = Clinic.getInstance(); 
-		clinic.setList(getPatientsFromCSV());
+//		clinic.setList(getPatientsFromCSV());
 	}
 
 	
@@ -44,32 +49,36 @@ public class ClinicController {
 	}
 	
 	public ObservableList<Patient> getPatients() {
-		return clinic.getList();
+		ObservableList<Patient> oList = FXCollections.observableArrayList(clinic.getList());
+		return oList;
+		
 	}
-	private void setPatients(ObservableList<Patient> patients) {
+	private void setPatients(ArrayList<Patient> patients) {
 		clinic.setList(patients);
 	}
 
-	public void save() {
-		// TODO Auto-generated method stub
-		setSaved(true);
-		System.out.println("Controller - Data saved.");
-	}
+
+	
+	/**
+	 * LOADING
+	 */
 	
 	public void loadPatientsFromCSV() {
-		setPatients(getPatientsFromCSV());
-		System.out.println("Data loaded from CSV file.");
-		setSaved(false);
+		ArrayList<Patient> list = getPatientsFromCSV();
+		clinic.setList(list);
+		System.out.println("Data loaded from CSV file. Items: " + list.size());
+		setSaved(true);
 	}
 	
 	public void loadPatientsFromSerial() {
-		setPatients(getPatientsFromSerial());
-		System.out.println("Data loaded from serial file.");
-		setSaved(false);
+		ArrayList<Patient> list = getPatientsFromSerial();
+		setPatients(list);
+		System.out.println("Data loaded from serial file. Items: " + list.size());
+		setSaved(true);
 	}
 	
-	private ObservableList<Patient> getPatientsFromCSV() {
-		ObservableList<Patient> plist = FXCollections.observableArrayList();
+	private ArrayList<Patient> getPatientsFromCSV() {
+		ArrayList<Patient> plist = new ArrayList<Patient>();
 		String csvFile = "src/data/patients.csv";
 		String fieldDelimiter = ",";
 
@@ -91,13 +100,27 @@ public class ClinicController {
 		return plist;
 	}
 	
-	private ObservableList<Patient> getPatientsFromSerial() {
-		ObservableList<Patient> plist = FXCollections.observableArrayList();
+	private ArrayList<Patient> getPatientsFromSerial() {
+		ArrayList<Patient> list = null;
 		try {
-			plist = (ObservableList<Patient>) FileStorage.readObservableObject("src/data/patientData.ser");
-		} catch (FileNotFoundException a) {
-			System.out.println("Error reading from serial file - " + a.getMessage() + "\nReading from CSV");
+			list = (ArrayList<Patient>) FileStorage.readObject("src/data/patientData.ser");
+		} catch (Exception ex) {
+			System.out.println("Error reading from serial file - " + ex);
 		} 
-		return plist;
+		return list;
+	}
+	
+	/**
+	 * SAVING
+	 */
+	
+	public void savePatientsToSerial() {
+		ArrayList<Patient> list = clinic.getList();
+		System.out.println("Tryng to save list with " + list.size() + " items to serial file...");
+		try {
+			FileStorage.storeObject(list, "src/data/patientData.ser");
+		} catch (Exception ex) {
+			System.out.println("Error writting serial file - " + ex);
+		}
 	}
 }

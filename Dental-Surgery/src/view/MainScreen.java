@@ -59,7 +59,8 @@ public class MainScreen {
 	private VBox reportPane;
 	private HBox mainArea;
 	private Scene scene;
-
+	ObservableStringValue saved;
+	
 	public MainScreen() {
 		instance = this;
 		go();
@@ -89,7 +90,7 @@ public class MainScreen {
 		
 		activatePane(patientPane, btnPatients);
 		
-		ObservableStringValue saved = new SimpleStringProperty(String.valueOf(ClinicController.getInstance().isSaved())); 
+		saved = new SimpleStringProperty("Saved: " + String.valueOf(ClinicController.getInstance().isSaved())); 
 		statusBar.textProperty().bind(saved);
 	}
 	
@@ -213,7 +214,10 @@ public class MainScreen {
 		btn.setText("Saving...");
 //		setStatusText("Saving to database...");
 //		FileStorage.storeObservableObject(new ArrayList<Patient>(PatientsScreen.getInstance().getPatientsData()), "src/data/patientData.ser");
-		ClinicController.getInstance().save();
+		
+//		ClinicController.getInstance().save();
+		ClinicController.getInstance().savePatientsToSerial();
+		
 		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
@@ -262,8 +266,15 @@ public class MainScreen {
 		
 		MenuItem loadFromCSV = new MenuItem("Load data from CSV file");
 		MenuItem loadFromSerial = new MenuItem("Load data from Serial file"); 
-		loadFromCSV.setOnAction(e -> ClinicController.getInstance().loadPatientsFromCSV());
-		loadFromCSV.setOnAction(e -> ClinicController.getInstance().loadPatientsFromSerial());
+		loadFromCSV.setOnAction(e -> { 
+			ClinicController.getInstance().loadPatientsFromCSV();
+			PatientsScreen.getInstance().setTable();
+			
+		});
+		loadFromSerial.setOnAction(e -> {
+			ClinicController.getInstance().loadPatientsFromSerial();
+			PatientsScreen.getInstance().setTable();
+		});
 		
 
 		MenuItem exit = new MenuItem("Exit");

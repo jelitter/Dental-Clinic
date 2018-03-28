@@ -67,6 +67,7 @@ public class PatientsScreen extends Pane {
 		Patient newPatient = new Patient(name, lastName, email, address, phone);
 //		patientsData.add(newPatient);
 		ClinicController.getInstance().addPatient(newPatient);
+		setTable();
 		clearFields();
 	}
 
@@ -152,19 +153,6 @@ public class PatientsScreen extends Pane {
 
 	private void loadDataToTable() {
 		table.setItems(ClinicController.getInstance().getPatients());
-//		try {
-//			System.out.println("Data read from serial file.");
-//		} catch (FileNotFoundException a) {
-//			System.out.println("Error reading from serial file - " + a.getMessage() + "\nReading from CSV");
-//			loadFromCSVtoTable();
-//		} finally {
-//			System.out.println("Data loaded.");
-//		}
-		
-//		catch (Exception ex) {
-//			System.out.println("Error reading from serial file - " + ex.getMessage() + "\nReading from CSV");
-//			loadFromCSVtoTable();
-//		}
 	}
 
 	private void tableItemSelected() {
@@ -387,5 +375,9 @@ public class PatientsScreen extends Pane {
 		}
 		btnRemovePatient.setDisable(pat == null);
 		btnUpdatePatient.setDisable(pat == null);
+	}
+
+	public void setTable() {
+		table.setItems(ClinicController.getInstance().getPatients());
 	}
 }
