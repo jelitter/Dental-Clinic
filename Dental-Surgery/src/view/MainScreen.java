@@ -53,7 +53,9 @@ public class MainScreen {
 	private ClinicController controller;
 	private Stage primaryStage;
 	private static MainScreen instance;
-	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnSave, btnSaveQuit, btnExit;
+	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnMaintenance; 
+	private MyButton btnSave, btnSaveQuit, btnQuit;
+	private MenuItem menuFileSave, menuFileSaveQuit, menuFileQuit;
 	private MyButton activeButton;
 	private VBox mainAreaLeft;
 	private Pane mainAreaRight;
@@ -65,6 +67,7 @@ public class MainScreen {
 	private VBox procedurePane;
 	private VBox invoicePane;
 	private VBox reportPane;
+	private VBox maintenancePane;
 	private HBox mainArea;
 	private Scene scene;
 	
@@ -133,6 +136,8 @@ public class MainScreen {
 		procedurePane = ProceduresScreen.getInstance().getPane();
 		invoicePane = InvoicesScreen.getInstance().getPane();
 		reportPane = ReportsScreen.getInstance().getPane();
+		maintenancePane = MaintenanceScreen.getInstance().getPane();
+		
 		patientPane.prefWidthProperty().bind(mainAreaRight.widthProperty());
 		patientPane.prefHeightProperty().bind(mainAreaRight.heightProperty());
 		procedurePane.prefWidthProperty().bind(mainAreaRight.widthProperty());
@@ -141,7 +146,9 @@ public class MainScreen {
 		invoicePane.prefHeightProperty().bind(mainAreaRight.heightProperty());
 		reportPane.prefWidthProperty().bind(mainAreaRight.widthProperty());
 		reportPane.prefHeightProperty().bind(mainAreaRight.heightProperty());
-		mainGroup.getChildren().addAll(patientPane, procedurePane, invoicePane, reportPane);
+		maintenancePane.prefWidthProperty().bind(mainAreaRight.widthProperty());
+		maintenancePane.prefHeightProperty().bind(mainAreaRight.heightProperty());
+		mainGroup.getChildren().addAll(patientPane, procedurePane, invoicePane, reportPane, maintenancePane);
 		
 		mainAreaRight.getChildren().add(mainGroup);
 	}
@@ -151,7 +158,7 @@ public class MainScreen {
 		setupButtons();
 		Region spacing = new Region();
         VBox.setVgrow(spacing, Priority.ALWAYS);
-		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, spacing, btnSave, btnSaveQuit, btnExit);
+		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnMaintenance, spacing, btnSave, btnSaveQuit, btnQuit);
 		BackgroundImage bgImage = new BackgroundImage(
 				new Image("/assets/background.png"), 
 				BackgroundRepeat.NO_REPEAT,
@@ -255,18 +262,20 @@ public class MainScreen {
 		btnProcedures = new MyButton("Procedures");
 		btnInvoices = new MyButton("Invoices");
 		btnReports = new MyButton("Reports");
+		btnMaintenance = new MyButton("Maintenance");
 		btnSave = new MyButton("Save", "Success");
-		btnSaveQuit = new MyButton("Save and Exit", "Success");
-		btnExit = new MyButton("Exit", "Warning");
-		activeButton = btnExit;
+		btnSaveQuit = new MyButton("Save and Quit", "Success");
+		btnQuit = new MyButton("Quit", "Warning");
+		activeButton = btnQuit;
 
 		btnPatients.setIcon("patient.png");
 		btnProcedures.setIcon("procedure.png");
 		btnInvoices.setIcon("invoice.png");
 		btnReports.setIcon("report.png");
+		btnMaintenance.setIcon("maintenance.png");
 		btnSave.setIcon("save.png");
 		btnSaveQuit.setIcon("savequit.png");
-		btnExit.setIcon("exit.png");
+		btnQuit.setIcon("quit.png");
 	}
 
 	private void setupMenu() {
@@ -275,23 +284,25 @@ public class MainScreen {
 		final Menu menuOptions = new Menu("Options");
 		final Menu menuHelp = new Menu("Help");
 		
-		MenuItem menuFileSave= new MenuItem("Save changes");
-		MenuItem menuFileSaveQuit = new MenuItem("Save changes and quit"); 
-		MenuItem menuFileExit = new MenuItem("Quit");
+		menuFileSave= new MenuItem("Save");
+		menuFileSaveQuit = new MenuItem("Save and Quit   "); 
+		menuFileQuit = new MenuItem("Quit");
 
 		setMenuIcon(menuFileSave, "save.png");
 		setMenuIcon(menuFileSaveQuit, "savequit.png");
-		setMenuIcon(menuFileExit, "exit.png");
+		setMenuIcon(menuFileQuit, "quit.png");
+		
+		menuFileSaveQuit.setDisable(true);
 		
 		menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 		menuFileSaveQuit.setAccelerator(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
-		menuFileExit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+		menuFileQuit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
 
 		menuFileSave.setOnAction(e -> save(btnSave));
 		menuFileSaveQuit.setOnAction(e -> save(btnSaveQuit));
-		menuFileExit.setOnAction(e -> quit());
+		menuFileQuit.setOnAction(e -> quit());
 		
-		menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit, menuFileExit);
+		menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit, menuFileQuit);
 
 		menuItems.add(menuFile);
 		menuItems.add(menuOptions);
@@ -314,7 +325,7 @@ public class MainScreen {
 		imgv.setSmooth(true);
 		imgv.setCache(true);
 		pane.getChildren().add(imgv);
-		pane.setPadding(new Insets(4));
+		pane.setPadding(new Insets(0,6,0,0));
 		menu.setGraphic(pane);
 //		menu.setContentDisplay(ContentDisplay.LEFT);
 	}
@@ -331,10 +342,11 @@ public class MainScreen {
 		btnProcedures.setOnMouseClicked(e -> activatePane(procedurePane, btnProcedures));
 		btnInvoices.setOnMouseClicked(e -> activatePane(invoicePane, btnInvoices));
 		btnReports.setOnMouseClicked(e -> activatePane(reportPane, btnReports));
+		btnMaintenance.setOnMouseClicked(e -> activatePane(maintenancePane, btnMaintenance));
 
 		btnSave.setOnMouseClicked(e -> save(btnSave));
 		btnSaveQuit.setOnMouseClicked(e -> save(btnSaveQuit));
-		btnExit.setOnMouseClicked(e -> quit());
+		btnQuit.setOnMouseClicked(e -> quit());
 
 		primaryStage.setOnCloseRequest(e -> {
 			quit();
@@ -355,6 +367,8 @@ public class MainScreen {
 		btnSaveQuit.setVisible(b);
 		btnSave.setDisable(!b);
 		btnSaveQuit.setDisable(!b);
+		menuFileSave.setDisable(!b);
+		menuFileSaveQuit.setDisable(!b);
 	}
 	
 	public Stage getStage() { return primaryStage; }
