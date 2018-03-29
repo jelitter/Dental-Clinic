@@ -18,10 +18,15 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -32,6 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -221,18 +227,14 @@ public class MainScreen {
 		root.setDisable(true);
 		btn.setIcon("spinner.gif");
 		btn.setText("Saving...");
-//		setStatusText("Saving to database...");
-//		FileStorage.storeObservableObject(new ArrayList<Patient>(PatientsScreen.getInstance().getPatientsData()), "src/data/patientData.ser");
-		
-//		ClinicController.getInstance().save();
 		controller.saveClinicToSerial();
-		
-		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
+
+		// Adding some artificial delay to display some saving progress
+		new Timeline(new KeyFrame(Duration.millis(15000), ae -> {
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
-//			setStatusText("Saving to database done!");
 		})).play();
-		new Timeline(new KeyFrame(Duration.millis(3500), ae -> {
+		new Timeline(new KeyFrame(Duration.millis(2500), ae -> {
 			
 			if (btn == this.btnSave) {
 				root.setDisable(false);
@@ -245,7 +247,6 @@ public class MainScreen {
 					Platform.exit();
 				})).play();
 			}
-//			setStatusText("App Ready");
 		})).play();
 	}
 
@@ -274,23 +275,23 @@ public class MainScreen {
 		final Menu menuOptions = new Menu("Options");
 		final Menu menuHelp = new Menu("Help");
 		
-		MenuItem loadFromCSV = new MenuItem("Add patients from CSV file");
-		MenuItem loadFromSerial = new MenuItem("Load Clinic data from Serial file"); 
-		loadFromCSV.setOnAction(e -> { 
-			controller.addPatientsFromCSV();
-//			PatientsScreen.getInstance().setTableItems();
-			
-		});
-		loadFromSerial.setOnAction(e -> {
-//			controller.loadClinicFromSerial();
-//			PatientsScreen.getInstance().setTableItems();
-		});
-		
+		MenuItem menuFileSave= new MenuItem("Save changes");
+		MenuItem menuFileSaveQuit = new MenuItem("Save changes and quit"); 
+		MenuItem menuFileExit = new MenuItem("Quit");
 
-		MenuItem exit = new MenuItem("Exit");
-		exit.setOnAction(e -> quit());
+		setMenuIcon(menuFileSave, "save.png");
+		setMenuIcon(menuFileSaveQuit, "savequit.png");
+		setMenuIcon(menuFileExit, "exit.png");
 		
-		menuFile.getItems().addAll(loadFromCSV, loadFromSerial, exit);
+		menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+		menuFileSaveQuit.setAccelerator(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
+		menuFileExit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+
+		menuFileSave.setOnAction(e -> save(btnSave));
+		menuFileSaveQuit.setOnAction(e -> save(btnSaveQuit));
+		menuFileExit.setOnAction(e -> quit());
+		
+		menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit, menuFileExit);
 
 		menuItems.add(menuFile);
 		menuItems.add(menuOptions);
@@ -301,6 +302,21 @@ public class MainScreen {
 		for (Menu m : menuItems) {
 			menuBar.getMenus().add(m);
 		}
+	}
+	
+	private void setMenuIcon(MenuItem menu, String fileName) {
+		Image img = new Image("/assets/" + fileName);
+		ImageView imgv = new ImageView();
+		StackPane pane = new StackPane();
+		imgv.setImage(img);
+		imgv.setFitHeight(20);
+		imgv.setPreserveRatio(true);
+		imgv.setSmooth(true);
+		imgv.setCache(true);
+		pane.getChildren().add(imgv);
+		pane.setPadding(new Insets(4));
+		menu.setGraphic(pane);
+//		menu.setContentDisplay(ContentDisplay.LEFT);
 	}
 
 	private void activatePane(VBox p, MyButton b) {

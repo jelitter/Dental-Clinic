@@ -41,13 +41,15 @@ public class ClinicController {
 			clinic = Clinic.getInstance();
 			clinic.setList(getPatientListFromCSV());
 			patients = ArrayListToObservableList(clinic.getList());
-			System.out.println("  New database created. Patients: " + patients.size());
+			System.out.println("  New database created from CSV with sample patients: " + patients.size());
+			saveClinicToSerial();
 		} else {
 			patients = ArrayListToObservableList(clinic.getList());
 			System.out.println("  Database loaded from serial file. Patients: " + patients.size());
 		}
+
+		// Getting patient max. Id so new patients don't overwrite previous ones
 		Patient.setMaxId(getMaxId());
-		System.out.println("Patient max Id: " + getMaxId());
 		setSaved(true);
 	}
 	
@@ -111,7 +113,7 @@ public class ClinicController {
 	 */
 	private Clinic getClinicFromSerial() {
 		Clinic clinic = (Clinic) FileStorage.readObject(CLINICFILENAME);
-		System.out.println("Read clinic from serial file: " + (clinic != null));
+//		System.out.println("Read clinic from serial file: " + (clinic != null));
 		return clinic;
 	}
 	
@@ -123,13 +125,12 @@ public class ClinicController {
 		ArrayList<Patient> list = ObservableListToArrayList(patients);
 		clinic.setList(list);
 		
-		System.out
-				.println("Tryng to save Clinic with a list of " + clinic.getList().size() + " items to serial file...");
+//		System.out.println("Tryng to save Clinic with a list of " + clinic.getList().size() + " items to serial file...");
 		try {
 			FileStorage.storeObject(this.clinic, CLINICFILENAME);
 //			savedChanges();
 		} catch (Exception ex) {
-			System.out.println("Error writting serial file - " + ex);
+//			System.out.println("Error writting serial file - " + ex);
 		}
 	}
 	
