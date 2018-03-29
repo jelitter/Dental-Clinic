@@ -228,7 +228,7 @@ public class PatientsScreen extends Pane {
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
 			    table.getItems().remove(selectedPatient);
-			    controller.setSaved(false);
+			    controller.unsavedChanges();
 				System.out.println("Patient removed");
 
 			} else if (result.get() == no) {
@@ -356,20 +356,17 @@ public class PatientsScreen extends Pane {
 			selectedPatient.setAddress(address);
 			selectedPatient.setPhoneNumber(phone);
 			
-//			Patient updatedPatient = new Patient(name, lastName, email, address, phone);
-//			personData.add(newPatient);
-			
-			table.getColumns().get(0).setVisible(false);
-			table.getColumns().get(0).setVisible(true);
-			 
-//			controller.addPatient(selectedPatient);
-			
+			refreshTable();
 			clearFields();
-			
+			controller.unsavedChanges();
 			
 		} catch (Exception e) {
 			System.out.println("Error updating patient - " + e.getMessage());
 		}
+	}
+	protected void refreshTable() {
+		table.getColumns().get(0).setVisible(false);
+		table.getColumns().get(0).setVisible(true);
 	}
 
 	private void updateRemovePatientButton() {
@@ -382,6 +379,4 @@ public class PatientsScreen extends Pane {
 		btnRemovePatient.setDisable(pat == null);
 		btnUpdatePatient.setDisable(pat == null);
 	}
-
-
 }

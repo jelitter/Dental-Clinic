@@ -2,12 +2,19 @@ package controller;
 
 import model.Clinic;
 import model.Patient;
+import view.MainScreen;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,7 +26,7 @@ public class ClinicController {
 	 * -------------------------------*/
 	private static final String CLINICFILENAME = "src/data/patients.ser";
 	private Clinic clinic;
-	private boolean isSaved;
+	private Boolean isSaved;
 	public ObservableList<Patient> patients;
 
 	
@@ -49,13 +56,15 @@ public class ClinicController {
 	/* --------------------------------
 	 *       METHODS
 	 * -------------------------------*/
-	
-	public boolean isSaved() { return isSaved; }
+	public ObservableBooleanValue getObservableSaved() {
+		return new SimpleBooleanProperty(this.isSaved());
+	}
+	public Boolean isSaved() { return isSaved; }
 	public void setSaved(Boolean b) { this.isSaved = b; }
 	
 	public void addPatient(Patient newPatient) {
 		patients.add(newPatient);
-		setSaved(false);
+		unsavedChanges();
 	}
 	
 	private int getMaxId() {
@@ -69,6 +78,7 @@ public class ClinicController {
 	public void addPatientsFromCSV() {
 		clinic.getList().addAll(getPatientListFromCSV());
 		patients = ArrayListToObservableList(clinic.getList());
+		setSaved(false);
 	}
 	
 	private ArrayList<Patient> getPatientListFromCSV() {
@@ -117,6 +127,7 @@ public class ClinicController {
 				.println("Tryng to save Clinic with a list of " + clinic.getList().size() + " items to serial file...");
 		try {
 			FileStorage.storeObject(this.clinic, CLINICFILENAME);
+//			savedChanges();
 		} catch (Exception ex) {
 			System.out.println("Error writting serial file - " + ex);
 		}
@@ -130,6 +141,22 @@ public class ClinicController {
 	private ArrayList<Patient> ObservableListToArrayList(ObservableList<Patient> olist) {
 		ArrayList<Patient> alist = (ArrayList<Patient>) olist.stream().collect(Collectors.toList());
 		return alist;
+	}
+	
+	
+	
+	public void unsavedChanges() {
+		setSaved(false);
+		MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE + "  (Unsaved changes)");
+		String statusText = MainScreen.getInstance().getStatusText();
+		MainScreen.getInstance().setStatusText(statusText.trim() + " *");
+		MainScreen.getInstance().showSaveButtons(!isSaved());
+	}
+	public void savedChanges() {
+		setSaved(true);
+		MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE);
+		MainScreen.getInstance().setStatusText("All changes saved");
+		MainScreen.getInstance().showSaveButtons(!isSaved());
 	}
 	
 }

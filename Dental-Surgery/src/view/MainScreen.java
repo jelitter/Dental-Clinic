@@ -40,6 +40,7 @@ import view.elements.MyButton;
 
 public class MainScreen {
 
+	public static final String APP_TITLE = "Dental Clinic";
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 700;
 
@@ -60,7 +61,6 @@ public class MainScreen {
 	private VBox reportPane;
 	private HBox mainArea;
 	private Scene scene;
-	ObservableStringValue saved;
 	
 	public MainScreen() {
 		instance = this;
@@ -88,12 +88,10 @@ public class MainScreen {
 		setupStatusBar();
 		root.getChildren().addAll(menuBar, mainArea,statusBar);
 		setEventHandlers();
+		showSaveButtons(false);
 		show();
 		
 		activatePane(patientPane, btnPatients);
-		
-		saved = new SimpleStringProperty("Saved: " + String.valueOf(controller.isSaved())); 
-		statusBar.textProperty().bind(saved);
 	}
 	
 	public ClinicController getController() {
@@ -161,7 +159,7 @@ public class MainScreen {
 	}
 
 	private void setupStatusBar() {
-		statusBar = new Label("Status text");
+		statusBar = new Label("Ready");
 		statusBar.setPadding(new Insets(0, 10, 5, 10));
 	}
 
@@ -176,7 +174,7 @@ public class MainScreen {
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
-		primaryStage.setTitle("Dental Surgery Management");
+		primaryStage.setTitle(APP_TITLE);
 		primaryStage.setScene(scene);
 	}
 
@@ -185,32 +183,37 @@ public class MainScreen {
 	}
 
 	public void quit() {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Quit Dental Surgery Management");
-		alert.setHeaderText("Quit program");
-		alert.setContentText("Are you sure you want to quit without saving changes?");
-
-		ButtonType buttonSaveAndQuit = new ButtonType("_Save and quit");
-		ButtonType buttonQuit = new ButtonType("_Quit without saving");
-		ButtonType buttonTypeCancel = new ButtonType("_Cancel", ButtonData.CANCEL_CLOSE);
-
-		alert.getButtonTypes().setAll(buttonSaveAndQuit, buttonQuit, buttonTypeCancel);
-
-		// Adding icon to Quit dialog
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
 		
-		// Centering dialog
-		Double alertX = primaryStage.getX() + primaryStage.getWidth()/2 - 90;
-		Double alertY = primaryStage.getY() + primaryStage.getHeight()/2 - 112;
-		alert.setX(alertX);
-		alert.setY(alertY);
-
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == buttonQuit) {
+		if (controller.isSaved()) {
 			Platform.exit();
-		} else if (result.get() == buttonSaveAndQuit) {
-			save(btnSaveQuit);
+		} else {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Quit Dental Surgery Management");
+			alert.setHeaderText("Warning: There are unsaved changes");
+			alert.setContentText("Are you sure you want to quit without saving these changes?\n ");
+			
+			ButtonType buttonSaveAndQuit = new ButtonType("_Save and quit");
+			ButtonType buttonQuit = new ButtonType("_Quit without saving");
+			ButtonType buttonTypeCancel = new ButtonType("_Cancel", ButtonData.CANCEL_CLOSE);
+			
+			alert.getButtonTypes().setAll(buttonSaveAndQuit, buttonQuit, buttonTypeCancel);
+			
+			// Adding icon to Quit dialog
+			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+			stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+			
+			// Centering dialog
+			Double alertX = primaryStage.getX() + primaryStage.getWidth()/2 - 90;
+			Double alertY = primaryStage.getY() + primaryStage.getHeight()/2 - 112;
+			alert.setX(alertX);
+			alert.setY(alertY);
+			
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == buttonQuit) {
+				Platform.exit();
+			} else if (result.get() == buttonSaveAndQuit) {
+				save(btnSaveQuit);
+			}
 		}
 	}
 
@@ -235,6 +238,7 @@ public class MainScreen {
 				root.setDisable(false);
 				btn.setIcon("save.png");
 				btn.setText("Save");
+				controller.savedChanges();				
 			} else {
 				btn.setText("Closing...");
 				new Timeline(new KeyFrame(Duration.millis(750), an -> {
@@ -324,8 +328,17 @@ public class MainScreen {
 		});
 	}
 
-	private void setStatusText(String text) {
+	public void setStatusText(String text) {
 		statusBar.setText(text);
+	}
+		
+	public String getStatusText() { return statusBar.getText(); }
+	
+	public void showSaveButtons(Boolean b) {
+		btnSave.setVisible(b);
+		btnSaveQuit.setVisible(b);
+		btnSave.setDisable(!b);
+		btnSaveQuit.setDisable(!b);
 	}
 	
 	public Stage getStage() { return primaryStage; }
