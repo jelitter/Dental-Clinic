@@ -7,7 +7,8 @@ public class Clinic implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static Clinic instance;
-	private ArrayList<Patient> list;
+	private ArrayList<Patient> patients;
+	private ArrayList<Procedure> procedures;
 
 	public static Clinic getInstance() {
 		if (instance == null) {
@@ -23,15 +24,22 @@ public class Clinic implements Serializable {
 	}
 
 	public void go() {
-		list = new ArrayList<Patient>();
+		patients = new ArrayList<Patient>();
+		procedures = new ArrayList<Procedure>();
 	}
 	
-	public ArrayList<Patient> getList() {
-		return this.list;
+	public ArrayList<Patient> getPatients() {
+		return this.patients;
+	}
+	
+	public ArrayList<Procedure> getProcedures() {
+		return this.procedures;
 	}
 
-	public void setList(ArrayList<Patient> list) {
-		this.list = list;
+	public void setPatientList(ArrayList<Patient> patients) {
+		this.patients = patients;
 	}
-
+	public void setProcedureList(ArrayList<Procedure> procedures) {
+		this.procedures = procedures;
+	}
 }
