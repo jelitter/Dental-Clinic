@@ -3,4 +3,7 @@
 
 Work in progress. Preliminar screenshot:
 
-![Dental Surgery, by Isaac Sanchez](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery.png)
+![Dental Surgery Patients](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Patients.png)
+
+
+![Dental Surgery Procedures](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Procedures.png)
