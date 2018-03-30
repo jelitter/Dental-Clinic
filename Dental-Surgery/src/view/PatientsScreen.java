@@ -306,7 +306,7 @@ public class PatientsScreen extends Pane {
 		fldName.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.15));
 		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.15));
 		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.2));
-		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.3));
+//		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.3));
 		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.2).subtract(16));
 		
 		fldId.setPromptText("Id");
@@ -361,6 +361,7 @@ public class PatientsScreen extends Pane {
 			System.out.println("Error updating patient - " + e.getMessage());
 		}
 	}
+	
 	protected void refreshTable() {
 		tblPatients.getColumns().get(0).setVisible(false);
 		tblPatients.getColumns().get(0).setVisible(true);

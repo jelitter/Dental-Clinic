@@ -75,6 +75,11 @@ public class ClinicController {
 		unsavedChanges();
 	}
 	
+	public void addProcedure(Procedure newProcedure) {
+		procedures.add(newProcedure);
+		unsavedChanges();
+	}
+	
 	private int getPatientMaxId() {
 		int id = -1;
 		for (Patient p : patients) {
@@ -196,5 +201,9 @@ public class ClinicController {
 		MainScreen.getInstance().setStatusText("All changes saved");
 		MainScreen.getInstance().showSaveButtons(!isSaved());
 	}
+
+
+
+
 	
 }
