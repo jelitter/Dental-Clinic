@@ -27,7 +27,7 @@ public class ClinicController {
 	private static final String CLINICFILENAME = "src/data/clinic.ser";
 	private Clinic clinic;
 	private Boolean isSaved;
-	private ObservableList<Procedure> procedures;
+	public ObservableList<Procedure> procedures;
 	public ObservableList<Patient> patients;
 
 	
@@ -50,11 +50,12 @@ public class ClinicController {
 		} else {
 			patients = ArrayListToObservableList(clinic.getPatients());
 			procedures = ArrayListToObservableList(clinic.getProcedures());
-			System.out.println("  Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedures.size());
+			System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedures.size());
 		}
 
 		// Getting patient max. Id so new patients don't overwrite previous ones
-		Patient.setMaxId(getMaxId());
+		Patient.setMaxId(getPatientMaxId());
+		Procedure.setMaxId(getProcedureMaxId());
 		setSaved(true);
 	}
 	
@@ -74,9 +75,17 @@ public class ClinicController {
 		unsavedChanges();
 	}
 	
-	private int getMaxId() {
+	private int getPatientMaxId() {
 		int id = -1;
 		for (Patient p : patients) {
+			if (p.getId() > id) { id = p.getId(); }
+		}
+		return id;
+	}
+	
+	private int getProcedureMaxId() {
+		int id = -1;
+		for (Procedure p : procedures) {
 			if (p.getId() > id) { id = p.getId(); }
 		}
 		return id;
@@ -125,7 +134,7 @@ public class ClinicController {
 			while ((line = br.readLine()) != null) {
 //				System.out.println("Line: " + line);
 				String[] fields = line.split(fieldDelimiter, -1);
-				Procedure proc = new Procedure(fields[1], fields[2], Double.parseDouble(fields[3]));
+				Procedure proc = new Procedure(fields[0], fields[1], Double.parseDouble(fields[2]));
 				procList.add(proc);
 			}
 		} catch (FileNotFoundException ex) {
@@ -154,10 +163,9 @@ public class ClinicController {
 		ArrayList<Patient> list = ObservableListToArrayList(patients);
 		clinic.setPatientList(list);
 		
-//		System.out.println("Tryng to save Clinic with a list of " + clinic.getList().size() + " items to serial file...");
 		try {
 			FileStorage.storeObject(this.clinic, CLINICFILENAME);
-//			savedChanges();
+			System.out.println("<- Data saved to: " + CLINICFILENAME);
 		} catch (Exception ex) {
 //			System.out.println("Error writting serial file - " + ex);
 		}

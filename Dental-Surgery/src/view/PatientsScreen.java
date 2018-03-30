@@ -27,37 +27,57 @@ import view.elements.MyTitle;
 public class PatientsScreen extends Pane {
 
 	private static PatientsScreen instance;
-	public static PatientsScreen getInstance() {
-		if (instance == null) {
-			return new PatientsScreen();
-		} else {
-//			instance.go();
-			return instance;
-		}
-	}
-	private MyTitle title;
+	private ClinicController controller;
 	private TableView<Patient> tblPatients;
+	
+	private MyTitle title;
 	private HBox buttons;
 	private Button btnSearchPatient, btnUpdatePatient, btnRemovePatient, btnAddPatient, btnClear;
 	private Region spacing;
 	private HBox personalFields;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
-	private TableView<Patient> table;
-	private ClinicController controller;
 
 //	private ObservableList<Patient> patientsData;
 //	ClinicController controller;
 //	private FilteredList<Patient> filteredData;
 
+	public static PatientsScreen getInstance() {
+		if (instance == null) {
+			return new PatientsScreen();
+		} else {
+			return instance;
+		}
+	}
+	
 	public PatientsScreen() {
 		instance = this;
 		go();
 	}
+	
+	public void go() {
+		controller = MainScreen.getInstance().getController();
+		pane = new VBox(10);
+		pane.getChildren().clear();
+		pane.setPadding(new Insets(20));
 
-//	public ObservableList<Patient> getPatientsData() { return patientsData; }
-//	public void setPatientsData(ObservableList<Patient> patientsData) { this.patientsData = patientsData; }
-
+		// Title
+		title = new MyTitle("Patients");
+		
+		//Table
+		createPatientsTable();
+		
+		setupFields();
+		setupButtons();
+		setButtonHandlers();
+		setFieldHandlers();
+		updateRemovePatientButton();
+		updateClearButton();
+		
+		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
+		VBox.setVgrow(tblPatients, Priority.ALWAYS);
+		pane.setStyle("-fx-background-color: #DDEEFF");
+	}
 
 	private void addPatient() {
 		String name = fldName.getText();
@@ -80,9 +100,9 @@ public class PatientsScreen extends Pane {
 		updateClearButton();
 	}
 
-	private TableView<Patient> createTable() {
+	private void createPatientsTable() {
 		
-		table = new TableView<Patient>();
+		tblPatients = new TableView<Patient>();
 		
 		TableColumn<Patient, String> idCol = new TableColumn<Patient,String>("Id");
 		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
@@ -97,32 +117,33 @@ public class PatientsScreen extends Pane {
         emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmailProperty());
         addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
         phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumberProperty());
-        table.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
-        		
+        tblPatients.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
+
+        // This hide the horizontal scrollbar, but has the side-efect of making all columns the same width
+        tblPatients.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
+        idCol.maxWidthProperty().set(50);
+        idCol.minWidthProperty().set(50);
         idCol.prefWidthProperty().set(50);
         
-		firstNameCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.15));
-		lastNameCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.15));
-		emailCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.2));
-		addressCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.3));
-		phoneCol.prefWidthProperty().bind(table.widthProperty().subtract(idCol.getWidth()).multiply(0.2).subtract(16));
-
+        phoneCol.maxWidthProperty().set(130);
+        phoneCol.minWidthProperty().set(130);
+        phoneCol.prefWidthProperty().set(130);
+        
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
-		setTableItems();
+		setPatientsTableItems();
 //        setupDataFilter();
 		
-		table.setOnMouseClicked(e ->tableItemSelected());
-		table.setOnKeyReleased(e -> {
+		tblPatients.setOnMouseClicked(e ->tableItemSelected());
+		tblPatients.setOnKeyReleased(e -> {
 			KeyCode key = e.getCode();
 			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
 					|| key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) || key.equals(KeyCode.END)) {
 				tableItemSelected();
 			}
 		});
-		
-		return table;
 	}
 
 //	private void setupDataFilter() {
@@ -152,13 +173,13 @@ public class PatientsScreen extends Pane {
 //        table.setItems(filteredData);
 //	}
 
-	public void setTableItems() {
-		table.setItems(controller.patients);
+	public void setPatientsTableItems() {
+		tblPatients.setItems(controller.patients);
 	}
 	
 	private void tableItemSelected() {
 		try {
-			Patient pat = table.getSelectionModel().getSelectedItem();
+			Patient pat = tblPatients.getSelectionModel().getSelectedItem();
 			fldId.setText(pat.getIdProperty().get());
 			fldId.setDisable(true);
 			fldName.setText(pat.getFirstName());
@@ -177,33 +198,9 @@ public class PatientsScreen extends Pane {
 		return pane;
 	}
 
-	public void go() {
-		controller = MainScreen.getInstance().getController();
-		pane = new VBox(10);
-		pane.getChildren().clear();
-		pane.setPadding(new Insets(20));
-
-		// Title
-		title = new MyTitle("Patients");
-		
-		//Table
-		tblPatients = createTable();
-		
-		setupFields();
-		setupButtons();
-		setButtonHandlers();
-		setFieldHandlers();
-		updateRemovePatientButton();
-		updateClearButton();
-		
-		pane.getChildren().addAll(title, tblPatients, personalFields, buttons);
-		VBox.setVgrow(tblPatients, Priority.ALWAYS);
-		pane.setStyle("-fx-background-color: #DDEEFF");
-	}
-
 	private void removePatient() {
 		try {
-			Patient selectedPatient = table.getSelectionModel().getSelectedItem();
+			Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
 
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Dental Surgery");
@@ -227,7 +224,7 @@ public class PatientsScreen extends Pane {
 		
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
-			    table.getItems().remove(selectedPatient);
+				tblPatients.getItems().remove(selectedPatient);
 			    controller.unsavedChanges();
 				System.out.println("Patient removed");
 
@@ -342,7 +339,7 @@ public class PatientsScreen extends Pane {
 
 	private void updatePatient() {
 		try {
-			Patient selectedPatient = table.getSelectionModel().getSelectedItem();
+			Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
 			
 			String name = fldName.getText();
 			String lastName = fldLastName.getText();
@@ -365,14 +362,14 @@ public class PatientsScreen extends Pane {
 		}
 	}
 	protected void refreshTable() {
-		table.getColumns().get(0).setVisible(false);
-		table.getColumns().get(0).setVisible(true);
+		tblPatients.getColumns().get(0).setVisible(false);
+		tblPatients.getColumns().get(0).setVisible(true);
 	}
 
 	private void updateRemovePatientButton() {
 		Patient pat = null;
 		try {
-			pat = table.getSelectionModel().getSelectedItem();
+			pat = tblPatients.getSelectionModel().getSelectedItem();
 		} catch (Exception e) {
 			
 		}

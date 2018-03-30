@@ -17,19 +17,23 @@ public class Procedure implements Serializable {
 		this.setName(name);
 		this.setDescription(description);
 		this.setPrice(price);
+		this.setId(++_id);
 	}
 	
 	public int getId() { return id; }
 	public StringProperty getIdProperty() { return new SimpleStringProperty(Integer.toString(id)); }
-	public void setId(int _id2) { this.id = _id2; } 
+	public void setId(int id) { this.id = id; } 
 	public static void setMaxId(int i) { _id = i; }
 
+	public StringProperty getNameProperty() { return new SimpleStringProperty(name); }
 	public String getName() { return name; }
 	public void setName(String name) { this.name = name;	}
 
+	public StringProperty getDescriptionProperty() { return new SimpleStringProperty(description); }
 	public String getDescription() { return description; }
 	public void setDescription(String description) { this.description = description;	}
 
+	public StringProperty getPriceProperty() { return new SimpleStringProperty(Double.toString(price)); }
 	public double getPrice() { return price;	}
 	public void setPrice(double price) { this.price = price;	};	
 }

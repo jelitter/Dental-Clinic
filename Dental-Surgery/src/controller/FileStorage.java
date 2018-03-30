@@ -16,7 +16,6 @@ public class FileStorage {
 			out.writeObject(o);
 			out.close();
 			fileOut.close();
-			System.out.println("  Data saved to: "+filename);
 		} catch (IOException i) {
 			storeObject(i,"IOException.ser");
 		}
