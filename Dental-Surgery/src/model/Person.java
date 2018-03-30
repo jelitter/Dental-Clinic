@@ -73,7 +73,7 @@ public class Person implements Serializable {
 	}
 
 	public String toString() {
-		return String.format("Name: %s %s\nEmail: %s\nAddress: %s\nPhone: %s\n", this.getFirstName(),
+		return String.format("Name: \t%s %s\nEmail: \t%s\nAddress: \t%s\nPhone: \t%s\n", this.getFirstName(),
 				this.getLastName(), this.getEmail(), this.getAddress(), this.getPhoneNumber());
 	}
 

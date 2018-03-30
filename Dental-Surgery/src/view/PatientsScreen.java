@@ -38,8 +38,7 @@ public class PatientsScreen extends Pane {
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
 
-//	private ObservableList<Patient> patientsData;
-//	ClinicController controller;
+
 //	private FilteredList<Patient> filteredData;
 
 	public static PatientsScreen getInstance() {
@@ -266,6 +265,12 @@ public class PatientsScreen extends Pane {
 		btnUpdatePatient.setPadding(new Insets(10, 20, 10, 20));
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
+		
+		btnSearchPatient.setMinWidth(120);
+		btnUpdatePatient.setMinWidth(120);
+		btnRemovePatient.setMinWidth(120);
+		btnAddPatient.setMinWidth(120);
+		btnClear.setMinWidth(120);
 		
 		btnSearchPatient.setPrefWidth(USE_COMPUTED_SIZE);
 		btnUpdatePatient.setPrefWidth(USE_COMPUTED_SIZE);

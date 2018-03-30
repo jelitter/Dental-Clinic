@@ -1,9 +1,11 @@
 package view;
 
 import java.util.Optional;
-
 import application.Main;
 import controller.ClinicController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -22,7 +24,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Patient;
 import model.Procedure;
 import view.elements.MyTitle;
 
@@ -42,6 +43,8 @@ public class MaintenanceScreen extends Pane {
 	
 	private VBox pane;
 	private MyTitle title;
+
+	private FilteredList<Procedure> filteredData;
 
 	public MaintenanceScreen() {
 		instance = this;
@@ -175,6 +178,16 @@ public class MaintenanceScreen extends Pane {
 		fldName.setOnKeyReleased(e -> updateClearButton());
 		fldDescription.setOnKeyReleased(e -> updateClearButton());
 		fldPrice.setOnKeyReleased(e -> updateClearButton());
+		
+		// Listener to force Price values to be numeric
+		fldPrice.textProperty().addListener(new ChangeListener<String>() {
+	        @Override
+	        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+	            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+	            	fldPrice.setText(oldValue);
+	            }
+	        }
+	    });
 	}
 	
 	private void clearFields() {
@@ -211,6 +224,11 @@ private void updateClearButton() {
 		btnAddProcedure.setPadding(new Insets(10, 20, 10, 20));
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
 		
+		btnRemoveProcedure.setMinWidth(120);
+		btnUpdateProcedure.setMinWidth(120);
+		btnAddProcedure.setMinWidth(120);
+		btnClear.setMinWidth(120);
+		
 		btnRemoveProcedure.setPrefWidth(USE_COMPUTED_SIZE);
 		btnUpdateProcedure.setPrefWidth(USE_COMPUTED_SIZE);
 		btnAddProcedure.setPrefWidth(USE_COMPUTED_SIZE);
@@ -244,8 +262,10 @@ private void updateClearButton() {
 		fldPrice.setPromptText("Price *");
 		
 		fldId.prefWidthProperty().set(ID_WIDTH );
-		fldPrice.prefWidthProperty().set(100);
+		fldPrice.prefWidthProperty().set(120);
 		fldName.prefWidthProperty().set(180);
+		
+		fldPrice.setStyle("-fx-alignment: CENTER;");
 		
 		fields.getChildren().addAll(fldId, fldName, fldDescription, fldPrice);
 		HBox.setHgrow(fldDescription, Priority.ALWAYS);
@@ -290,20 +310,45 @@ private void updateClearButton() {
 		priceCol.setStyle("-fx-alignment: CENTER;");
 
 		setProcedureTableItems();
-		// setupDataFilter();
+//		setupDataFilter();
 
-		 tblProcedures.setOnMouseClicked(e ->tableItemSelected());
-		 tblProcedures.setOnKeyReleased(e -> {
-		 KeyCode key = e.getCode();
-		 if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) ||
-		 key.equals(KeyCode.PAGE_UP)
-		 || key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) ||
-		 key.equals(KeyCode.END)) {
-		 tableItemSelected();
-		 }
-		 });
+		tblProcedures.setOnMouseClicked(e -> tableItemSelected());
+		tblProcedures.setOnKeyReleased(e -> {
+			KeyCode key = e.getCode();
+			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
+					|| key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) || key.equals(KeyCode.END)) {
+				tableItemSelected();
+			}
+		});
 
 	}
+	
+	private void setupDataFilter() {
+	// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+	filteredData = new FilteredList<Procedure>(controller.procedures, p -> true);
+	// 2. Set the filter Predicate whenever the filter changes.
+    fldName.textProperty().addListener((observable, oldValue, newValue) -> {
+        filteredData.setPredicate(proc -> {
+            // If filter text is empty, display all persons.
+            if (newValue == null || newValue.isEmpty()) {
+                return true;
+            }
+
+            // Compare first name and last name of every person with filter text.
+            String lowerCaseFilter = newValue.toLowerCase();
+
+            if (proc.getNameProperty().get().toLowerCase().contains(lowerCaseFilter)) {
+                return true; // Filter matches first name.
+            } else if (proc.getDescriptionProperty().get().toLowerCase().contains(lowerCaseFilter)) {
+                return true; // Filter matches last name.
+            }
+            return false; // Does not match.
+        });
+    });
+    
+    // 3. Add sorted (and filtered) data to the table.
+    tblProcedures.setItems(filteredData);
+}
 
 	public void setProcedureTableItems() {
 		tblProcedures.setItems(controller.procedures);
@@ -316,7 +361,7 @@ private void updateClearButton() {
 			fldId.setDisable(true);
 			fldName.setText(proc.getName());
 			fldDescription.setText(proc.getDescription());
-			fldPrice.setText(Double.toString(proc.getPrice()));
+			fldPrice.setText(proc.getPriceProperty().get());
 			
 			btnRemoveProcedure.setDisable(proc == null);
 			btnUpdateProcedure.setDisable(proc == null);

@@ -3,7 +3,6 @@ package controller;
 import model.Clinic;
 import model.Patient;
 import model.Procedure;
-import model.ProcedureList;
 import view.MainScreen;
 
 import java.io.BufferedReader;
@@ -11,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleBooleanProperty;
@@ -129,7 +129,7 @@ public class ClinicController {
 	private ArrayList<Procedure> getProcedureListFromCSV() {
 		ArrayList<Procedure> procList = new ArrayList<Procedure>();
 		String csvFile = "src/data/procedures.csv";
-		String fieldDelimiter = ",";
+		String fieldDelimiter = "\\|";
 
 		BufferedReader br;
 
@@ -137,9 +137,12 @@ public class ClinicController {
 			br = new BufferedReader(new FileReader(csvFile));
 			String line;
 			while ((line = br.readLine()) != null) {
-//				System.out.println("Line: " + line);
+				System.out.println("Line:\n" + line);
 				String[] fields = line.split(fieldDelimiter, -1);
-				Procedure proc = new Procedure(fields[0], fields[1], Double.parseDouble(fields[2]));
+				
+				System.out.println(Arrays.toString(fields));
+				
+				Procedure proc = new Procedure(fields[0].trim(), fields[1].trim(), Double.parseDouble(fields[2].trim()));
 				procList.add(proc);
 			}
 		} catch (FileNotFoundException ex) {
@@ -165,8 +168,11 @@ public class ClinicController {
 	 */
 	
 	public void saveClinicToSerial() {
-		ArrayList<Patient> list = ObservableListToArrayList(patients);
-		clinic.setPatientList(list);
+		ArrayList<Patient> patientList = ObservableListToArrayList(patients);
+		ArrayList<Procedure> procedureList = ObservableListToArrayList(procedures);
+		
+		clinic.setPatientList(patientList);
+		clinic.setProcedureList(procedureList);
 		
 		try {
 			FileStorage.storeObject(this.clinic, CLINICFILENAME);
