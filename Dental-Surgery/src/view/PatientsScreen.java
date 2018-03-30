@@ -368,12 +368,7 @@ public class PatientsScreen extends Pane {
 	}
 
 	private void updateRemovePatientButton() {
-		Patient pat = null;
-		try {
-			pat = tblPatients.getSelectionModel().getSelectedItem();
-		} catch (Exception e) {
-			
-		}
+		Patient pat = tblPatients.getSelectionModel().getSelectedItem();
 		btnRemovePatient.setDisable(pat == null);
 		btnUpdatePatient.setDisable(pat == null);
 	}
