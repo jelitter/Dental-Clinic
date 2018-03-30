@@ -13,6 +13,7 @@ import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -90,6 +91,8 @@ public class MainScreen {
 		controller = new ClinicController();
 		root = new VBox(0);
 		scene = new Scene(root, WIDTH, HEIGHT);
+		
+		root.setStyle("-fx-background-color: WHITE");
 		
 		setupStage();
 		setupMenu();
@@ -169,6 +172,7 @@ public class MainScreen {
 		
 		Background bg = new Background(bgImage);
 		mainAreaLeft.setBackground(bg);
+		root.setBackground(bg);
 	}
 
 	private void setupStatusBar() {
@@ -331,10 +335,16 @@ public class MainScreen {
 	}
 
 	private void activatePane(VBox p, MyButton b) {
+			
 		activeButton.deActivate();
 		b.activate();
 		activeButton = b;
 		p.toFront();
+		
+		// Setting visible the active pane and invisible the rest
+		for (Node n : p.getParent().getChildrenUnmodifiable()) {
+			n.setVisible(n.equals(p));
+		}
 	}
 
 	private void setEventHandlers() {

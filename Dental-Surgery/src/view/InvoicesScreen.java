@@ -30,7 +30,7 @@ public class InvoicesScreen extends Pane {
 	public void go() {
 		pane = new VBox(10);
 		pane.setPadding(new Insets(20));
-		pane.setStyle("-fx-background-color: #DDEEFF");
+//		pane.setStyle("-fx-background-color: #DDEEFF");
 		title = new MyTitle("Invoices");
 		subtitle = new Label("This is for Invoice Management");
 		pane.getChildren().addAll(title, subtitle);
