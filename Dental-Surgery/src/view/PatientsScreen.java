@@ -1,14 +1,23 @@
 package view;
 
+import java.io.Serializable;
 import java.util.Optional;
+import java.util.function.Predicate;
+
 import application.Main;
 import controller.ClinicController;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -20,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Patient;
 import view.elements.MyTitle;
@@ -32,11 +42,12 @@ public class PatientsScreen extends Pane {
 	
 	private MyTitle title;
 	private HBox buttons;
-	private Button btnSearchPatient, btnUpdatePatient, btnRemovePatient, btnAddPatient, btnClear;
+	private Button btnSearchPatient, btnEditPatient, btnRemovePatient, btnAddPatient, btnClear;
 	private Region spacing;
 	private HBox personalFields;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
+//	private FilteredList<Patient> filteredData;
 
 
 //	private FilteredList<Patient> filteredData;
@@ -63,10 +74,12 @@ public class PatientsScreen extends Pane {
 		// Title
 		title = new MyTitle("Patients");
 		
+
+		setupFields();
+
 		//Table
 		createPatientsTable();
 		
-		setupFields();
 		setupButtons();
 		setButtonHandlers();
 		setFieldHandlers();
@@ -97,6 +110,7 @@ public class PatientsScreen extends Pane {
 		fldAddress.clear();
 		fldPhoneNumber.clear();
 		updateClearButton();
+		btnEditPatient.setDisable(true);
 	}
 
 	private void createPatientsTable() {
@@ -133,9 +147,20 @@ public class PatientsScreen extends Pane {
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
 		setPatientsTableItems();
-//        setupDataFilter();
+        setupDataFilter();
 		
-		tblPatients.setOnMouseClicked(e ->tableItemSelected());
+//		tblPatients.setOnMouseClicked(e -> { 
+//			tableItemSelected();
+//		});
+		
+		tblPatients.setOnMouseClicked(e -> {
+			tableItemSelected();
+			if (e.getClickCount() == 2) {
+				editPatient();
+			}
+		});
+		
+		
 		tblPatients.setOnKeyReleased(e -> {
 			KeyCode key = e.getCode();
 			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
@@ -145,53 +170,66 @@ public class PatientsScreen extends Pane {
 		});
 	}
 
-//	private void setupDataFilter() {
-//		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-//		filteredData = new FilteredList<Patient>(patientsData, p -> true);
-//		// 2. Set the filter Predicate whenever the filter changes.
-//        fldName.textProperty().addListener((observable, oldValue, newValue) -> {
-//            filteredData.setPredicate(patient -> {
-//                // If filter text is empty, display all persons.
-//                if (newValue == null || newValue.isEmpty()) {
-//                    return true;
-//                }
+	private void setupDataFilter() {
+
+		ObjectProperty<Predicate<Patient>> firstNameFilter = new SimpleObjectProperty<>();
+        ObjectProperty<Predicate<Patient>> lastNameFilter = new SimpleObjectProperty<>();
+
+		firstNameFilter.bind(Bindings.createObjectBinding(
+				() -> patient -> patient.getFirstName().toLowerCase().contains(fldName.getText().toLowerCase()),
+				fldName.textProperty()));
+
+		lastNameFilter.bind(Bindings.createObjectBinding(
+				() -> patient -> patient.getLastName().toLowerCase().contains(fldLastName.getText().toLowerCase()),
+				fldLastName.textProperty()));
+
+        FilteredList<Patient> filteredItems = new FilteredList<Patient>(FXCollections.observableList(controller.patients));
+        tblPatients.setItems(filteredItems);
+
+        
+		filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
+                () -> firstNameFilter.get().and(lastNameFilter.get()), 
+                firstNameFilter, lastNameFilter));
+		
+		
+		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
+	
+//		filteredData = new FilteredList<Patient>(controller.patients, p -> true);
 //
-//                // Compare first name and last name of every person with filter text.
-//                String lowerCaseFilter = newValue.toLowerCase();
-//
-//                if (patient.getFirstName().get().toLowerCase().contains(lowerCaseFilter)) {
-//                    return true; // Filter matches first name.
-//                } else if (patient.getLastName().get().toLowerCase().contains(lowerCaseFilter)) {
-//                    return true; // Filter matches last name.
-//                }
-//                return false; // Does not match.
-//            });
-//        });
-//        
-//        // 3. Add sorted (and filtered) data to the table.
-//        table.setItems(filteredData);
-//	}
+//		fldName.textProperty().addListener((observable, oldValue, newValue) -> {
+//			filteredData.setPredicate(patient -> {
+//				if (newValue == null || newValue.isEmpty()) {
+//					return true;
+//				}
+//				return patient.getFirstName().toLowerCase().contains(newValue.toLowerCase()); // Filter matches first
+//			});
+//		});
+//		
+//		fldLastName.textProperty().addListener((observable, oldValue, newValue) -> {
+//			filteredData.setPredicate(patient -> {
+//				if (newValue == null || newValue.isEmpty()) {
+//					return true;
+//				}
+//				return patient.getLastName().toLowerCase().contains(newValue.toLowerCase()); // Filter matches first
+//			});
+//		});
+
+		// 3. Add sorted (and filtered) data to the table.
+//		tblPatients.setItems(filteredData);
+	}
 
 	public void setPatientsTableItems() {
 		tblPatients.setItems(controller.patients);
 	}
 	
 	private void tableItemSelected() {
-		try {
-			Patient pat = tblPatients.getSelectionModel().getSelectedItem();
-			fldId.setText(pat.getIdProperty().get());
-			fldId.setDisable(true);
-			fldName.setText(pat.getFirstName());
-			fldLastName.setText(pat.getLastName());
-			fldEmail.setText(pat.getEmail());
-			fldAddress.setText(pat.getAddress());
-			fldPhoneNumber.setText(pat.getPhoneNumber());
-			
-			btnRemovePatient.setDisable(pat == null);
-			btnUpdatePatient.setDisable(pat == null);
-			updateClearButton();
-		} catch (Exception ex) {};
+		Patient pat = tblPatients.getSelectionModel().getSelectedItem();
+
+		btnRemovePatient.setDisable(pat == null);
+		btnEditPatient.setDisable(pat == null);
+		updateClearButton();
 	}
+
 
 	public VBox getPane() {
 		return pane;
@@ -223,8 +261,12 @@ public class PatientsScreen extends Pane {
 		
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
-				tblPatients.getItems().remove(selectedPatient);
+//				tblPatients.getItems().remove(selectedPatient);
+				
+				controller.patients.removeAll(selectedPatient);
+				setPatientsTableItems();
 			    controller.unsavedChanges();
+//			    refreshTable();
 				System.out.println("Patient removed");
 
 			} else if (result.get() == no) {
@@ -232,13 +274,15 @@ public class PatientsScreen extends Pane {
 
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println(e);
 			btnRemovePatient.setDisable(true);
 		}
 	}
 	
 	private void setButtonHandlers() {
-		btnUpdatePatient.setOnMouseClicked(e -> updatePatient());
+//		btnUpdatePatient.setOnMouseClicked(e -> updatePatient());
+		
+		btnEditPatient.setOnMouseClicked(e -> editPatient() );
 		btnRemovePatient.setOnMouseClicked(e -> removePatient());
 		btnAddPatient.setOnMouseClicked(e -> addPatient());
 		btnClear.setOnMouseClicked(e -> clearFields());
@@ -252,35 +296,35 @@ public class PatientsScreen extends Pane {
 		fldAddress.setOnKeyReleased(e -> updateClearButton());
 		fldPhoneNumber.setOnKeyReleased(e -> updateClearButton());
 	}
- 	
+
 	private void setupButtons() {
 		btnSearchPatient = new Button("🔎  Search");
 		btnRemovePatient = new Button("➖  Remove");
-		btnUpdatePatient = new Button("⌨  Update");
+		btnEditPatient = new Button("⌨  Edit");
 		btnAddPatient = new Button("➕  Add");
 		btnClear = new Button("❌  Clear");
 		
 		btnSearchPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnRemovePatient.setPadding(new Insets(10, 20, 10, 20));
-		btnUpdatePatient.setPadding(new Insets(10, 20, 10, 20));
+		btnEditPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnAddPatient.setPadding(new Insets(10, 20, 10, 20));
 		btnClear.setPadding(new Insets(10, 20, 10, 20));
 		
 		btnSearchPatient.setMinWidth(120);
-		btnUpdatePatient.setMinWidth(120);
+		btnEditPatient.setMinWidth(120);
 		btnRemovePatient.setMinWidth(120);
 		btnAddPatient.setMinWidth(120);
 		btnClear.setMinWidth(120);
 		
 		btnSearchPatient.setPrefWidth(USE_COMPUTED_SIZE);
-		btnUpdatePatient.setPrefWidth(USE_COMPUTED_SIZE);
+		btnEditPatient.setPrefWidth(USE_COMPUTED_SIZE);
 		btnRemovePatient.setPrefWidth(USE_COMPUTED_SIZE);
 		btnAddPatient.setPrefWidth(USE_COMPUTED_SIZE);
 		btnClear.setPrefWidth(USE_COMPUTED_SIZE);
 
 		btnSearchPatient.setStyle("-fx-base: DEEPSKYBLUE;");
 		btnRemovePatient.setStyle("-fx-base: LIGHTCORAL;");
-		btnUpdatePatient.setStyle("-fx-base: LIGHTGREEN;");
+		btnEditPatient.setStyle("-fx-base: LIGHTGREEN;");
 		btnAddPatient.setStyle("-fx-base: LIMEGREEN;");
 		btnClear.setStyle("-fx-base: LIGHTGOLDENRODYELLOW;");
 		
@@ -291,7 +335,7 @@ public class PatientsScreen extends Pane {
 		buttons.prefWidthProperty().bind(pane.widthProperty());
 		
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
-		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnUpdatePatient, btnAddPatient, btnSearchPatient);
+		buttons.getChildren().addAll(btnClear, spacing, btnRemovePatient, btnEditPatient, btnAddPatient, btnSearchPatient);
 	}
 
 	private void setupFields() {
@@ -306,13 +350,13 @@ public class PatientsScreen extends Pane {
 		fldPhoneNumber = new TextField("");
 		personalFields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
 		
-		fldId.prefWidthProperty().set(60);
-				
-		fldName.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.15));
-		fldLastName.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.15));
-		fldEmail.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.2));
-//		fldAddress.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.3));
-		fldPhoneNumber.prefWidthProperty().bind(personalFields.widthProperty().subtract(fldId.getWidth()).multiply(0.2).subtract(16));
+		fldId.setMinWidth(50);
+		fldId.setPrefWidth(50);
+		fldId.setMaxWidth(50);
+		
+		fldPhoneNumber.setMinWidth(130);
+		fldPhoneNumber.setPrefWidth(130);
+		fldPhoneNumber.setMaxWidth(130);
 		
 		fldId.setPromptText("Id");
 		fldName.setPromptText("First Name *");
@@ -321,46 +365,52 @@ public class PatientsScreen extends Pane {
 		fldAddress.setPromptText("Address");
 		fldPhoneNumber.setPromptText("Phone No.");
 
+		HBox.setHgrow(fldName, Priority.ALWAYS);
+		HBox.setHgrow(fldLastName, Priority.ALWAYS);
+		HBox.setHgrow(fldEmail, Priority.ALWAYS);
 		HBox.setHgrow(fldAddress, Priority.ALWAYS);
 	}
 
 	
 	private void updateClearButton() {
-		
-		Boolean updateIdField = fldName.getText().trim().isEmpty()
-				&& fldLastName.getText().trim().isEmpty() && fldEmail.getText().trim().isEmpty()
-				&& fldAddress.getText().trim().isEmpty() && fldPhoneNumber.getText().trim().isEmpty();
+
+		Boolean updateIdField = fldName.getText().trim().isEmpty() && fldLastName.getText().trim().isEmpty()
+				&& fldEmail.getText().trim().isEmpty() && fldAddress.getText().trim().isEmpty()
+				&& fldPhoneNumber.getText().trim().isEmpty();
 		fldId.setDisable(!updateIdField);
-		
+
 		Boolean updateAddButton = fldName.getText().trim().isEmpty() || fldLastName.getText().trim().isEmpty();
 		btnAddPatient.setDisable(updateAddButton);
-		
+
 		Boolean updateClearButton = fldId.getText().trim().isEmpty() && updateIdField;
-	
+
 		btnClear.setDisable(updateClearButton);
 		btnClear.setVisible(!updateClearButton);
 		btnSearchPatient.setDisable(updateClearButton);
 	}
 
-	private void updatePatient() {
+	private void editPatient() {
 		try {
 			Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
 			
-			String name = fldName.getText();
-			String lastName = fldLastName.getText();
-			String 	email = fldEmail.getText();
-			String address = fldAddress.getText();
-			String phone = fldPhoneNumber.getText();
 			
-			selectedPatient.setFirstName(name);
-			selectedPatient.setLastName(lastName);
-			selectedPatient.setEmail(email);
-			selectedPatient.setAddress(address);
-			selectedPatient.setPhoneNumber(phone);
+			EditPatientScreen editPatient = new EditPatientScreen(selectedPatient);
+			editPatient.initOwner(MainScreen.getInstance().getStage());
+			editPatient.initModality(Modality.APPLICATION_MODAL); 
+			editPatient.showAndWait();
 			
-			refreshTable();
-			clearFields();
-			controller.unsavedChanges();
+			if (editPatient.wasUpdated()) {
+
+				refreshTable();
+				clearFields();
+				controller.unsavedChanges();
+				System.out.println("Changes.");
+
+			} else {
+				System.out.println("No changes.");
+
+			}
+			
 			
 		} catch (Exception e) {
 			System.out.println("Error updating patient - " + e.getMessage());
@@ -375,6 +425,6 @@ public class PatientsScreen extends Pane {
 	private void updateRemovePatientButton() {
 		Patient pat = tblPatients.getSelectionModel().getSelectedItem();
 		btnRemovePatient.setDisable(pat == null);
-		btnUpdatePatient.setDisable(pat == null);
+		btnEditPatient.setDisable(pat == null);
 	}
 }

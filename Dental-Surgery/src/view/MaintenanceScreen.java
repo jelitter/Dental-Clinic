@@ -23,6 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Procedure;
 import view.elements.MyTitle;
@@ -261,9 +262,17 @@ private void updateClearButton() {
 		fldDescription.setPromptText("Description");
 		fldPrice.setPromptText("Price *");
 		
+		fldId.minWidthProperty().set(ID_WIDTH );
 		fldId.prefWidthProperty().set(ID_WIDTH );
+		fldId.maxWidthProperty().set(ID_WIDTH );
+		
+		fldPrice.minWidthProperty().set(120);
 		fldPrice.prefWidthProperty().set(120);
-		fldName.prefWidthProperty().set(180);
+		fldPrice.maxWidthProperty().set(120);
+		
+		fldName.minWidthProperty().set(190);
+		fldName.prefWidthProperty().set(190);
+		fldName.maxWidthProperty().set(190);
 		
 		fldPrice.setStyle("-fx-alignment: CENTER;");
 		
@@ -294,13 +303,13 @@ private void updateClearButton() {
 		// columns the same width
 		tblProcedures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-		idCol.maxWidthProperty().set(ID_WIDTH);
 		idCol.minWidthProperty().set(ID_WIDTH);
 		idCol.prefWidthProperty().set(ID_WIDTH);
+		idCol.maxWidthProperty().set(ID_WIDTH);
 
-		priceCol.maxWidthProperty().set(100);
 		priceCol.minWidthProperty().set(100);
 		priceCol.prefWidthProperty().set(100);
+		priceCol.maxWidthProperty().set(100);
 
 		nameCol.minWidthProperty().set(200);
 		nameCol.prefWidthProperty().set(200);
