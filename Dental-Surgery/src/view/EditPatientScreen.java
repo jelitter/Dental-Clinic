@@ -78,7 +78,7 @@ public class EditPatientScreen extends Stage {
 		Pane separator = new Pane();
 		
 		HBox buttons = new HBox(10);
-		btnSave = new Button("Save");
+		btnSave = new Button("Apply");
 		btnCancel = new Button("Cancel");
 		buttons.getChildren().addAll(btnSave,btnCancel);
 		HBox.setHgrow(btnSave, Priority.ALWAYS);
