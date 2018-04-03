@@ -1,6 +1,8 @@
 package view;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Observable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -10,7 +12,9 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -130,10 +134,13 @@ public class PatientsScreen extends Pane {
         emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmailProperty());
         addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
         phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumberProperty());
-        tblPatients.getColumns().addAll(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol);
+        
+        
+        tblPatients.getColumns().addAll(Arrays.asList(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol));
 
-        // This hide the horizontal scrollbar, but has the side-efect of making all columns the same width
+        // Hiding horizontal scroll bar
         tblPatients.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
         
         idCol.maxWidthProperty().set(50);
         idCol.minWidthProperty().set(50);
@@ -146,12 +153,8 @@ public class PatientsScreen extends Pane {
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
-		setPatientsTableItems();
         setupDataFilter();
 		
-//		tblPatients.setOnMouseClicked(e -> { 
-//			tableItemSelected();
-//		});
 		
 		tblPatients.setOnMouseClicked(e -> {
 			tableItemSelected();
@@ -160,12 +163,13 @@ public class PatientsScreen extends Pane {
 			}
 		});
 		
-		
 		tblPatients.setOnKeyReleased(e -> {
 			KeyCode key = e.getCode();
 			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
 					|| key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) || key.equals(KeyCode.END)) {
 				tableItemSelected();
+			} else if (key.equals(KeyCode.ENTER)) {
+				editPatient();
 			}
 		});
 	}
@@ -174,6 +178,9 @@ public class PatientsScreen extends Pane {
 
 		ObjectProperty<Predicate<Patient>> firstNameFilter = new SimpleObjectProperty<>();
         ObjectProperty<Predicate<Patient>> lastNameFilter = new SimpleObjectProperty<>();
+        ObjectProperty<Predicate<Patient>> emailFilter = new SimpleObjectProperty<>();
+        ObjectProperty<Predicate<Patient>> addressFilter = new SimpleObjectProperty<>();
+        ObjectProperty<Predicate<Patient>> phoneFilter = new SimpleObjectProperty<>();
 
 		firstNameFilter.bind(Bindings.createObjectBinding(
 				() -> patient -> patient.getFirstName().toLowerCase().contains(fldName.getText().toLowerCase()),
@@ -182,40 +189,34 @@ public class PatientsScreen extends Pane {
 		lastNameFilter.bind(Bindings.createObjectBinding(
 				() -> patient -> patient.getLastName().toLowerCase().contains(fldLastName.getText().toLowerCase()),
 				fldLastName.textProperty()));
+		
+		emailFilter.bind(Bindings.createObjectBinding(
+				() -> patient -> patient.getEmail().toLowerCase().contains(fldEmail.getText().toLowerCase()),
+				fldEmail.textProperty()));
+		
+		addressFilter.bind(Bindings.createObjectBinding(
+				() -> patient -> patient.getAddress().toLowerCase().contains(fldAddress.getText().toLowerCase()),
+				fldAddress.textProperty()));
+		
+		phoneFilter.bind(Bindings.createObjectBinding(
+				() -> patient -> patient.getPhoneNumber().toLowerCase().contains(fldPhoneNumber.getText().toLowerCase()),
+				fldPhoneNumber.textProperty()));
 
+		// As FilteredLists are unmodifiable, cannot be sorted directly.
+		// https://stackoverflow.com/questions/17958337/javafx-tableview-with-filteredlist-jdk-8-does-not-sort-by-column
+		// We wrap the filtered list in a sorted list, so the sorting when clicking headers works again.
         FilteredList<Patient> filteredItems = new FilteredList<Patient>(FXCollections.observableList(controller.patients));
-        tblPatients.setItems(filteredItems);
+        SortedList<Patient> filteredSortedItems = new SortedList<>(filteredItems);
+        tblPatients.setItems(filteredSortedItems);
+        filteredSortedItems.comparatorProperty().bind(tblPatients.comparatorProperty());
 
         
-		filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
-                () -> firstNameFilter.get().and(lastNameFilter.get()), 
-                firstNameFilter, lastNameFilter));
-		
-		
-		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-	
-//		filteredData = new FilteredList<Patient>(controller.patients, p -> true);
-//
-//		fldName.textProperty().addListener((observable, oldValue, newValue) -> {
-//			filteredData.setPredicate(patient -> {
-//				if (newValue == null || newValue.isEmpty()) {
-//					return true;
-//				}
-//				return patient.getFirstName().toLowerCase().contains(newValue.toLowerCase()); // Filter matches first
-//			});
-//		});
-//		
-//		fldLastName.textProperty().addListener((observable, oldValue, newValue) -> {
-//			filteredData.setPredicate(patient -> {
-//				if (newValue == null || newValue.isEmpty()) {
-//					return true;
-//				}
-//				return patient.getLastName().toLowerCase().contains(newValue.toLowerCase()); // Filter matches first
-//			});
-//		});
+		filteredItems.predicateProperty()
+				.bind(Bindings.createObjectBinding(
+						() -> firstNameFilter.get().and(lastNameFilter.get()).and(emailFilter.get())
+								.and(addressFilter.get()).and(phoneFilter.get()),
+						firstNameFilter, lastNameFilter, emailFilter, addressFilter, phoneFilter));
 
-		// 3. Add sorted (and filtered) data to the table.
-//		tblPatients.setItems(filteredData);
 	}
 
 	public void setPatientsTableItems() {
@@ -225,6 +226,10 @@ public class PatientsScreen extends Pane {
 	private void tableItemSelected() {
 		Patient pat = tblPatients.getSelectionModel().getSelectedItem();
 
+		if (pat != null) {
+			MainScreen.getInstance().setStatusText("Double click, <ENTER> or Edit button to edit Patient Id " + pat.getId());
+		}
+		
 		btnRemovePatient.setDisable(pat == null);
 		btnEditPatient.setDisable(pat == null);
 		updateClearButton();

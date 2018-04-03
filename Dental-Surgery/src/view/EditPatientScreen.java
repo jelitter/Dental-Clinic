@@ -1,37 +1,24 @@
 package view;
 
-import controller.ClinicController;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.Patient;
-import view.elements.MyButton;
 import view.elements.MyTitle;
 
 public class EditPatientScreen extends Stage {
 	
 	private final static double WIDTH = 600;
-	private final static double HEIGHT = 500;
+	private final static double HEIGHT = 400;
 	
 	private Button btnSave,btnCancel;
 	private TextField fldFirstName, fldLastName, fldEmail, fldPhone, fldAddress;
@@ -51,21 +38,10 @@ public class EditPatientScreen extends Stage {
 		root.setPadding(new Insets(20));
 		root.setStyle(
 				"-fx-background-image: url(" + "'/assets/background.png'" + "); " + "-fx-background-size: cover;");
-		root.prefWidthProperty().bind(scene.widthProperty());
-		root.prefHeightProperty().bind(scene.heightProperty());
-
-		
-//		Timeline tl = new Timeline(new KeyFrame(Duration.millis(33), ae -> {
-//			root.getBackground().setRotate(root.getRotate() + 0.1);
-//		}));
-//		tl.setCycleCount(Timeline.INDEFINITE);
-//		tl.play();
-		
 		
 		MyTitle title = new MyTitle("Edit Patient");
 		HBox fullName = new HBox(10);
 		HBox contact = new HBox(10);
-		
 		
 		fldFirstName = new TextField(patient.getFirstName());
 		fldFirstName.setPromptText("First Name");
@@ -79,7 +55,6 @@ public class EditPatientScreen extends Stage {
 		HBox.setHgrow(firstName, Priority.ALWAYS);
 		HBox.setHgrow(lastName, Priority.ALWAYS);
 		fullName.getChildren().addAll(firstName, lastName);
-		
 		
 		fldEmail = new TextField(patient.getEmail());
 		fldEmail.setPromptText("Email");
@@ -99,9 +74,8 @@ public class EditPatientScreen extends Stage {
 		fldPhone.setPromptText("Phone no.");
 		TitledPane address= new TitledPane("Address", fldAddress);
 		address.setCollapsible(false);
-
 			
-		Group separator = new Group();
+		Pane separator = new Pane();
 		
 		HBox buttons = new HBox(10);
 		btnSave = new Button("Save");
@@ -122,23 +96,17 @@ public class EditPatientScreen extends Stage {
 		
 		getIcons().add(new Image("/assets/icon.png"));
 		
-//		double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
-//		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-		
 		double mainWidth = MainScreen.getInstance().getStage().getWidth();
 		double mainX = MainScreen.getInstance().getStage().getX();
 		double mainHeight = MainScreen.getInstance().getStage().getHeight();
 		double mainY = MainScreen.getInstance().getStage().getY();
-		
-		
-		setButtonHandlers(patient);
 		
 		setX(mainX + mainWidth / 2 - WIDTH / 2);
 		setY(mainY + mainHeight / 2 - HEIGHT / 2);
 		setTitle("Edit Patient");
 		setScene(scene);
 		
-
+		setButtonHandlers(patient);
 	}
 
 
