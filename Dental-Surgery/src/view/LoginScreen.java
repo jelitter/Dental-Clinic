@@ -71,7 +71,7 @@ public class LoginScreen {
 		btnExit = new MyButton("Exit", "Warning");
 		
 		btnLogin.setIcon("login.png");
-		btnExit.setIcon("exit.png");
+		btnExit.setIcon("quit.png");
 
 		fldUserName.setPromptText("User name");
 		fldPassword.setPromptText("Password");
