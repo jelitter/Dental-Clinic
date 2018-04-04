@@ -1,10 +1,20 @@
 package view;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import controller.ClinicController;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -12,26 +22,33 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Invoice;
 import model.Patient;
+import model.Payment;
+import model.Procedure;
 import view.elements.MyTitle;
 
 public class EditPatientScreen extends Stage {
 	
 	private final static double WIDTH = 600;
-	private final static double HEIGHT = 400;
+	private final static double HEIGHT = 600;
 	
+	private ClinicController controller;
 	private Button btnSave,btnCancel;
+	private Pane patientDetails;
 	private TextField fldFirstName, fldLastName, fldEmail, fldPhone, fldAddress;
 	private boolean updated;
 
 	public EditPatientScreen(Patient patient) {
 		
+		controller = MainScreen.getInstance().getController();
 		updated = false;
 		
-		setResizable(false);
+//		setResizable(false);
 		setWidth(WIDTH);
-		setHeight(HEIGHT);
+		setMinHeight(HEIGHT);
 		
 		VBox root = new VBox(10);
 		Scene scene = new Scene(root, WIDTH, HEIGHT);
@@ -79,7 +96,8 @@ public class EditPatientScreen extends Stage {
 		TitledPane address= new TitledPane("Address", fldAddress);
 		address.setCollapsible(false);
 			
-		Pane separator = new Pane();
+		Pane sep1 = new Pane();
+		Pane sep2= new Pane();
 		
 		HBox buttons = new HBox(10);
 		btnSave = new Button("Apply");
@@ -94,9 +112,13 @@ public class EditPatientScreen extends Stage {
 		btnSave.setStyle("-fx-base: LIGHTGREEN;");
 		btnCancel.setStyle("-fx-base: LIGHTCORAL;");
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
+
+		patientDetails = getPatientDetails(patient);
 		
-		root.getChildren().addAll(title, fullName, contact, address, separator, buttons);
-		VBox.setVgrow(separator, Priority.ALWAYS);
+		
+		root.getChildren().addAll(title, fullName, contact, address, sep1, patientDetails, sep2, buttons);
+		VBox.setVgrow(sep1, Priority.ALWAYS);
+		VBox.setVgrow(sep2, Priority.ALWAYS);
 		
 		getIcons().add(new Image("/assets/icon.png"));
 		
@@ -111,6 +133,38 @@ public class EditPatientScreen extends Stage {
 		setScene(scene);
 		
 		setButtonHandlers(patient);
+	}
+
+
+	private Pane getPatientDetails(Patient patient) {
+		HBox details = new HBox(10);
+		
+		VBox details1 = new VBox(10);
+		Text invTitle = new Text("Invoices");
+		TableView<Invoice> invoices = new TableView<>();
+		
+		details1.getChildren().addAll(invTitle, invoices);
+		
+		VBox details2 = new VBox(10);
+		
+		Text payTitle = new Text("Payments");
+		TableView<Payment> payments = new TableView<>();
+		
+		Text procTitle = new Text("Procedures");
+		TableView<Procedure> procedures = new TableView<>();
+		
+		details2.getChildren().addAll(payTitle, payments, procTitle, procedures);
+		
+		invoices.setItems(FXCollections.observableArrayList(patient.getInvoices()));
+//		payments.setItems(FXCollections.observableArrayList(invoices.getSelectionModel().getSelectedItem().getPayments()));
+		
+		
+		details.getChildren().addAll(details1, details2);
+		
+		HBox.setHgrow(details1, Priority.ALWAYS);
+		HBox.setHgrow(details2, Priority.ALWAYS);
+		
+		return details;
 	}
 
 

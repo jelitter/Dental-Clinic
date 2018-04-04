@@ -2,9 +2,11 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Node;
 
 public class Patient extends Person implements Serializable {
 	
@@ -33,7 +35,6 @@ public class Patient extends Person implements Serializable {
 	public ArrayList<Invoice> getInvoices() { return invoices; }
 	public void setInvoices(ArrayList<Invoice> invoices) { this.invoices = invoices; 	}
 	public void addInvoice(Invoice invoice) { this.invoices.add(invoice); }
-	
 	
 
 }
