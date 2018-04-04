@@ -1,43 +1,41 @@
 package view;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import controller.ClinicController;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Invoice;
 import model.Patient;
 import model.Payment;
 import model.Procedure;
+import view.elements.MiniButton;
 import view.elements.MyTitle;
 
 public class EditPatientScreen extends Stage {
 	
-	private final static double WIDTH = 600;
-	private final static double HEIGHT = 600;
+	private final static double WIDTH = 700;
+	private final static double HEIGHT = 700;
 	
 	private ClinicController controller;
 	private Button btnSave,btnCancel;
-	private Pane patientDetails;
+	private HBox patientDetails;
 	private TextField fldFirstName, fldLastName, fldEmail, fldPhone, fldAddress;
 	private boolean updated;
 
@@ -47,7 +45,7 @@ public class EditPatientScreen extends Stage {
 		updated = false;
 		
 //		setResizable(false);
-		setWidth(WIDTH);
+		setMinWidth(WIDTH);
 		setMinHeight(HEIGHT);
 		
 		VBox root = new VBox(10);
@@ -96,9 +94,7 @@ public class EditPatientScreen extends Stage {
 		TitledPane address= new TitledPane("Address", fldAddress);
 		address.setCollapsible(false);
 			
-		Pane sep1 = new Pane();
-		Pane sep2= new Pane();
-		
+
 		HBox buttons = new HBox(10);
 		btnSave = new Button("Apply");
 		btnCancel = new Button("Cancel");
@@ -116,9 +112,8 @@ public class EditPatientScreen extends Stage {
 		patientDetails = getPatientDetails(patient);
 		
 		
-		root.getChildren().addAll(title, fullName, contact, address, sep1, patientDetails, sep2, buttons);
-		VBox.setVgrow(sep1, Priority.ALWAYS);
-		VBox.setVgrow(sep2, Priority.ALWAYS);
+		root.getChildren().addAll(title, fullName, contact, address, patientDetails, buttons);
+		VBox.setVgrow(patientDetails, Priority.ALWAYS);
 		
 		getIcons().add(new Image("/assets/icon.png"));
 		
@@ -136,35 +131,163 @@ public class EditPatientScreen extends Stage {
 	}
 
 
-	private Pane getPatientDetails(Patient patient) {
+	private HBox getPatientDetails(Patient patient) {
 		HBox details = new HBox(10);
 		
-		VBox details1 = new VBox(10);
+		VBox details1 = new VBox(0);
+		
 		Text invTitle = new Text("Invoices");
+		invTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 		TableView<Invoice> invoices = new TableView<>();
+		invoices.setPlaceholder(new Label("This patient has no invoices"));
+		setInvoicesTableColumns(invoices);
+		invoices.setItems(patient.InvoicesProperty());
 		
-		details1.getChildren().addAll(invTitle, invoices);
+		HBox invoicesButtons = new HBox(0);
+		MiniButton btnRemoveInvoice = new MiniButton("Remove");
+		MiniButton btnEditInvoice = new MiniButton("Edit");
+		MiniButton btnAddInvoice = new MiniButton("Add");
+		HBox.setHgrow(btnRemoveInvoice, Priority.ALWAYS);
+		HBox.setHgrow(btnEditInvoice, Priority.ALWAYS);
+		HBox.setHgrow(btnAddInvoice, Priority.ALWAYS);
+		btnRemoveInvoice.setMaxWidth(Double.MAX_VALUE);
+		btnEditInvoice.setMaxWidth(Double.MAX_VALUE);
+		btnAddInvoice.setMaxWidth(Double.MAX_VALUE);
+		invoicesButtons.getChildren().addAll(btnRemoveInvoice, btnEditInvoice, btnAddInvoice);
+		btnRemoveInvoice.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
+		btnEditInvoice.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
+		btnRemoveInvoice.visibleProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNotNull());
+		btnEditInvoice.visibleProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNotNull());
 		
-		VBox details2 = new VBox(10);
+		details1.getChildren().addAll(invTitle, invoices, invoicesButtons);
+		
+		
+		VBox details2 = new VBox(0);
 		
 		Text payTitle = new Text("Payments");
+		payTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 		TableView<Payment> payments = new TableView<>();
+		payments.setPlaceholder(new Label("Select an invoice"));
+		setPaymentsTableColumns(payments);
+		
+		HBox paymentsButtons = new HBox(0);
+		MiniButton btnRemovePayment = new MiniButton("Remove");
+		MiniButton btnEditPayment = new MiniButton("Edit");
+		MiniButton btnAddPayment = new MiniButton("Add");
+		HBox.setHgrow(btnRemovePayment, Priority.ALWAYS);
+		HBox.setHgrow(btnEditPayment, Priority.ALWAYS);
+		HBox.setHgrow(btnAddPayment, Priority.ALWAYS);
+		btnRemovePayment.setMaxWidth(Double.MAX_VALUE);
+		btnEditPayment.setMaxWidth(Double.MAX_VALUE);
+		btnAddPayment.setMaxWidth(Double.MAX_VALUE);
+		paymentsButtons.getChildren().addAll(btnRemovePayment, btnEditPayment, btnAddPayment);
+		btnAddPayment.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
+		btnRemovePayment.disableProperty().bind(payments.getSelectionModel().selectedItemProperty().isNull());
+		btnEditPayment.disableProperty().bind(payments.getSelectionModel().selectedItemProperty().isNull());
+		btnRemovePayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
+		btnEditPayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
+		
 		
 		Text procTitle = new Text("Procedures");
+		procTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 		TableView<Procedure> procedures = new TableView<>();
+		procedures.setPlaceholder(new Label("Select an invoice"));
+		setProceduresTableColumns(procedures);
 		
-		details2.getChildren().addAll(payTitle, payments, procTitle, procedures);
+		HBox proceduresButtons = new HBox(0);
+		MiniButton btnRemoveProcedure = new MiniButton("Remove");
+		MiniButton btnEditProcedure = new MiniButton("Edit");
+		MiniButton btnAddProcedure = new MiniButton("Add");
+		HBox.setHgrow(btnRemoveProcedure, Priority.ALWAYS);
+		HBox.setHgrow(btnEditProcedure, Priority.ALWAYS);
+		HBox.setHgrow(btnAddProcedure, Priority.ALWAYS);
+		btnRemoveProcedure.setMaxWidth(Double.MAX_VALUE);
+		btnEditProcedure.setMaxWidth(Double.MAX_VALUE);
+		btnAddProcedure.setMaxWidth(Double.MAX_VALUE);
+		btnAddProcedure.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
+		proceduresButtons.getChildren().addAll(btnRemoveProcedure, btnEditProcedure, btnAddProcedure);
+		btnRemoveProcedure.disableProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNull());
+		btnEditProcedure.disableProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNull());
+		btnRemoveProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
+		btnEditProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
 		
-		invoices.setItems(FXCollections.observableArrayList(patient.getInvoices()));
-//		payments.setItems(FXCollections.observableArrayList(invoices.getSelectionModel().getSelectedItem().getPayments()));
+		details2.getChildren().addAll(payTitle, payments, paymentsButtons, procTitle, procedures, proceduresButtons);
+
 		
 		
+		
+		
+		details1.setMaxHeight(Double.MAX_VALUE);
+		VBox.setVgrow(details1, Priority.ALWAYS);
 		details.getChildren().addAll(details1, details2);
+		
 		
 		HBox.setHgrow(details1, Priority.ALWAYS);
 		HBox.setHgrow(details2, Priority.ALWAYS);
 		
+//		details.setStyle("-fx-background-color: YELLOW;");
+		
+		
 		return details;
+	}
+
+
+	private void setInvoicesTableColumns(TableView<Invoice> invoices) {
+		TableColumn<Invoice, Number> idCol = new TableColumn<Invoice,Number>("Id");
+		TableColumn<Invoice, Number> amountCol = new TableColumn<Invoice,Number>("Amount");
+		TableColumn<Invoice, String> dateCol = new TableColumn<Invoice, String>("Date");
+		TableColumn<Invoice, Boolean> paidCol = new TableColumn<Invoice, Boolean>("Paid");
+		TableColumn<Invoice, Number> proceduresCol = new TableColumn<Invoice, Number>("#Procedures");
+		TableColumn<Invoice, Number> paymentsCol = new TableColumn<Invoice, Number>("#Payments");
+		
+		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountProperty());
+		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
+		paidCol.setCellValueFactory(cellData -> cellData.getValue().PaidProperty());
+		proceduresCol.setCellValueFactory(cellData -> cellData.getValue().ProcedureNumberProperty());
+		paymentsCol.setCellValueFactory(cellData -> cellData.getValue().PaymentNumberProperty());
+        
+		idCol.maxWidthProperty().set(50);
+        idCol.minWidthProperty().set(50);
+        idCol.prefWidthProperty().set(50);
+        
+        paidCol.maxWidthProperty().set(50);
+        paidCol.minWidthProperty().set(50);
+        paidCol.prefWidthProperty().set(50);
+        
+        invoices.getColumns().addAll(Arrays.asList(idCol, amountCol, dateCol, paidCol, proceduresCol, paymentsCol));
+        invoices.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+	}
+	
+	private void setPaymentsTableColumns(TableView<Payment> payments) {
+		TableColumn<Payment, String> dateCol = new TableColumn<Payment, String>("Date");
+		TableColumn<Payment, Number> amountCol = new TableColumn<Payment,Number>("Amount");
+		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
+		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountProperty());
+		dateCol.setStyle( "-fx-alignment: CENTER;");
+		amountCol.setStyle( "-fx-alignment: RIGHT;");
+		payments.getColumns().addAll(Arrays.asList(dateCol, amountCol));
+		payments.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+	}
+	
+	private void setProceduresTableColumns(TableView<Procedure> procedures) {
+		TableColumn<Procedure, Number> idCol = new TableColumn<Procedure,Number>("Id");
+		TableColumn<Procedure, String> nameCol = new TableColumn<Procedure, String>("Name");
+		TableColumn<Procedure, String> descCol = new TableColumn<Procedure, String>("Desc.");
+		TableColumn<Procedure, Number> priceCol = new TableColumn<Procedure, Number>("Price");
+
+		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+		nameCol.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
+		descCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
+		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
+
+		idCol.maxWidthProperty().set(30);
+		idCol.minWidthProperty().set(30);
+		idCol.prefWidthProperty().set(30);
+		
+		procedures.getColumns().addAll(Arrays.asList(idCol, nameCol, descCol, priceCol));
+		procedures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 
 

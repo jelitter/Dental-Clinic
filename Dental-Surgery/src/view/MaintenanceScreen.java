@@ -1,8 +1,10 @@
 package view;
 
+import java.util.Arrays;
 import java.util.Optional;
 import application.Main;
 import controller.ClinicController;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
@@ -288,16 +290,17 @@ private void updateClearButton() {
 
 		tblProcedures = new TableView<Procedure>();
 
-		TableColumn<Procedure, String> idCol = new TableColumn<Procedure, String>("Id");
+		TableColumn<Procedure, Number> idCol = new TableColumn<Procedure, Number>("Id");
 		TableColumn<Procedure, String> nameCol = new TableColumn<Procedure, String>("Name");
 		TableColumn<Procedure, String> descriptionCol = new TableColumn<Procedure, String>("Description");
 		TableColumn<Procedure, String> priceCol = new TableColumn<Procedure, String>("Price");
 
-		idCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
-		nameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-		descriptionCol.setCellValueFactory(cellData -> cellData.getValue().getDescriptionProperty());
-		priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceProperty());
-		tblProcedures.getColumns().addAll(idCol, nameCol, descriptionCol, priceCol);
+		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+		nameCol.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
+		descriptionCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
+		priceCol.setCellValueFactory(cellData -> Bindings.format("%.2f", cellData.getValue().PriceProperty()));
+		
+		tblProcedures.getColumns().addAll(Arrays.asList(idCol, nameCol, descriptionCol, priceCol));
 
 		// This hide the horizontal scrollbar, but has the side-efect of making all
 		// columns the same width
@@ -332,51 +335,50 @@ private void updateClearButton() {
 
 	}
 	
-	private void setupDataFilter() {
-	// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-	filteredData = new FilteredList<Procedure>(controller.procedures, p -> true);
-	// 2. Set the filter Predicate whenever the filter changes.
-    fldName.textProperty().addListener((observable, oldValue, newValue) -> {
-        filteredData.setPredicate(proc -> {
-            // If filter text is empty, display all persons.
-            if (newValue == null || newValue.isEmpty()) {
-                return true;
-            }
-
-            // Compare first name and last name of every person with filter text.
-            String lowerCaseFilter = newValue.toLowerCase();
-
-            if (proc.getNameProperty().get().toLowerCase().contains(lowerCaseFilter)) {
-                return true; // Filter matches first name.
-            } else if (proc.getDescriptionProperty().get().toLowerCase().contains(lowerCaseFilter)) {
-                return true; // Filter matches last name.
-            }
-            return false; // Does not match.
-        });
-    });
-    
-    // 3. Add sorted (and filtered) data to the table.
-    tblProcedures.setItems(filteredData);
-}
+	// private void setupDataFilter() {
+	// // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+	// filteredData = new FilteredList<Procedure>(controller.procedures, p -> true);
+	// // 2. Set the filter Predicate whenever the filter changes.
+	// fldName.textProperty().addListener((observable, oldValue, newValue) -> {
+	// filteredData.setPredicate(proc -> {
+	// // If filter text is empty, display all persons.
+	// if (newValue == null || newValue.isEmpty()) {
+	// return true;
+	// }
+	//
+	// // Compare first name and last name of every person with filter text.
+	// String lowerCaseFilter = newValue.toLowerCase();
+	//
+	// if (proc.getNameProperty().get().toLowerCase().contains(lowerCaseFilter)) {
+	// return true; // Filter matches first name.
+	// } else if
+	// (proc.getDescriptionProperty().get().toLowerCase().contains(lowerCaseFilter))
+	// {
+	// return true; // Filter matches last name.
+	// }
+	// return false; // Does not match.
+	// });
+	// });
+	//
+	// // 3. Add sorted (and filtered) data to the table.
+	// tblProcedures.setItems(filteredData);
+	// }
 
 	public void setProcedureTableItems() {
 		tblProcedures.setItems(controller.procedures);
 	}
 	
 	private void tableItemSelected() {
-		try {
-			Procedure proc = tblProcedures.getSelectionModel().getSelectedItem();
-			fldId.setText(proc.getIdProperty().get());
-			fldId.setDisable(true);
-			fldName.setText(proc.getName());
-			fldDescription.setText(proc.getDescription());
-			fldPrice.setText(proc.getPriceProperty().get());
-			
-			btnRemoveProcedure.setDisable(proc == null);
-			btnUpdateProcedure.setDisable(proc == null);
-			updateClearButton();
-		} catch (Exception ex) {};
+		Procedure proc = tblProcedures.getSelectionModel().getSelectedItem();
+//		fldId.setText(Integer.toString(proc.IdProperty().get()));
+		fldId.setText(String.valueOf(proc.getId()));
+		fldId.setDisable(true);
+		fldName.setText(proc.getName());
+		fldDescription.setText(proc.getDescription());
+		fldPrice.setText(proc.PriceProperty().toString());
+
+		btnRemoveProcedure.setDisable(proc == null);
+		btnUpdateProcedure.setDisable(proc == null);
+		updateClearButton();
 	}
-	
-	
 }

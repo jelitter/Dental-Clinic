@@ -6,6 +6,8 @@ import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
 public class Patient extends Person implements Serializable {
@@ -32,6 +34,7 @@ public class Patient extends Person implements Serializable {
 	public void setId(int _id2) { this.id = _id2; } 
 	public static void setMaxId(int i) { _id = i; }
 	
+	public ObservableList<Invoice> InvoicesProperty() { return FXCollections.observableArrayList(invoices); }
 	public ArrayList<Invoice> getInvoices() { return invoices; }
 	public void setInvoices(ArrayList<Invoice> invoices) { this.invoices = invoices; 	}
 	public void addInvoice(Invoice invoice) { this.invoices.add(invoice); }
