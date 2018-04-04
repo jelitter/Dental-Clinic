@@ -1,5 +1,6 @@
 package view;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -39,15 +40,16 @@ public class EditPatientScreen extends Stage {
 		root.setStyle(
 				"-fx-background-image: url(" + "'/assets/background.png'" + "); " + "-fx-background-size: cover;");
 		
-		MyTitle title = new MyTitle("Edit Patient");
+		MyTitle title = new MyTitle("");
 		HBox fullName = new HBox(10);
 		HBox contact = new HBox(10);
+		
 		
 		fldFirstName = new TextField(patient.getFirstName());
 		fldFirstName.setPromptText("First Name");
 		TitledPane firstName = new TitledPane("First Name", fldFirstName);
 		firstName.setCollapsible(false);
-		
+
 		fldLastName = new TextField(patient.getLastName());
 		fldLastName.setPromptText("Last Name");
 		TitledPane lastName = new TitledPane("Last Name", fldLastName);
@@ -56,6 +58,8 @@ public class EditPatientScreen extends Stage {
 		HBox.setHgrow(lastName, Priority.ALWAYS);
 		fullName.getChildren().addAll(firstName, lastName);
 		
+		title.textProperty().bind(fldFirstName.textProperty().concat(" ").concat(fldLastName.textProperty()));
+
 		fldEmail = new TextField(patient.getEmail());
 		fldEmail.setPromptText("Email");
 		TitledPane email = new TitledPane("Email", fldEmail);
