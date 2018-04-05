@@ -20,7 +20,7 @@ public class Invoice implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
-	private IntegerProperty id;
+	private int id;
 	private double amount;
 	private Date date; 
 	private boolean isPaid;
@@ -30,7 +30,6 @@ public class Invoice implements Serializable  {
 	// Constructors
 	
 	public Invoice() {
-		this.id = new SimpleIntegerProperty();
 		this.setId(++_id);
 		this.setAmount(0.0);
 		this.setDate(Calendar.getInstance().getTime());;
@@ -40,7 +39,6 @@ public class Invoice implements Serializable  {
 	}
 	
 	public Invoice(ArrayList<Procedure> procedures, ArrayList<Payment> payments) {
-		this.id = new SimpleIntegerProperty();
 		this.setId(++_id);
 		this.setAmount(this.getTotalAmount());
 		this.setDate(Calendar.getInstance().getTime());;
@@ -71,9 +69,9 @@ public class Invoice implements Serializable  {
 
 	// Getters, Setters, Observers
 
-	public IntegerProperty IdProperty() { return id; }
-	public int getId() { return id.get(); }
-	public void setId(int id) { this.id.setValue(id); } 
+	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; } 
 	public static void setMaxId(int i) { _id = i; }
 	
 	public DoubleProperty AmountProperty() { return new SimpleDoubleProperty(amount); }
@@ -88,18 +86,20 @@ public class Invoice implements Serializable  {
 	public boolean isPaid() { return isPaid;	}
 	public void setPaid(boolean isPaid) { this.isPaid = isPaid; }
 	
-	public IntegerProperty ProcedureNumberProperty() { return new SimpleIntegerProperty(procedures.size()); }
 	public ObservableList<Procedure> ProceduresProperty() { return FXCollections.observableArrayList(procedures); }
+	public IntegerProperty ProcedureNumberProperty() { return new SimpleIntegerProperty(procedures.size()); }
 	public ArrayList<Procedure> getProcedures() { return procedures; 	}
 	public void setProcedures(ArrayList<Procedure> procedures) { this.procedures = procedures; }
 
-	public IntegerProperty PaymentNumberProperty() { return new SimpleIntegerProperty(payments.size()); }
 	public ObservableList<Payment> PaymentsProperty() { return FXCollections.observableArrayList(payments); }
+	public IntegerProperty PaymentNumberProperty() { return new SimpleIntegerProperty(payments.size()); }
 	public ArrayList<Payment> getPayments() { return payments; }
 	public void setPayments(ArrayList<Payment> payments) { this.payments = payments; 	}
 	
 	// Methods
 	
+	public DoubleProperty TotalAmountProperty() { return new SimpleDoubleProperty(getTotalAmount()); }
+
 	private double getTotalAmount() {
 		double total = 0.;
 		for (Procedure p: this.getProcedures()) {

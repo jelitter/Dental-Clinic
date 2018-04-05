@@ -15,28 +15,28 @@ public class Payment implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
-	private IntegerProperty id;
+	private int id;
 	private Date date;
-	private DoubleProperty amount;
+	private Double amount;
 
 	public Payment(double amount) {
-		this.id = new SimpleIntegerProperty();
+//		this.id = new SimpleIntegerProperty();
 		this.setId(++_id);
-		this.amount = new SimpleDoubleProperty();
+//		this.amount = new SimpleDoubleProperty();
 		this.setAmount(amount);
 		this.setDate(Calendar.getInstance().getTime());
 	}
 	
-	public IntegerProperty IdProperty() { return id; }
-	public int getId() { return id.get(); }
-	public void setId(int id) { this.id.setValue(id); } 
+	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; } 
 	public static void setMaxId(int i) { _id = i; }
 
 	public StringProperty DateProperty() { return new SimpleStringProperty(date.toString()); }
 	public Date getDate() { return date;	}
 	public void setDate(Date date) { this.date = date; }
 
-	public DoubleProperty AmountProperty() { return amount; }
-	public double getAmount() { return amount.get(); }
-	public void setAmount(double amount) { this.amount.set(amount);	}
+	public DoubleProperty AmountProperty() { return new SimpleDoubleProperty(amount); }
+	public double getAmount() { return amount; }
+	public void setAmount(double amount) { this.amount = amount;	}
 }

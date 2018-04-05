@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -17,8 +19,8 @@ public class Patient extends Person implements Serializable {
 	private int id;
 	private ArrayList<Invoice> invoices;
 
-	public Patient(String firstName, String lastName, String email, String address, String phoneNumber) {
-		super(firstName, lastName, email, address, phoneNumber);
+	public Patient(String firstName, String lastName, String email, String address, String phone) {
+		super(firstName, lastName, email, address, phone);
 		this.setId(++_id);
 		this.setInvoices(new ArrayList<Invoice> ());
 	}
@@ -29,8 +31,8 @@ public class Patient extends Person implements Serializable {
 		this.setInvoices(new ArrayList<Invoice> ());
 	}
 	
+	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
-	public StringProperty getIdProperty() { return new SimpleStringProperty(Integer.toString(id)); }
 	public void setId(int _id2) { this.id = _id2; } 
 	public static void setMaxId(int i) { _id = i; }
 	

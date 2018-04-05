@@ -13,39 +13,39 @@ public class Procedure implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
-	private IntegerProperty id;
-	private StringProperty name, description;
-	private DoubleProperty price;
+	private int id;
+	private String name, description;
+	private Double price;
 
 	public Procedure(String name, String description, double price) {
-		this.id = new SimpleIntegerProperty();
-		this.name = new SimpleStringProperty(name);
-		this.description = new SimpleStringProperty(description);
-		this.price= new SimpleDoubleProperty(price);
+//		this.id = new SimpleIntegerProperty();
+//		this.name = new SimpleStringProperty(name);
+//		this.description = new SimpleStringProperty(description);
+//		this.price= new SimpleDoubleProperty(price);
+		
+		this.setName(name);
+		this.setDescription(description);
+		this.setPrice(price);
 		this.setId(++_id);
 	}
 
 
-	public IntegerProperty IdProperty() { return id; }
-	public int getId() { return id.get(); }
-	public void setId(int id) { this.id.set(id); }
+	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; }
 	public static void setMaxId(int i) {	_id = i; }
 
-	public StringProperty NameProperty() { return name; }
-	public String getName() {	return name.get(); }
-	public void setName(String name) { this.name.setValue(name);	}
+	public StringProperty NameProperty() { return new SimpleStringProperty(name); }
+	public String getName() {	return name; }
+	public void setName(String name) { this.name = name;	}
 
-	public StringProperty DescriptionProperty() { return description; 	}
-	public String getDescription() { 	return description.get(); }
-	public void setDescription(String description) { this.description.setValue(description);	}
+	public StringProperty DescriptionProperty() { return new SimpleStringProperty(description); }
+	public String getDescription() { 	return description; }
+	public void setDescription(String description) { this.description = description; }
 
-//	public StringProperty getPriceProperty() {
-//		return new SimpleStringProperty(String.format("%.2f", price));
-//	}
-
-	public DoubleProperty PriceProperty() { return price; }
-	public double getPrice() { return price.get(); }
-	public void setPrice(double price) { this.price.setValue(price); }
+	public DoubleProperty PriceProperty() { return new SimpleDoubleProperty(price); }
+	public double getPrice() { return price; }
+	public void setPrice(double price) { this.price = price; }
 
 
 	public String toString() {

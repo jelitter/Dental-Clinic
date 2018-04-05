@@ -121,19 +121,19 @@ public class PatientsScreen extends Pane {
 		
 		tblPatients = new TableView<Patient>();
 		
-		TableColumn<Patient, String> idCol = new TableColumn<Patient,String>("Id");
+		TableColumn<Patient, Number> idCol = new TableColumn<Patient,Number>("Id");
 		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
 		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
 		TableColumn<Patient, String> emailCol = new TableColumn<Patient, String>("Email");
 		TableColumn<Patient, String> addressCol = new TableColumn<Patient, String>("Address");
 		TableColumn<Patient, String> phoneCol = new TableColumn<Patient, String>("Phone No.");
 		
-		idCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
-        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().getFirstNameProperty());
-        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().getLastNameProperty());
-        emailCol.setCellValueFactory(cellData -> cellData.getValue().getEmailProperty());
-        addressCol.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
-        phoneCol.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumberProperty());
+		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().FirstNameProperty());
+        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().LastNameProperty());
+        emailCol.setCellValueFactory(cellData -> cellData.getValue().EmailProperty());
+        addressCol.setCellValueFactory(cellData -> cellData.getValue().AddressProperty());
+        phoneCol.setCellValueFactory(cellData -> cellData.getValue().PhoneProperty());
         
         
         tblPatients.getColumns().addAll(Arrays.asList(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol));
