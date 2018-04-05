@@ -34,7 +34,6 @@ public class Invoice implements Serializable  {
 		this.setAmount(0.0);
 		this.setAmountPaid(0.0);
 		this.setDate(Calendar.getInstance().getTime());;
-//		this.setPaid(false);
 		this.setProcedures(new ArrayList<Procedure>());
 		this.setPayments(new ArrayList<Payment>());
 	}
@@ -43,7 +42,6 @@ public class Invoice implements Serializable  {
 		this.setId(++_id);
 		this.setAmount(this.getTotalAmount());
 		this.setDate(Calendar.getInstance().getTime());;
-//		this.setPaid(false);
 		this.setProcedures(procedures);
 		this.setPayments(payments);
 		this.setAmountPaid(0.0);
@@ -90,9 +88,7 @@ public class Invoice implements Serializable  {
 
 	public BooleanProperty IsPaidProperty() { return new SimpleBooleanProperty(TotalAmountProperty().get() <= TotalAmountPaidProperty().get()); }
 	public boolean isPaid() { return (AmountProperty().get() <= AmountPaidProperty().get());	}
-	public void setPaid() { this.isPaid = (AmountProperty().get() <= AmountPaidProperty().get());
-		System.out.println("Set paid to: " + this.isPaid);
-	}
+	public void setPaid() { this.isPaid = (AmountProperty().get() <= AmountPaidProperty().get()); }
 	
 	public ObservableList<Procedure> ProceduresProperty() { return FXCollections.observableArrayList(procedures); }
 	public IntegerProperty ProcedureNumberProperty() { return new SimpleIntegerProperty(procedures.size()); }

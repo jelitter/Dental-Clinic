@@ -13,27 +13,27 @@ public class Procedure implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
-	private int id;
+	private static int _ipid = 0;
+	private int id, ipid;
 	private String name, description;
 	private Double price;
 
 	public Procedure(String name, String description, double price) {
-//		this.id = new SimpleIntegerProperty();
-//		this.name = new SimpleStringProperty(name);
-//		this.description = new SimpleStringProperty(description);
-//		this.price= new SimpleDoubleProperty(price);
-		
 		this.setName(name);
 		this.setDescription(description);
 		this.setPrice(price);
 		this.setId(++_id);
 	}
 
-
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }
 	public static void setMaxId(int i) {	_id = i; }
+	
+	public IntegerProperty InvoiceProcedureIdProperty() { return new SimpleIntegerProperty(ipid); }
+	public int getInvoiceProcedureId() { return ipid; }
+	public void setInvoiceProcedureId(int id) { this.ipid = id; }
+	public static void setMaxInvoiceProcedureId(int id) { _ipid = id; }
 
 	public StringProperty NameProperty() { return new SimpleStringProperty(name); }
 	public String getName() {	return name; }
@@ -52,4 +52,7 @@ public class Procedure implements Serializable {
 		return String.format("Procedure: \t%s \nDescription: \t%s \nPrice: \t\t%s \n", this.getName(), this.getDescription(),
 				String.format("%.2f", getPrice()));
 	}
+
+
+
 }

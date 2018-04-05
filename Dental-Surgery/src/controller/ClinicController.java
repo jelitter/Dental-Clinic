@@ -1,7 +1,9 @@
 package controller;
 
 import model.Clinic;
+import model.Invoice;
 import model.Patient;
+import model.Payment;
 import model.Procedure;
 import view.MainScreen;
 
@@ -56,11 +58,13 @@ public class ClinicController {
 		// Getting patient max. Id so new patients don't overwrite previous ones
 		Patient.setMaxId(getPatientMaxId());
 		Procedure.setMaxId(getProcedureMaxId());
+		Payment.setMaxId(getPaymentMaxId());
+		Procedure.setMaxId(getProcedureMaxId());
+		Procedure.setMaxInvoiceProcedureId(getInvoiceProcedureMaxId());
 		setSaved(true);
 	}
 	
 
-	
 	/* --------------------------------
 	 *       METHODS
 	 * -------------------------------*/
@@ -92,6 +96,36 @@ public class ClinicController {
 		int id = -1;
 		for (Procedure p : procedures) {
 			if (p.getId() > id) { id = p.getId(); }
+		}
+		return id;
+	}
+	
+	private int getPaymentMaxId() {
+		int id = -1;
+		
+		for (Patient pat : patients) {
+			for (Invoice inv : pat.getInvoices()) {
+				for (Payment pay : inv.getPayments()) {
+					if (pay.getId() > id) {
+						id = pay.getId();
+					}
+				}
+			}
+		}
+		return id;
+	}
+	
+	private int getInvoiceProcedureMaxId() {
+		int id = -1;
+		
+		for (Patient pat : patients) {
+			for (Invoice inv : pat.getInvoices()) {
+				for (Procedure proc : inv.getProcedures()) {
+					if (proc.getId() > id) {
+						id = proc.getId();
+					}
+				}
+			}
 		}
 		return id;
 	}

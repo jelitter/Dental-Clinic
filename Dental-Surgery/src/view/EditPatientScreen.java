@@ -420,19 +420,14 @@ public class EditPatientScreen extends Stage {
 		Text txtAmount = new Text("Amount:");
 		TextField fldAmount = new TextField();
 		fldAmount.setPromptText("Amount paid");
-		amountBox.getChildren().addAll(txtAmount, fldAmount);
-		
 		fldAmount.setText(Double.toString(inv.TotalAmountProperty().get() - inv.TotalAmountPaidProperty().get())); // Default to due amount
-		
-		System.out.println("Due amount: " + inv.TotalAmountProperty().get());
-		System.out.println("Paid amount: " + inv.TotalAmountPaidProperty().get());
+		amountBox.getChildren().addAll(txtAmount, fldAmount);
 		
 		btnOkPayment = new Button("OK");
 		btnCancelPayment = new Button("Cancel");
 		HBox.setHgrow(btnOkPayment, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelPayment, Priority.ALWAYS);
 		buttons.getChildren().addAll(btnOkPayment, btnCancelPayment);
-		
 		buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
 		root.getChildren().addAll(paymentTitle, dateBox, amountBox, buttons);

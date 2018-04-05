@@ -241,11 +241,12 @@ public class MainScreen {
 		controller.saveClinicToSerial();
 
 		// Adding some artificial delay to display some saving progress
-		new Timeline(new KeyFrame(Duration.millis(15000), ae -> {
+		new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
 			btn.setIcon("done.png");
 			btn.setText("Saved!");
 		})).play();
-		new Timeline(new KeyFrame(Duration.millis(2500), ae -> {
+		
+		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			
 			if (btn == this.btnSave) {
 				root.setDisable(false);
