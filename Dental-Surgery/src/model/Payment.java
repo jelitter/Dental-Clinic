@@ -20,11 +20,15 @@ public class Payment implements Serializable  {
 	private Double amount;
 
 	public Payment(double amount) {
-//		this.id = new SimpleIntegerProperty();
 		this.setId(++_id);
-//		this.amount = new SimpleDoubleProperty();
 		this.setAmount(amount);
 		this.setDate(Calendar.getInstance().getTime());
+	}
+	
+	public Payment(double amount, Date date) {
+		this.setId(++_id);
+		this.setAmount(amount);
+		this.setDate(date);
 	}
 	
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }

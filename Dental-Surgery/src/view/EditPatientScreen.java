@@ -1,6 +1,9 @@
 package view;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.omg.PortableInterceptor.USER_EXCEPTION;
@@ -11,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,6 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Invoice;
 import model.Patient;
@@ -38,7 +43,7 @@ public class EditPatientScreen extends Stage {
 	private final static double HEIGHT = 700;
 	
 	private ClinicController controller;
-	private Button btnSave,btnCancel;
+	private Button btnSave,btnCancel,btnOkPayment,btnCancelPayment;
 	private HBox patientDetails;
 	private TextField fldFirstName, fldLastName, fldEmail, fldPhone, fldAddress;
 	private boolean updated;
@@ -119,7 +124,7 @@ public class EditPatientScreen extends Stage {
 		root.getChildren().addAll(title, fullName, contact, address, patientDetails, buttons);
 		VBox.setVgrow(patientDetails, Priority.ALWAYS);
 		
-		getIcons().add(new Image("/assets/icon.png"));
+		getIcons().add(new Image("/assets/patient.png"));
 		
 		double mainWidth = MainScreen.getInstance().getStage().getWidth();
 		double mainX = MainScreen.getInstance().getStage().getX();
@@ -155,27 +160,30 @@ public class EditPatientScreen extends Stage {
 		
 		HBox invoicesButtons = new HBox(0);
 		MiniButton btnRemoveInvoice = new MiniButton("Remove");
-		MiniButton btnEditInvoice = new MiniButton("Edit");
 		MiniButton btnAddInvoice = new MiniButton("Add");
 		HBox.setHgrow(btnRemoveInvoice, Priority.ALWAYS);
-		HBox.setHgrow(btnEditInvoice, Priority.ALWAYS);
 		HBox.setHgrow(btnAddInvoice, Priority.ALWAYS);
 		btnRemoveInvoice.setMaxWidth(Double.MAX_VALUE);
-		btnEditInvoice.setMaxWidth(Double.MAX_VALUE);
 		btnAddInvoice.setMaxWidth(Double.MAX_VALUE);
-		invoicesButtons.getChildren().addAll(btnRemoveInvoice, btnEditInvoice, btnAddInvoice);
+		invoicesButtons.getChildren().addAll(btnRemoveInvoice, btnAddInvoice);
 		btnRemoveInvoice.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
-		btnEditInvoice.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
 		btnRemoveInvoice.visibleProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNotNull());
-		btnEditInvoice.visibleProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNotNull());
 		
 		details1.getChildren().addAll(invTitle, invoices, invoicesButtons);
 		
 		invoices.setOnMouseClicked(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
 			if (inv != null) {
-				payments.setItems(inv.PaymentsProperty());
+				
 				procedures.setItems(inv.ProceduresProperty());
+				if (inv.ProcedureNumberProperty().get() == 0) {
+					procedures.setPlaceholder(new Label("No procedures in this invoice"));
+				} 
+				
+				payments.setItems(inv.PaymentsProperty());
+				if (inv.PaymentsNumberProperty().get() == 0) {
+					payments.setPlaceholder(new Label("No payments in this invoice"));
+				} 
 			}
 		});
 		
@@ -217,7 +225,7 @@ public class EditPatientScreen extends Stage {
 	
 		btnAddPayment.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
-			inv.addPayment(0.0);
+			getNewPayment(inv);
 			payments.setItems(inv.PaymentsProperty());
 			refreshTable(invoices);
 		});
@@ -292,16 +300,18 @@ public class EditPatientScreen extends Stage {
 
 	private void setInvoicesTableColumns(TableView<Invoice> invoices) {
 		TableColumn<Invoice, Number> idCol = new TableColumn<Invoice,Number>("Id");
-		TableColumn<Invoice, Number> amountCol = new TableColumn<Invoice,Number>("Amount");
+		TableColumn<Invoice, Number> amountCol = new TableColumn<Invoice,Number>("Total");
+		TableColumn<Invoice, Number> paidCol = new TableColumn<Invoice,Number>("Paid");
 		TableColumn<Invoice, String> dateCol = new TableColumn<Invoice, String>("Date");
-		TableColumn<Invoice, Boolean> paidCol = new TableColumn<Invoice, Boolean>("Paid");
+		TableColumn<Invoice, Boolean> isPaidCol = new TableColumn<Invoice, Boolean>("Is paid");
 		TableColumn<Invoice, Number> proceduresCol = new TableColumn<Invoice, Number>("#Procedures");
 		TableColumn<Invoice, Number> paymentsCol = new TableColumn<Invoice, Number>("#Payments");
 		
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		amountCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountProperty());
+		paidCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountPaidProperty());
 		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
-		paidCol.setCellValueFactory(cellData -> cellData.getValue().PaidProperty());
+		isPaidCol.setCellValueFactory(cellData -> cellData.getValue().IsPaidProperty());
 		proceduresCol.setCellValueFactory(cellData -> cellData.getValue().ProcedureNumberProperty());
 		paymentsCol.setCellValueFactory(cellData -> cellData.getValue().PaymentsNumberProperty());
 		
@@ -315,7 +325,7 @@ public class EditPatientScreen extends Stage {
         paidCol.prefWidthProperty().set(40);
         
         
-        invoices.getColumns().addAll(Arrays.asList(idCol, amountCol, dateCol, paidCol, proceduresCol, paymentsCol));
+        invoices.getColumns().addAll(Arrays.asList(idCol, amountCol, paidCol, dateCol, isPaidCol, proceduresCol, paymentsCol));
         invoices.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
         for (TableColumn<?, ?> col: invoices.getColumns()) {
@@ -370,10 +380,82 @@ public class EditPatientScreen extends Stage {
 			this.close();
 		});
 		
+		
+		
 	}
 	
 	public boolean wasUpdated() {
 		return updated;
+	}
+	
+	private void getNewPayment(Invoice inv) {
+
+		Stage stage = new Stage();
+		VBox root = new VBox(10);
+		int width = 250;
+		int height = 300;
+		
+		
+		Scene scene = new Scene(root, width, height);
+		stage.setScene(scene);
+		stage.setResizable(false);
+		
+		stage.setWidth(width);
+		stage.setHeight(height);
+		root.setPadding(new Insets(20));
+		root.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); " + "-fx-background-size: cover;");
+		
+		MyTitle paymentTitle = new MyTitle("New Payment");
+		
+		VBox dateBox = new VBox(10);
+		VBox amountBox = new VBox(10);
+		HBox buttons = new HBox(10);
+		
+		Text txtDate = new Text("Date");
+		DatePicker date = new DatePicker();
+		date.setValue(LocalDate.now());
+		dateBox.getChildren().addAll(txtDate, date);
+		
+		Text txtAmount = new Text("Amount:");
+		TextField fldAmount = new TextField();
+		fldAmount.setPromptText("Amount paid");
+		amountBox.getChildren().addAll(txtAmount, fldAmount);
+		
+		fldAmount.setText(Double.toString(inv.TotalAmountProperty().get() - inv.TotalAmountPaidProperty().get())); // Default to due amount
+		
+		System.out.println("Due amount: " + inv.TotalAmountProperty().get());
+		System.out.println("Paid amount: " + inv.TotalAmountPaidProperty().get());
+		
+		btnOkPayment = new Button("OK");
+		btnCancelPayment = new Button("Cancel");
+		HBox.setHgrow(btnOkPayment, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelPayment, Priority.ALWAYS);
+		buttons.getChildren().addAll(btnOkPayment, btnCancelPayment);
+		
+		buttons.setAlignment(Pos.BOTTOM_RIGHT);
+
+		root.getChildren().addAll(paymentTitle, dateBox, amountBox, buttons);
+		
+		stage.getIcons().add(new Image("/assets/payment.png"));
+		stage.initOwner(this);
+		stage.initModality(Modality.APPLICATION_MODAL); 
+		stage.setTitle("Add Payment - Max: " + inv.getAmount() + " EUR.");
+		
+		
+		btnOkPayment.setOnAction(e -> {
+			Date retDate = Date.from(date.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+			Double amount = Double.parseDouble(fldAmount.getText());
+			Payment p = new Payment(amount, retDate);
+			inv.addPayment(p);
+			stage.close();
+		});
+		btnCancelPayment.setOnAction(e -> {
+			stage.close();
+		});
+		
+		stage.showAndWait();
+		
 	}
 	
 	protected void refreshTable(TableView<?> table) {
