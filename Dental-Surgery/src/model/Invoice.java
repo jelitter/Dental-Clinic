@@ -92,7 +92,7 @@ public class Invoice implements Serializable  {
 	public void setProcedures(ArrayList<Procedure> procedures) { this.procedures = procedures; }
 
 	public ObservableList<Payment> PaymentsProperty() { return FXCollections.observableArrayList(payments); }
-	public IntegerProperty PaymentNumberProperty() { return new SimpleIntegerProperty(payments.size()); }
+	public IntegerProperty PaymentsNumberProperty() { return new SimpleIntegerProperty(payments.size()); }
 	public ArrayList<Payment> getPayments() { return payments; }
 	public void setPayments(ArrayList<Payment> payments) { this.payments = payments; 	}
 	

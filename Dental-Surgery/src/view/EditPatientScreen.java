@@ -8,6 +8,7 @@ import org.omg.PortableInterceptor.USER_EXCEPTION;
 import controller.ClinicController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -139,6 +141,8 @@ public class EditPatientScreen extends Stage {
 		TableView<Payment> payments = new TableView<>();
 		TableView<Procedure> procedures = new TableView<>();
 		
+		payments.setEditable(true);
+		
 		HBox details = new HBox(10);
 		
 		VBox details1 = new VBox(0);
@@ -210,16 +214,19 @@ public class EditPatientScreen extends Stage {
 		btnRemovePayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
 		btnEditPayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
 		
+	
 		btnAddPayment.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
 			inv.addPayment(0.0);
 			payments.setItems(inv.PaymentsProperty());
+			refreshTable(invoices);
 		});
 		btnRemovePayment.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
 			Payment pay = payments.getSelectionModel().getSelectedItem();
 			inv.removePayment(pay);
 			payments.setItems(inv.PaymentsProperty());
+			refreshTable(invoices);
 		});
 		
 		
@@ -244,6 +251,23 @@ public class EditPatientScreen extends Stage {
 		btnEditProcedure.disableProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNull());
 		btnRemoveProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
 		btnEditProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
+		
+		btnAddProcedure.setOnAction(e -> {
+			Invoice inv = invoices.getSelectionModel().getSelectedItem();
+			Procedure p = new Procedure("Test proc.", "Test desc.", 90.00);
+			inv.addProcedure(p);
+			procedures.setItems(inv.ProceduresProperty());
+			refreshTable(invoices);
+		});
+		btnRemoveProcedure.setOnAction(e -> {
+			Invoice inv = invoices.getSelectionModel().getSelectedItem();
+			Procedure proc = procedures.getSelectionModel().getSelectedItem();
+			inv.removeProcedure(proc);
+			procedures.setItems(inv.ProceduresProperty());
+			refreshTable(invoices);
+		});
+		
+		
 		
 		details2.getChildren().addAll(procTitle, procedures, proceduresButtons, payTitle, payments, paymentsButtons);
 
@@ -275,11 +299,12 @@ public class EditPatientScreen extends Stage {
 		TableColumn<Invoice, Number> paymentsCol = new TableColumn<Invoice, Number>("#Payments");
 		
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
-		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountProperty());
+		amountCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountProperty());
 		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
 		paidCol.setCellValueFactory(cellData -> cellData.getValue().PaidProperty());
 		proceduresCol.setCellValueFactory(cellData -> cellData.getValue().ProcedureNumberProperty());
-		paymentsCol.setCellValueFactory(cellData -> cellData.getValue().PaymentNumberProperty());
+		paymentsCol.setCellValueFactory(cellData -> cellData.getValue().PaymentsNumberProperty());
+		
         
 		idCol.maxWidthProperty().set(40);
         idCol.minWidthProperty().set(40);
@@ -349,6 +374,11 @@ public class EditPatientScreen extends Stage {
 	
 	public boolean wasUpdated() {
 		return updated;
+	}
+	
+	protected void refreshTable(TableView<?> table) {
+		table.getColumns().get(0).setVisible(false);
+		table.getColumns().get(0).setVisible(true);
 	}
 
 }
