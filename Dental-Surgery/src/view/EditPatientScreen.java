@@ -3,6 +3,8 @@ package view;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.omg.PortableInterceptor.USER_EXCEPTION;
+
 import controller.ClinicController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -132,13 +134,17 @@ public class EditPatientScreen extends Stage {
 
 
 	private HBox getPatientDetails(Patient patient) {
+		
+		TableView<Invoice> invoices = new TableView<>();
+		TableView<Payment> payments = new TableView<>();
+		TableView<Procedure> procedures = new TableView<>();
+		
 		HBox details = new HBox(10);
 		
 		VBox details1 = new VBox(0);
 		
-		Text invTitle = new Text("Invoices");
+		Text invTitle = new Text("INVOICES");
 		invTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-		TableView<Invoice> invoices = new TableView<>();
 		invoices.setPlaceholder(new Label("This patient has no invoices"));
 		setInvoicesTableColumns(invoices);
 		invoices.setItems(patient.InvoicesProperty());
@@ -161,12 +167,29 @@ public class EditPatientScreen extends Stage {
 		
 		details1.getChildren().addAll(invTitle, invoices, invoicesButtons);
 		
+		invoices.setOnMouseClicked(e -> {
+			Invoice inv = invoices.getSelectionModel().getSelectedItem();
+			if (inv != null) {
+				payments.setItems(inv.PaymentsProperty());
+				procedures.setItems(inv.ProceduresProperty());
+			}
+		});
+		
+		btnAddInvoice.setOnAction(e -> {
+			patient.addInvoice(new Invoice());
+			invoices.setItems(patient.InvoicesProperty());
+		});
+		btnRemoveInvoice.setOnAction(e -> {
+			patient.removeInvoice(invoices.getSelectionModel().getSelectedItem());
+			invoices.setItems(patient.InvoicesProperty());
+		});
+
+		
 		
 		VBox details2 = new VBox(0);
 		
-		Text payTitle = new Text("Payments");
+		Text payTitle = new Text("PAYMENTS");
 		payTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-		TableView<Payment> payments = new TableView<>();
 		payments.setPlaceholder(new Label("Select an invoice"));
 		setPaymentsTableColumns(payments);
 		
@@ -187,10 +210,21 @@ public class EditPatientScreen extends Stage {
 		btnRemovePayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
 		btnEditPayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
 		
+		btnAddPayment.setOnAction(e -> {
+			Invoice inv = invoices.getSelectionModel().getSelectedItem();
+			inv.addPayment(0.0);
+			payments.setItems(inv.PaymentsProperty());
+		});
+		btnRemovePayment.setOnAction(e -> {
+			Invoice inv = invoices.getSelectionModel().getSelectedItem();
+			Payment pay = payments.getSelectionModel().getSelectedItem();
+			inv.removePayment(pay);
+			payments.setItems(inv.PaymentsProperty());
+		});
 		
-		Text procTitle = new Text("Procedures");
+		
+		Text procTitle = new Text("PROCEDURES");
 		procTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-		TableView<Procedure> procedures = new TableView<>();
 		procedures.setPlaceholder(new Label("Select an invoice"));
 		setProceduresTableColumns(procedures);
 		
@@ -211,7 +245,7 @@ public class EditPatientScreen extends Stage {
 		btnRemoveProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
 		btnEditProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
 		
-		details2.getChildren().addAll(payTitle, payments, paymentsButtons, procTitle, procedures, proceduresButtons);
+		details2.getChildren().addAll(procTitle, procedures, proceduresButtons, payTitle, payments, paymentsButtons);
 
 		
 		
@@ -247,17 +281,21 @@ public class EditPatientScreen extends Stage {
 		proceduresCol.setCellValueFactory(cellData -> cellData.getValue().ProcedureNumberProperty());
 		paymentsCol.setCellValueFactory(cellData -> cellData.getValue().PaymentNumberProperty());
         
-		idCol.maxWidthProperty().set(50);
-        idCol.minWidthProperty().set(50);
-        idCol.prefWidthProperty().set(50);
+		idCol.maxWidthProperty().set(40);
+        idCol.minWidthProperty().set(40);
+        idCol.prefWidthProperty().set(40);
         
-        paidCol.maxWidthProperty().set(50);
-        paidCol.minWidthProperty().set(50);
-        paidCol.prefWidthProperty().set(50);
+        paidCol.maxWidthProperty().set(40);
+        paidCol.minWidthProperty().set(40);
+        paidCol.prefWidthProperty().set(40);
+        
         
         invoices.getColumns().addAll(Arrays.asList(idCol, amountCol, dateCol, paidCol, proceduresCol, paymentsCol));
         invoices.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
+        for (TableColumn<?, ?> col: invoices.getColumns()) {
+        	col.setStyle( "-fx-alignment: CENTER;");
+        }
 	}
 	
 	private void setPaymentsTableColumns(TableView<Payment> payments) {
@@ -266,7 +304,7 @@ public class EditPatientScreen extends Stage {
 		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
 		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountProperty());
 		dateCol.setStyle( "-fx-alignment: CENTER;");
-		amountCol.setStyle( "-fx-alignment: RIGHT;");
+		amountCol.setStyle( "-fx-alignment: CENTER_RIGHT;");
 		payments.getColumns().addAll(Arrays.asList(dateCol, amountCol));
 		payments.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}

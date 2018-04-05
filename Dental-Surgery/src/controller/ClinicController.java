@@ -129,8 +129,8 @@ public class ClinicController {
 	private ArrayList<Procedure> getProcedureListFromCSV() {
 		ArrayList<Procedure> procList = new ArrayList<Procedure>();
 		String csvFile = "src/data/procedures.csv";
-//		String fieldDelimiter = "\\|";
-		String fieldDelimiter = ",";
+		String fieldDelimiter = "\\|";
+//		String fieldDelimiter = ",";
 
 		BufferedReader br;
 
@@ -138,7 +138,7 @@ public class ClinicController {
 			br = new BufferedReader(new FileReader(csvFile));
 			String line;
 			while ((line = br.readLine()) != null) {
-				System.out.println("Line:\n" + line);
+//				System.out.println("Line:\n" + line);
 				String[] fields = line.split(fieldDelimiter, -1);
 				
 //				System.out.println(Arrays.toString(fields));

@@ -30,6 +30,7 @@ public class Invoice implements Serializable  {
 	// Constructors
 	
 	public Invoice() {
+		this.id = new SimpleIntegerProperty();
 		this.setId(++_id);
 		this.setAmount(0.0);
 		this.setDate(Calendar.getInstance().getTime());;
@@ -39,6 +40,7 @@ public class Invoice implements Serializable  {
 	}
 	
 	public Invoice(ArrayList<Procedure> procedures, ArrayList<Payment> payments) {
+		this.id = new SimpleIntegerProperty();
 		this.setId(++_id);
 		this.setAmount(this.getTotalAmount());
 		this.setDate(Calendar.getInstance().getTime());;
@@ -54,6 +56,10 @@ public class Invoice implements Serializable  {
 	}
 	public void removeProcedure(Procedure procedure) {
 		this.getProcedures().remove(procedure);
+	}
+	
+	public void addPayment(double amount) {
+		this.getPayments().add(new Payment(amount));
 	}
 
 	public void addPayment(Payment payment) {

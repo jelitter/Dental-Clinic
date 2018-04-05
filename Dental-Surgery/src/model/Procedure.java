@@ -28,10 +28,7 @@ public class Procedure implements Serializable {
 
 	public IntegerProperty IdProperty() { return id; }
 	public int getId() { return id.get(); }
-	public void setId(int id) {
-		System.out.println("Setting proc. id: " + id);
-		this.id.set(id);	
-		}
+	public void setId(int id) { this.id.set(id); }
 	public static void setMaxId(int i) {	_id = i; }
 
 	public StringProperty NameProperty() { return name; }

@@ -38,6 +38,7 @@ public class Patient extends Person implements Serializable {
 	public ArrayList<Invoice> getInvoices() { return invoices; }
 	public void setInvoices(ArrayList<Invoice> invoices) { this.invoices = invoices; 	}
 	public void addInvoice(Invoice invoice) { this.invoices.add(invoice); }
+	public void removeInvoice(Invoice invoice) { this.invoices.remove(invoice); }
 	
 
 }
