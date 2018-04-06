@@ -127,15 +127,6 @@ public class LoginScreen {
 			if (isLoginAllowed()) {
 				launchLogin();
 			} 
-			// else {
-			// Alert alert = new Alert(AlertType.WARNING);
-			// alert.setContentText("Please enter both username and password");
-			// alert.setHeaderText("Could not login");
-			// alert.setTitle("Login error");
-			// alert.show();
-			// fldUserName.setText("");
-			// fldPassword.setText("");
-			// }
 		});
 		
 		remember.setOnAction(e -> {
