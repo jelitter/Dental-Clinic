@@ -3,33 +3,32 @@ package view;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-
-import org.omg.PortableInterceptor.USER_EXCEPTION;
 
 import controller.ClinicController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.Invoice;
 import model.Patient;
 import model.Payment;
@@ -172,18 +171,14 @@ public class EditPatientScreen extends Stage {
 		details1.getChildren().addAll(invTitle, invoices, invoicesButtons);
 		
 		invoices.setOnMouseClicked(e -> {
-			Invoice inv = invoices.getSelectionModel().getSelectedItem();
-			if (inv != null) {
-				
-				procedures.setItems(inv.ProceduresProperty());
-				if (inv.ProcedureNumberProperty().get() == 0) {
-					procedures.setPlaceholder(new Label("No procedures in this invoice"));
-				} 
-				
-				payments.setItems(inv.PaymentsProperty());
-				if (inv.PaymentsNumberProperty().get() == 0) {
-					payments.setPlaceholder(new Label("No payments in this invoice"));
-				} 
+			invoiceItemSelected(invoices, payments, procedures);
+		});
+		
+		invoices.setOnKeyReleased(e -> {
+			KeyCode key = e.getCode();
+			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
+					|| key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) || key.equals(KeyCode.END)) {
+				invoiceItemSelected(invoices, payments, procedures);
 			}
 		});
 		
@@ -298,14 +293,32 @@ public class EditPatientScreen extends Stage {
 	}
 
 
+	private void invoiceItemSelected(TableView<Invoice> invoices, TableView<Payment> payments,
+			TableView<Procedure> procedures) {
+		Invoice inv = invoices.getSelectionModel().getSelectedItem();
+		if (inv != null) {
+
+			procedures.setItems(inv.ProceduresProperty());
+			if (inv.ProcedureNumberProperty().get() == 0) {
+				procedures.setPlaceholder(new Label("No procedures in this invoice"));
+			}
+
+			payments.setItems(inv.PaymentsProperty());
+			if (inv.PaymentsNumberProperty().get() == 0) {
+				payments.setPlaceholder(new Label("No payments in this invoice"));
+			}
+		}
+	}
+
+
 	private void setInvoicesTableColumns(TableView<Invoice> invoices) {
 		TableColumn<Invoice, Number> idCol = new TableColumn<Invoice,Number>("Id");
 		TableColumn<Invoice, Number> amountCol = new TableColumn<Invoice,Number>("Total");
 		TableColumn<Invoice, Number> paidCol = new TableColumn<Invoice,Number>("Paid");
 		TableColumn<Invoice, String> dateCol = new TableColumn<Invoice, String>("Date");
 		TableColumn<Invoice, Boolean> isPaidCol = new TableColumn<Invoice, Boolean>("Is paid");
-		TableColumn<Invoice, Number> proceduresCol = new TableColumn<Invoice, Number>("#Procedures");
-		TableColumn<Invoice, Number> paymentsCol = new TableColumn<Invoice, Number>("#Payments");
+		TableColumn<Invoice, Number> proceduresCol = new TableColumn<Invoice, Number>("Procedures");
+		TableColumn<Invoice, Number> paymentsCol = new TableColumn<Invoice, Number>("Payments");
 		
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		amountCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountProperty());
@@ -315,15 +328,53 @@ public class EditPatientScreen extends Stage {
 		proceduresCol.setCellValueFactory(cellData -> cellData.getValue().ProcedureNumberProperty());
 		paymentsCol.setCellValueFactory(cellData -> cellData.getValue().PaymentsNumberProperty());
 		
+
+        // Table cell colouring (isPaid)
+		isPaidCol.setCellFactory(new Callback<TableColumn<Invoice, Boolean>, TableCell<Invoice, Boolean>>() {
+            @Override
+            public TableCell<Invoice, Boolean> call(TableColumn<Invoice, Boolean> param) {
+                return new TableCell<Invoice, Boolean>() {
+                    @Override
+                    public void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+						if (item != null) {
+							if (item) {
+								this.setTextFill(Color.GREEN);
+								this.setText("✔");
+							} else {
+								this.setTextFill(Color.RED);
+								this.setText("✖");
+							}
+						}
+                    }
+                };
+            }
+        });
+		
         
 		idCol.maxWidthProperty().set(40);
         idCol.minWidthProperty().set(40);
         idCol.prefWidthProperty().set(40);
         
-        paidCol.maxWidthProperty().set(40);
-        paidCol.minWidthProperty().set(40);
-        paidCol.prefWidthProperty().set(40);
+        amountCol.maxWidthProperty().set(60);
+        amountCol.minWidthProperty().set(60);
+        amountCol.prefWidthProperty().set(60);
         
+        paidCol.maxWidthProperty().set(60);
+        paidCol.minWidthProperty().set(60);
+        paidCol.prefWidthProperty().set(60);
+        
+        isPaidCol.maxWidthProperty().set(50);
+        isPaidCol.minWidthProperty().set(50);
+        isPaidCol.prefWidthProperty().set(50);
+        
+        proceduresCol.maxWidthProperty().set(90);
+        proceduresCol.minWidthProperty().set(70);
+        proceduresCol.prefWidthProperty().set(70);
+        
+        paymentsCol.maxWidthProperty().set(90);
+        paymentsCol.minWidthProperty().set(70);
+        paymentsCol.prefWidthProperty().set(70);
         
         invoices.getColumns().addAll(Arrays.asList(idCol, amountCol, paidCol, dateCol, isPaidCol, proceduresCol, paymentsCol));
         invoices.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -334,13 +385,26 @@ public class EditPatientScreen extends Stage {
 	}
 	
 	private void setPaymentsTableColumns(TableView<Payment> payments) {
+		TableColumn<Payment, Number> idCol = new TableColumn<Payment,Number>("Id");
 		TableColumn<Payment, String> dateCol = new TableColumn<Payment, String>("Date");
 		TableColumn<Payment, Number> amountCol = new TableColumn<Payment,Number>("Amount");
+		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
 		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountProperty());
+		
+		idCol.setStyle( "-fx-alignment: CENTER;");
 		dateCol.setStyle( "-fx-alignment: CENTER;");
-		amountCol.setStyle( "-fx-alignment: CENTER_RIGHT;");
-		payments.getColumns().addAll(Arrays.asList(dateCol, amountCol));
+		amountCol.setStyle( "-fx-alignment: CENTER;");
+		
+		idCol.maxWidthProperty().set(30);
+		idCol.minWidthProperty().set(30);
+		idCol.prefWidthProperty().set(30);
+		
+		amountCol.maxWidthProperty().set(50);
+		amountCol.minWidthProperty().set(50);
+		amountCol.prefWidthProperty().set(50);
+		
+		payments.getColumns().addAll(Arrays.asList(idCol, dateCol, amountCol));
 		payments.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 	
@@ -355,9 +419,17 @@ public class EditPatientScreen extends Stage {
 		descCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
 		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
 
+		idCol.setStyle( "-fx-alignment: CENTER;");
+		priceCol.setStyle( "-fx-alignment: CENTER;");
+
+		
 		idCol.maxWidthProperty().set(30);
 		idCol.minWidthProperty().set(30);
 		idCol.prefWidthProperty().set(30);
+		
+		priceCol.maxWidthProperty().set(50);
+		priceCol.minWidthProperty().set(50);
+		priceCol.prefWidthProperty().set(50);
 		
 		procedures.getColumns().addAll(Arrays.asList(idCol, nameCol, descCol, priceCol));
 		procedures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
