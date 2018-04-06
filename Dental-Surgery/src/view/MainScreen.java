@@ -225,7 +225,7 @@ public class MainScreen {
 		root.setDisable(true);
 		btn.setIcon("spinner.gif");
 		btn.setText("Saving...");
-		controller.saveClinicToSerial();
+		controller.save();
 
 		// Adding some artificial delay to display some saving progress
 		new Timeline(new KeyFrame(Duration.millis(1000), ae -> {

@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 import controller.ClinicController;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -121,12 +119,13 @@ public class EditPatientScreen extends Stage {
 		btnSave.setStyle("-fx-base: LIGHTGREEN;");
 		btnCancel.setStyle("-fx-base: LIGHTCORAL;");
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
+		buttons.setPadding(new Insets(20,0,0,0));
 
 		patientDetails = getPatientDetails(patient);
+		patientDetails.setPadding(new Insets(20,0,0,0));
 		
-		
-		root.getChildren().addAll(title, fullName, contact, address, patientDetails, buttons);
 		VBox.setVgrow(patientDetails, Priority.ALWAYS);
+		root.getChildren().addAll(title, fullName, contact, address, patientDetails, buttons);
 		
 		getIcons().add(new Image("/assets/patient.png"));
 		
@@ -154,7 +153,7 @@ public class EditPatientScreen extends Stage {
 		
 		HBox details = new HBox(10);
 		
-		VBox details1 = new VBox(0);
+		VBox detailsLeft = new VBox(0);
 		
 		Text invTitle = new Text("INVOICES");
 		invTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
@@ -173,7 +172,8 @@ public class EditPatientScreen extends Stage {
 		btnRemoveInvoice.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
 		btnRemoveInvoice.visibleProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNotNull());
 		
-		details1.getChildren().addAll(invTitle, invoices, invoicesButtons);
+		VBox.setVgrow(invoices, Priority.ALWAYS);
+		detailsLeft.getChildren().addAll(invTitle, invoices, invoicesButtons);
 		
 		invoices.setOnMouseClicked(e -> {
 			invoiceItemSelected(invoices, payments, procedures);
@@ -202,7 +202,7 @@ public class EditPatientScreen extends Stage {
 
 		
 		
-		VBox details2 = new VBox(0);
+		VBox detailsRight = new VBox(0);
 		
 		Text payTitle = new Text("PAYMENTS");
 		payTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
@@ -211,21 +211,15 @@ public class EditPatientScreen extends Stage {
 		
 		HBox paymentsButtons = new HBox(0);
 		MiniButton btnRemovePayment = new MiniButton("Remove");
-		MiniButton btnEditPayment = new MiniButton("Edit");
 		MiniButton btnAddPayment = new MiniButton("Add");
 		HBox.setHgrow(btnRemovePayment, Priority.ALWAYS);
-		HBox.setHgrow(btnEditPayment, Priority.ALWAYS);
 		HBox.setHgrow(btnAddPayment, Priority.ALWAYS);
 		btnRemovePayment.setMaxWidth(Double.MAX_VALUE);
-		btnEditPayment.setMaxWidth(Double.MAX_VALUE);
 		btnAddPayment.setMaxWidth(Double.MAX_VALUE);
-		paymentsButtons.getChildren().addAll(btnRemovePayment, btnEditPayment, btnAddPayment);
+		paymentsButtons.getChildren().addAll(btnRemovePayment, btnAddPayment);
 		btnAddPayment.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
 		btnRemovePayment.disableProperty().bind(payments.getSelectionModel().selectedItemProperty().isNull());
-		btnEditPayment.disableProperty().bind(payments.getSelectionModel().selectedItemProperty().isNull());
 		btnRemovePayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
-		btnEditPayment.visibleProperty().bind(payments.getSelectionModel().selectedItemProperty().isNotNull());
-		
 	
 		btnAddPayment.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
@@ -251,20 +245,15 @@ public class EditPatientScreen extends Stage {
 		
 		HBox proceduresButtons = new HBox(0);
 		MiniButton btnRemoveProcedure = new MiniButton("Remove");
-		MiniButton btnEditProcedure = new MiniButton("Edit");
 		MiniButton btnAddProcedure = new MiniButton("Add");
 		HBox.setHgrow(btnRemoveProcedure, Priority.ALWAYS);
-		HBox.setHgrow(btnEditProcedure, Priority.ALWAYS);
 		HBox.setHgrow(btnAddProcedure, Priority.ALWAYS);
 		btnRemoveProcedure.setMaxWidth(Double.MAX_VALUE);
-		btnEditProcedure.setMaxWidth(Double.MAX_VALUE);
 		btnAddProcedure.setMaxWidth(Double.MAX_VALUE);
 		btnAddProcedure.disableProperty().bind(invoices.getSelectionModel().selectedItemProperty().isNull());
-		proceduresButtons.getChildren().addAll(btnRemoveProcedure, btnEditProcedure, btnAddProcedure);
+		proceduresButtons.getChildren().addAll(btnRemoveProcedure, btnAddProcedure);
 		btnRemoveProcedure.disableProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNull());
-		btnEditProcedure.disableProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNull());
 		btnRemoveProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
-		btnEditProcedure.visibleProperty().bind(procedures.getSelectionModel().selectedItemProperty().isNotNull());
 		
 		btnAddProcedure.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
@@ -284,14 +273,14 @@ public class EditPatientScreen extends Stage {
 			controller.unsavedChanges();
 		});
 		
-		details2.getChildren().addAll(procTitle, procedures, proceduresButtons, payTitle, payments, paymentsButtons);
+		detailsRight.getChildren().addAll(procTitle, procedures, proceduresButtons, payTitle, payments, paymentsButtons);
 		
-		details1.setMaxHeight(Double.MAX_VALUE);
-		VBox.setVgrow(details1, Priority.ALWAYS);
-		details.getChildren().addAll(details1, details2);
+		detailsLeft.setMaxHeight(Double.MAX_VALUE);
+		VBox.setVgrow(detailsLeft, Priority.ALWAYS);
+		details.getChildren().addAll(detailsLeft, detailsRight);
 		
-		HBox.setHgrow(details1, Priority.ALWAYS);
-		HBox.setHgrow(details2, Priority.ALWAYS);
+		HBox.setHgrow(detailsLeft, Priority.ALWAYS);
+		HBox.setHgrow(detailsRight, Priority.ALWAYS);
 		
 		return details;
 	}
@@ -537,10 +526,6 @@ public class EditPatientScreen extends Stage {
 		});
 		
 		stage.showAndWait();
-		
-	}
-	
-	private void editSelectedProcedure(Invoice inv) {
 		
 	}
 	
