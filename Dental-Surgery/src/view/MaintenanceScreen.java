@@ -27,7 +27,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Procedure;
+import model.ProcedureType;
 import view.elements.MyTitle;
 
 public class MaintenanceScreen extends Pane {
@@ -36,7 +36,7 @@ public class MaintenanceScreen extends Pane {
 	
 	private static MaintenanceScreen instance;
 	private ClinicController controller;
-	private TableView<Procedure> tblProcedures;
+	private TableView<ProcedureType> tblProcedures;
 	
 	private HBox buttons;
 	private Button btnUpdateProcedure, btnRemoveProcedure, btnAddProcedure, btnClear;
@@ -47,7 +47,7 @@ public class MaintenanceScreen extends Pane {
 	private VBox pane;
 	private MyTitle title;
 
-	private FilteredList<Procedure> filteredData;
+	private FilteredList<ProcedureType> filteredData;
 
 	public MaintenanceScreen() {
 		instance = this;
@@ -89,7 +89,7 @@ public class MaintenanceScreen extends Pane {
 	}
 
 	private void updateRemoveProcedureButton() {
-		Procedure proc = tblProcedures.getSelectionModel().getSelectedItem();
+		ProcedureType proc = tblProcedures.getSelectionModel().getSelectedItem();
 		btnRemoveProcedure.setDisable(proc == null);
 		btnUpdateProcedure.setDisable(proc == null);
 	}
@@ -105,14 +105,14 @@ public class MaintenanceScreen extends Pane {
 		String name = fldName.getText();
 		String description = fldDescription.getText();
 		String 	price = fldPrice.getText();
-		Procedure newProcedure = new Procedure(name, description, Double.parseDouble(price));
+		ProcedureType newProcedure = new ProcedureType(name, description, Double.parseDouble(price));
 		controller.addProcedure(newProcedure);
 		clearFields();
 	}
 	
 	private void updateProcedure() {
 		try {
-			Procedure selectedProcedure = tblProcedures.getSelectionModel().getSelectedItem();
+			ProcedureType selectedProcedure = tblProcedures.getSelectionModel().getSelectedItem();
 			
 			String name = fldName.getText();
 			String 	description = fldDescription.getText();
@@ -127,13 +127,13 @@ public class MaintenanceScreen extends Pane {
 			controller.unsavedChanges();
 			
 		} catch (Exception e) {
-			System.out.println("Error updating patient - " + e.getMessage());
+			System.out.println("Error updating procedure - " + e.getMessage());
 		}
 	}
 	
 	private void removeProcedure() {
 		try {
-			Procedure selectedProcedure = tblProcedures.getSelectionModel().getSelectedItem();
+			ProcedureType selectedProcedure = tblProcedures.getSelectionModel().getSelectedItem();
 
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Dental Surgery");
@@ -288,17 +288,19 @@ private void updateClearButton() {
 
 	private void createProceduresTable() {
 
-		tblProcedures = new TableView<Procedure>();
+		tblProcedures = new TableView<ProcedureType>();
 
-		TableColumn<Procedure, Number> idCol = new TableColumn<Procedure, Number>("Id");
-		TableColumn<Procedure, String> nameCol = new TableColumn<Procedure, String>("Name");
-		TableColumn<Procedure, String> descriptionCol = new TableColumn<Procedure, String>("Description");
-		TableColumn<Procedure, String> priceCol = new TableColumn<Procedure, String>("Price");
+		TableColumn<ProcedureType, Number> idCol = new TableColumn<ProcedureType, Number>("Id");
+		TableColumn<ProcedureType, String> nameCol = new TableColumn<ProcedureType, String>("Name");
+		TableColumn<ProcedureType, String> descriptionCol = new TableColumn<ProcedureType, String>("Description");
+		TableColumn<ProcedureType, Number> priceCol = new TableColumn<ProcedureType, Number>("Price");
 
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		nameCol.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		descriptionCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
-		priceCol.setCellValueFactory(cellData -> Bindings.format("%.2f", cellData.getValue().PriceProperty()));
+//		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
+		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
+//		Bindings.format("%.2f", cellData.getValue().PriceProperty()));
 		
 		tblProcedures.getColumns().addAll(Arrays.asList(idCol, nameCol, descriptionCol, priceCol));
 
@@ -322,7 +324,6 @@ private void updateClearButton() {
 		priceCol.setStyle("-fx-alignment: CENTER;");
 
 		setProcedureTableItems();
-//		setupDataFilter();
 
 		tblProcedures.setOnMouseClicked(e -> tableItemSelected());
 		tblProcedures.setOnKeyReleased(e -> {
@@ -334,48 +335,19 @@ private void updateClearButton() {
 		});
 
 	}
-	
-	// private void setupDataFilter() {
-	// // 1. Wrap the ObservableList in a FilteredList (initially display all data).
-	// filteredData = new FilteredList<Procedure>(controller.procedures, p -> true);
-	// // 2. Set the filter Predicate whenever the filter changes.
-	// fldName.textProperty().addListener((observable, oldValue, newValue) -> {
-	// filteredData.setPredicate(proc -> {
-	// // If filter text is empty, display all persons.
-	// if (newValue == null || newValue.isEmpty()) {
-	// return true;
-	// }
-	//
-	// // Compare first name and last name of every person with filter text.
-	// String lowerCaseFilter = newValue.toLowerCase();
-	//
-	// if (proc.getNameProperty().get().toLowerCase().contains(lowerCaseFilter)) {
-	// return true; // Filter matches first name.
-	// } else if
-	// (proc.getDescriptionProperty().get().toLowerCase().contains(lowerCaseFilter))
-	// {
-	// return true; // Filter matches last name.
-	// }
-	// return false; // Does not match.
-	// });
-	// });
-	//
-	// // 3. Add sorted (and filtered) data to the table.
-	// tblProcedures.setItems(filteredData);
-	// }
 
 	public void setProcedureTableItems() {
-		tblProcedures.setItems(controller.procedures);
+		tblProcedures.setItems(controller.procedureTypes);
 	}
 	
 	private void tableItemSelected() {
-		Procedure proc = tblProcedures.getSelectionModel().getSelectedItem();
+		ProcedureType proc = tblProcedures.getSelectionModel().getSelectedItem();
 //		fldId.setText(Integer.toString(proc.IdProperty().get()));
 		fldId.setText(String.valueOf(proc.getId()));
 		fldId.setDisable(true);
 		fldName.setText(proc.getName());
 		fldDescription.setText(proc.getDescription());
-		fldPrice.setText(proc.PriceProperty().toString());
+		fldPrice.setText(Double.toString(proc.PriceProperty().get()));
 
 		btnRemoveProcedure.setDisable(proc == null);
 		btnUpdateProcedure.setDisable(proc == null);

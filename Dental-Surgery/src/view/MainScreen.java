@@ -7,10 +7,6 @@ import application.Main;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableStringValue;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -27,7 +23,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -54,7 +49,7 @@ public class MainScreen {
 	private ClinicController controller;
 	private Stage primaryStage;
 	private static MainScreen instance;
-	private MyButton btnPatients, btnProcedures, btnInvoices, btnReports, btnMaintenance; 
+	private MyButton btnPatients, btnReports, btnMaintenance; 
 	private MyButton btnSave, btnSaveQuit, btnQuit;
 	private MenuItem menuFileSave, menuFileSaveQuit, menuFileQuit;
 	private MyButton activeButton;
@@ -65,8 +60,6 @@ public class MainScreen {
 	private VBox root;
 	private Group mainGroup;
 	private VBox patientPane;
-	private VBox procedurePane;
-	private VBox invoicePane;
 	private VBox reportPane;
 	private VBox maintenancePane;
 	private HBox mainArea;
@@ -136,22 +129,16 @@ public class MainScreen {
 		
 		mainGroup = new Group();
 		patientPane = PatientsScreen.getInstance().getPane();
-		procedurePane = ProceduresScreen.getInstance().getPane();
-		invoicePane = InvoicesScreen.getInstance().getPane();
 		reportPane = ReportsScreen.getInstance().getPane();
 		maintenancePane = MaintenanceScreen.getInstance().getPane();
 		
 		patientPane.prefWidthProperty().bind(mainAreaRight.widthProperty());
 		patientPane.prefHeightProperty().bind(mainAreaRight.heightProperty());
-		procedurePane.prefWidthProperty().bind(mainAreaRight.widthProperty());
-		procedurePane.prefHeightProperty().bind(mainAreaRight.heightProperty());
-		invoicePane.prefWidthProperty().bind(mainAreaRight.widthProperty());
-		invoicePane.prefHeightProperty().bind(mainAreaRight.heightProperty());
 		reportPane.prefWidthProperty().bind(mainAreaRight.widthProperty());
 		reportPane.prefHeightProperty().bind(mainAreaRight.heightProperty());
 		maintenancePane.prefWidthProperty().bind(mainAreaRight.widthProperty());
 		maintenancePane.prefHeightProperty().bind(mainAreaRight.heightProperty());
-		mainGroup.getChildren().addAll(patientPane, procedurePane, invoicePane, reportPane, maintenancePane);
+		mainGroup.getChildren().addAll(patientPane, reportPane, maintenancePane);
 		
 		mainAreaRight.getChildren().add(mainGroup);
 	}
@@ -161,7 +148,7 @@ public class MainScreen {
 		setupButtons();
 		Region spacing = new Region();
         VBox.setVgrow(spacing, Priority.ALWAYS);
-		mainAreaLeft.getChildren().addAll(btnPatients, btnProcedures, btnInvoices, btnReports, btnMaintenance, spacing, btnSave, btnSaveQuit, btnQuit);
+		mainAreaLeft.getChildren().addAll(btnPatients, btnReports, btnMaintenance, spacing, btnSave, btnSaveQuit, btnQuit);
 		BackgroundImage bgImage = new BackgroundImage(
 				new Image("/assets/background.png"), 
 				BackgroundRepeat.NO_REPEAT,
@@ -264,8 +251,6 @@ public class MainScreen {
 
 	private void setupButtons() {
 		btnPatients = new MyButton("Patients");
-		btnProcedures = new MyButton("Procedures");
-		btnInvoices = new MyButton("Invoices");
 		btnReports = new MyButton("Reports");
 		btnMaintenance = new MyButton("Maintenance");
 		btnSave = new MyButton("Save", "Success");
@@ -274,8 +259,6 @@ public class MainScreen {
 		activeButton = btnQuit;
 
 		btnPatients.setIcon("patient.png");
-		btnProcedures.setIcon("procedure.png");
-		btnInvoices.setIcon("invoice.png");
 		btnReports.setIcon("report.png");
 		btnMaintenance.setIcon("maintenance.png");
 		btnSave.setIcon("save.png");
@@ -332,7 +315,6 @@ public class MainScreen {
 		pane.getChildren().add(imgv);
 		pane.setPadding(new Insets(0,6,0,0));
 		menu.setGraphic(pane);
-//		menu.setContentDisplay(ContentDisplay.LEFT);
 	}
 
 	private void activatePane(VBox p, MyButton b) {
@@ -350,8 +332,6 @@ public class MainScreen {
 
 	private void setEventHandlers() {
 		btnPatients.setOnMouseClicked(e -> activatePane(patientPane, btnPatients));
-		btnProcedures.setOnMouseClicked(e -> activatePane(procedurePane, btnProcedures));
-		btnInvoices.setOnMouseClicked(e -> activatePane(invoicePane, btnInvoices));
 		btnReports.setOnMouseClicked(e -> activatePane(reportPane, btnReports));
 		btnMaintenance.setOnMouseClicked(e -> activatePane(maintenancePane, btnMaintenance));
 

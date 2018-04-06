@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 import controller.ClinicController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,6 +35,7 @@ import model.Invoice;
 import model.Patient;
 import model.Payment;
 import model.Procedure;
+import model.ProcedureType;
 import view.elements.MiniButton;
 import view.elements.MyTitle;
 
@@ -185,10 +188,14 @@ public class EditPatientScreen extends Stage {
 		btnAddInvoice.setOnAction(e -> {
 			patient.addInvoice(new Invoice());
 			invoices.setItems(patient.InvoicesProperty());
+			controller.unsavedChanges();
 		});
 		btnRemoveInvoice.setOnAction(e -> {
 			patient.removeInvoice(invoices.getSelectionModel().getSelectedItem());
 			invoices.setItems(patient.InvoicesProperty());
+			procedures.setItems(null);
+			payments.setItems(null);
+			controller.unsavedChanges();
 		});
 
 		
@@ -223,6 +230,7 @@ public class EditPatientScreen extends Stage {
 			getNewPayment(inv);
 			payments.setItems(inv.PaymentsProperty());
 			refreshTable(invoices);
+			controller.unsavedChanges();
 		});
 		btnRemovePayment.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
@@ -230,6 +238,7 @@ public class EditPatientScreen extends Stage {
 			inv.removePayment(pay);
 			payments.setItems(inv.PaymentsProperty());
 			refreshTable(invoices);
+			controller.unsavedChanges();
 		});
 		
 		
@@ -257,10 +266,12 @@ public class EditPatientScreen extends Stage {
 		
 		btnAddProcedure.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
-			Procedure p = new Procedure("Test proc.", "Test desc.", 90.00);
+			ProcedureType pt = controller.procedureTypes.get((int)(Math. random()*10));
+			Procedure p = new Procedure(pt);
 			inv.addProcedure(p);
 			procedures.setItems(inv.ProceduresProperty());
 			refreshTable(invoices);
+			controller.unsavedChanges();
 		});
 		btnRemoveProcedure.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
@@ -268,26 +279,17 @@ public class EditPatientScreen extends Stage {
 			inv.removeProcedure(proc);
 			procedures.setItems(inv.ProceduresProperty());
 			refreshTable(invoices);
+			controller.unsavedChanges();
 		});
 		
-		
-		
 		details2.getChildren().addAll(procTitle, procedures, proceduresButtons, payTitle, payments, paymentsButtons);
-
-		
-		
-		
 		
 		details1.setMaxHeight(Double.MAX_VALUE);
 		VBox.setVgrow(details1, Priority.ALWAYS);
 		details.getChildren().addAll(details1, details2);
 		
-		
 		HBox.setHgrow(details1, Priority.ALWAYS);
 		HBox.setHgrow(details2, Priority.ALWAYS);
-		
-//		details.setStyle("-fx-background-color: YELLOW;");
-		
 		
 		return details;
 	}
@@ -307,6 +309,9 @@ public class EditPatientScreen extends Stage {
 			if (inv.PaymentsNumberProperty().get() == 0) {
 				payments.setPlaceholder(new Label("No payments in this invoice"));
 			}
+		} else {
+			procedures.setItems(null);
+			payments.setItems(null);
 		}
 	}
 
@@ -342,9 +347,11 @@ public class EditPatientScreen extends Stage {
 								this.setTextFill(Color.GREEN);
 								this.setText("✔");
 							} else {
-								this.setTextFill(Color.RED);
+								this.setTextFill(Color.CORAL);
 								this.setText("✖");
 							}
+						} else {
+							this.setText("");
 						}
                     }
                 };
@@ -502,13 +509,23 @@ public class EditPatientScreen extends Stage {
 		buttons.getChildren().addAll(btnOkPayment, btnCancelPayment);
 		buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-		root.getChildren().addAll(paymentTitle, dateBox, amountBox, buttons);
+		root.getChildren().addAll(paymentTitle, amountBox, dateBox, buttons);
 		
 		stage.getIcons().add(new Image("/assets/payment.png"));
 		stage.initOwner(this);
 		stage.initModality(Modality.APPLICATION_MODAL); 
 		stage.setTitle("Add Payment - Max: " + inv.getAmount() + " EUR.");
 		
+		
+		// Listener to force Amount values to be numeric
+		fldAmount.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*(\\.\\d*)?")) {
+					fldAmount.setText(oldValue);
+				}
+			}
+		});
 		
 		btnOkPayment.setOnAction(e -> {
 			Date retDate = Date.from(date.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());

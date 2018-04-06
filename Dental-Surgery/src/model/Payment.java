@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -36,7 +37,9 @@ public class Payment implements Serializable  {
 	public void setId(int id) { this.id = id; } 
 	public static void setMaxId(int i) { _id = i; }
 
-	public StringProperty DateProperty() { return new SimpleStringProperty(date.toString()); }
+	public StringProperty DateProperty() { 
+		return new SimpleStringProperty(new SimpleDateFormat("d-MMM-yy").format(date));	
+	}
 	public Date getDate() { return date;	}
 	public void setDate(Date date) { this.date = date; }
 

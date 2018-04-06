@@ -5,6 +5,7 @@ import model.Invoice;
 import model.Patient;
 import model.Payment;
 import model.Procedure;
+import model.ProcedureType;
 import view.MainScreen;
 
 import java.io.BufferedReader;
@@ -29,7 +30,7 @@ public class ClinicController {
 	private static final String CLINICFILENAME = "src/data/clinic.ser";
 	private Clinic clinic;
 	private Boolean isSaved;
-	public ObservableList<Procedure> procedures;
+	public ObservableList<ProcedureType> procedureTypes;
 	public ObservableList<Patient> patients;
 
 	
@@ -45,22 +46,36 @@ public class ClinicController {
 			clinic.setPatientList(getPatientListFromCSV());
 			clinic.setProcedureList(getProcedureListFromCSV());
 			patients = ArrayListToObservableList(clinic.getPatients());
-			procedures = ArrayListToObservableList(clinic.getProcedures());
+			procedureTypes = ArrayListToObservableList(clinic.getProcedures());
 			System.out.println("  New database created from CSV with sample patients: " + patients.size());
-			System.out.println("  and sample procedures: " + procedures.size());
+			System.out.println("  and sample procedures: " + procedureTypes.size());
 			saveClinicToSerial();
 		} else {
 			patients = ArrayListToObservableList(clinic.getPatients());
-			procedures = ArrayListToObservableList(clinic.getProcedures());
-			System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedures.size());
+			procedureTypes = ArrayListToObservableList(clinic.getProcedures());
+			System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedureTypes.size());
 		}
 
-		// Getting patient max. Id so new patients don't overwrite previous ones
+		// Getting max. Ids for patients, procedure types, procedures, invoices and payments
+		// so new ones don't get repeated Ids.
 		Patient.setMaxId(getPatientMaxId());
+		ProcedureType.setMaxId(getProcedureTypeMaxId());
+		Invoice.setMaxId(getInvoiceMaxId());
 		Procedure.setMaxId(getProcedureMaxId());
 		Payment.setMaxId(getPaymentMaxId());
-		Procedure.setMaxId(getProcedureMaxId());
-		Procedure.setMaxInvoiceProcedureId(getInvoiceProcedureMaxId());
+		
+		int a = getPatientMaxId();
+		int b = getProcedureTypeMaxId();
+		int c = getInvoiceMaxId();
+		int d = getProcedureMaxId();
+		int e = getPaymentMaxId();
+		
+		System.out.println("Max Id Patients: " + a);
+		System.out.println("Max Id Procedure Types: " + b);
+		System.out.println("Max Id Invoices: " + c);
+		System.out.println("Max Id Procedures: " + d);
+		System.out.println("Max Id Payments: " + e);
+		
 		setSaved(true);
 	}
 	
@@ -79,8 +94,8 @@ public class ClinicController {
 		unsavedChanges();
 	}
 	
-	public void addProcedure(Procedure newProcedure) {
-		procedures.add(newProcedure);
+	public void addProcedure(ProcedureType newProcedure) {
+		procedureTypes.add(newProcedure);
 		unsavedChanges();
 	}
 	
@@ -92,9 +107,9 @@ public class ClinicController {
 		return id;
 	}
 	
-	private int getProcedureMaxId() {
+	private int getProcedureTypeMaxId() {
 		int id = -1;
-		for (Procedure p : procedures) {
+		for (ProcedureType p : procedureTypes) {
 			if (p.getId() > id) { id = p.getId(); }
 		}
 		return id;
@@ -115,7 +130,7 @@ public class ClinicController {
 		return id;
 	}
 	
-	private int getInvoiceProcedureMaxId() {
+	private int getProcedureMaxId() {
 		int id = -1;
 		
 		for (Patient pat : patients) {
@@ -124,6 +139,19 @@ public class ClinicController {
 					if (proc.getId() > id) {
 						id = proc.getId();
 					}
+				}
+			}
+		}
+		return id;
+	}
+	
+	private int getInvoiceMaxId() {
+		int id = -1;
+
+		for (Patient pat : patients) {
+			for (Invoice inv : pat.getInvoices()) {
+				if (inv.getId() > id) {
+					id = inv.getId();
 				}
 			}
 		}
@@ -160,8 +188,8 @@ public class ClinicController {
 		return plist;
 	}
 	
-	private ArrayList<Procedure> getProcedureListFromCSV() {
-		ArrayList<Procedure> procList = new ArrayList<Procedure>();
+	private ArrayList<ProcedureType> getProcedureListFromCSV() {
+		ArrayList<ProcedureType> procList = new ArrayList<ProcedureType>();
 		String csvFile = "src/data/procedures.csv";
 		String fieldDelimiter = "\\|";
 //		String fieldDelimiter = ",";
@@ -177,7 +205,7 @@ public class ClinicController {
 				
 //				System.out.println(Arrays.toString(fields));
 				
-				Procedure proc = new Procedure(fields[0].trim(), fields[1].trim(), Double.parseDouble(fields[2].trim()));
+				ProcedureType proc = new ProcedureType(fields[0].trim(), fields[1].trim(), Double.parseDouble(fields[2].trim()));
 				procList.add(proc);
 			}
 		} catch (FileNotFoundException ex) {
@@ -204,7 +232,7 @@ public class ClinicController {
 	
 	public void saveClinicToSerial() {
 		ArrayList<Patient> patientList = ObservableListToArrayList(patients);
-		ArrayList<Procedure> procedureList = ObservableListToArrayList(procedures);
+		ArrayList<ProcedureType> procedureList = ObservableListToArrayList(procedureTypes);
 		
 		clinic.setPatientList(patientList);
 		clinic.setProcedureList(procedureList);
