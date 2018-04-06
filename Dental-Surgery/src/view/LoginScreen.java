@@ -1,5 +1,6 @@
 package view;
 
+import controller.UserController;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,6 +27,7 @@ public class LoginScreen {
 	private static final int WIDTH = 500;
 	private static final int HEIGHT = 300;
 
+	private UserController uc;
 	private static LoginScreen instance;
 	private Stage primaryStage;
 	MyTextField fldUserName;
@@ -52,6 +54,9 @@ public class LoginScreen {
 		primaryStage.getIcons().add(new Image("/assets/icon.png" ));
 
 
+		uc = new UserController();
+		
+		
 		double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 
@@ -102,7 +107,10 @@ public class LoginScreen {
 
 		btnLogin.setOnMouseClicked(e -> {
 			if (isLoginAllowed()) {
-				launchLogin();
+				String user, pwd;
+				user = fldUserName.getText();
+				pwd = fldPassword.getText();
+				launchLogin(user, pwd);
 			} else {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setContentText("Please enter both username and password");
@@ -139,16 +147,25 @@ public class LoginScreen {
 		// System.out.println("Key pressed: " + e.getCode());
 
 		if (e.getCode() == KeyCode.ENTER) {
-			if (isLoginAllowed())
-				launchLogin();
+			if (isLoginAllowed()) {
+				String user, pwd;
+				user = fldUserName.getText();
+				pwd = fldPassword.getText();
+				launchLogin(user, pwd);
+			}
 		} else {
 			btnLogin.setDisable(!isLoginAllowed());
 		}
 	}
 
-	private void launchLogin() {
-		this.end();
-		LoadingScreen.getInstance();
+	private void launchLogin(String user, String pass) {
+		if (uc.validateLogin(user, pass)) {
+			this.end();
+			LoadingScreen.getInstance();
+			System.out.println("Login allowed");
+		} else {
+			System.out.println("Login forbidden");
+		}
 	}
 
 	private Stage getStage() {

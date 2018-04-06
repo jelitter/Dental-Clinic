@@ -33,7 +33,7 @@ public class Patient extends Person implements Serializable {
 	
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
-	public void setId(int _id2) { this.id = _id2; } 
+	public void setId(int id) { this.id = id; } 
 	public static void setMaxId(int i) { _id = i; }
 	
 	public ObservableList<Invoice> InvoicesProperty() { return FXCollections.observableArrayList(invoices); }
