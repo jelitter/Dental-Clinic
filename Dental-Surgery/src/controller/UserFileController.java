@@ -14,6 +14,7 @@ import model.Dentist;
 public class UserFileController {
 
 	private static final String USERSFILENAME = "src/data/users.ser";
+	private static final String LOGINFILENAME = "src/data/login.ser";
 	private ArrayList<Dentist> users;
 
 	public UserFileController() {
@@ -69,6 +70,15 @@ public class UserFileController {
 	private <T> ArrayList<T> getArrayList(ObservableList<T> olist) {
 		ArrayList<T> alist = (ArrayList<T>) olist.stream().collect(Collectors.toList());
 		return alist;
+	}
+
+	public void saveLogin(String user, String pass) {
+		Dentist d = new Dentist(user, pass);
+		FileStorage.storeObject(d, LOGINFILENAME);
+	}
+	public Dentist loadLogin() {
+		Dentist d = (Dentist) FileStorage.readObject(LOGINFILENAME);
+		return d;
 	}
 
 }

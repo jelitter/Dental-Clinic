@@ -21,6 +21,13 @@ public class Dentist extends Person implements Serializable {
 		this.setPassword(password);
 	}
 	
+	public Dentist(String username, String password) {
+		super("", "");
+//		this.setId(++_id);
+		this.setUsername(username);
+		this.setPassword(password);
+	}
+	
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; } 

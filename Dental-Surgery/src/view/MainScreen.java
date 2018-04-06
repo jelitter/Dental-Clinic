@@ -185,6 +185,8 @@ public class MainScreen {
 	public void show() {
 		primaryStage.show();
 	}
+	
+	
 
 	public void quit() {
 		
@@ -204,7 +206,7 @@ public class MainScreen {
 			
 			// Adding icon to Quit dialog
 			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-			stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/icon.png")));
+			stage.getIcons().add(new Image(Main.class.getResourceAsStream("/assets/quit.png")));
 			
 			// Centering dialog
 			Double alertX = primaryStage.getX() + primaryStage.getWidth()/2 - 90;

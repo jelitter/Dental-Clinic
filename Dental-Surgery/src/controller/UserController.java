@@ -57,14 +57,19 @@ public class UserController implements Serializable {
 
 
 	public boolean validateLogin(String user, String pass) {
-		
 		for (Dentist d: users ) {
 			if (d.getUsername().equals(user) && d.getPassword().equals(pass)) {
 				return true;
 			}
 		}
-
 		return false;
+	}
+
+	public void saveLogin(String user, String pass) {
+		fc.saveLogin(user, pass);
 	} 
+	public Dentist loadLogin() {
+		return fc.loadLogin();
+	}
 	
 }
