@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -45,7 +46,8 @@ public class EditPatientScreen extends Stage {
 	private final static double HEIGHT = 700;
 	
 	private ClinicController controller;
-	private Button btnSave,btnCancel,btnOkPayment,btnCancelPayment;
+	private Button btnSave,btnCancel;
+	private MiniButton btnOkPayment,btnCancelPayment, btnOkProc, btnCancelProc;
 	private HBox patientDetails;
 	private TextField fldFirstName, fldLastName, fldEmail, fldPhone, fldAddress;
 	private boolean updated;
@@ -227,7 +229,7 @@ public class EditPatientScreen extends Stage {
 	
 		btnAddPayment.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
-			getNewPayment(inv);
+			addNewPayment(inv);
 			payments.setItems(inv.PaymentsProperty());
 			refreshTable(invoices);
 			controller.unsavedChanges();
@@ -266,9 +268,9 @@ public class EditPatientScreen extends Stage {
 		
 		btnAddProcedure.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
-			ProcedureType pt = controller.procedureTypes.get((int)(Math. random()*10));
-			Procedure p = new Procedure(pt);
-			inv.addProcedure(p);
+			
+			addNewProcedure(inv);
+			
 			procedures.setItems(inv.ProceduresProperty());
 			refreshTable(invoices);
 			controller.unsavedChanges();
@@ -467,13 +469,12 @@ public class EditPatientScreen extends Stage {
 		return updated;
 	}
 	
-	private void getNewPayment(Invoice inv) {
+	private void addNewPayment(Invoice inv) {
 
 		Stage stage = new Stage();
 		VBox root = new VBox(10);
 		int width = 250;
 		int height = 300;
-		
 		
 		Scene scene = new Scene(root, width, height);
 		stage.setScene(scene);
@@ -502,8 +503,8 @@ public class EditPatientScreen extends Stage {
 		fldAmount.setText(Double.toString(inv.TotalAmountProperty().get() - inv.TotalAmountPaidProperty().get())); // Default to due amount
 		amountBox.getChildren().addAll(txtAmount, fldAmount);
 		
-		btnOkPayment = new Button("OK");
-		btnCancelPayment = new Button("Cancel");
+		btnOkPayment = new MiniButton("Ok");
+		btnCancelPayment = new MiniButton("Cancel");
 		HBox.setHgrow(btnOkPayment, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelPayment, Priority.ALWAYS);
 		buttons.getChildren().addAll(btnOkPayment, btnCancelPayment);
@@ -514,7 +515,7 @@ public class EditPatientScreen extends Stage {
 		stage.getIcons().add(new Image("/assets/payment.png"));
 		stage.initOwner(this);
 		stage.initModality(Modality.APPLICATION_MODAL); 
-		stage.setTitle("Add Payment - Max: " + inv.getAmount() + " EUR.");
+		stage.setTitle("Add Payment - Due: " + Double.toString(inv.TotalAmountProperty().get() - inv.TotalAmountPaidProperty().get()) + " EUR.");
 		
 		
 		// Listener to force Amount values to be numeric
@@ -540,6 +541,67 @@ public class EditPatientScreen extends Stage {
 		
 		stage.showAndWait();
 		
+	}
+	
+	private void editSelectedProcedure(Invoice inv) {
+		
+	}
+	
+	private void addNewProcedure(Invoice inv) {
+		
+		Stage stage = new Stage();
+		VBox root = new VBox(10);
+		int width = 250;
+		int height = 300;
+		
+		Scene scene = new Scene(root, width, height);
+		stage.setScene(scene);
+		stage.setResizable(false);
+		
+		stage.setWidth(width);
+		stage.setHeight(height);
+		root.setPadding(new Insets(20));
+		root.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); " + "-fx-background-size: cover;");
+		
+		MyTitle procedureTitle = new MyTitle("New Procedure");
+		
+		ComboBox<ProcedureType> procsCombo = new ComboBox<ProcedureType>(controller.procedureTypes);
+		procsCombo.getSelectionModel().select(0);
+		
+		HBox buttons = new HBox(10);
+		btnOkProc = new MiniButton("Ok");
+		btnCancelProc= new MiniButton("Cancel");
+		HBox.setHgrow(btnOkProc, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelProc, Priority.ALWAYS);
+		buttons.getChildren().addAll(btnOkProc, btnCancelProc);
+		buttons.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		root.getChildren().addAll(procedureTitle, procsCombo, buttons);
+		
+		stage.getIcons().add(new Image("/assets/procedure.png"));
+		stage.initOwner(this);
+		stage.initModality(Modality.APPLICATION_MODAL); 
+		stage.setTitle("Add Procedure");
+		
+		procsCombo.setOnAction(e -> {
+//			System.out.println("Selected: " + procsCombo.getSelectionModel().getSelectedItem());
+		});
+		
+		btnOkProc.setOnAction(e -> {
+			ProcedureType pt = procsCombo.getSelectionModel().getSelectedItem();
+			Procedure p = new Procedure(pt);
+			inv.addProcedure(p);
+			stage.close();
+		});
+		
+		btnCancelProc.setOnAction(e -> {
+			stage.close();
+		});
+		
+		
+		stage.showAndWait();
+
 	}
 	
 	protected void refreshTable(TableView<?> table) {
