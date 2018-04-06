@@ -519,12 +519,9 @@ public class EditPatientScreen extends Stage {
 		
 		
 		// Listener to force Amount values to be numeric
-		fldAmount.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d*(\\.\\d*)?")) {
-					fldAmount.setText(oldValue);
-				}
+		fldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue.matches("\\d*(\\.\\d*)?")) {
+				fldAmount.setText(oldValue);
 			}
 		});
 		

@@ -183,14 +183,11 @@ public class MaintenanceScreen extends Pane {
 		fldPrice.setOnKeyReleased(e -> updateClearButton());
 		
 		// Listener to force Price values to be numeric
-		fldPrice.textProperty().addListener(new ChangeListener<String>() {
-	        @Override
-	        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-	            if (!newValue.matches("\\d*(\\.\\d*)?")) {
-	            	fldPrice.setText(oldValue);
-	            }
-	        }
-	    });
+		fldPrice.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue.matches("\\d*(\\.\\d*)?")) {
+				fldPrice.setText(oldValue);
+			}
+		});
 	}
 	
 	private void clearFields() {
