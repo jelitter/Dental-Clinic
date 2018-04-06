@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -30,6 +31,7 @@ public class LoginScreen {
 	MyTextField fldUserName;
 	MyPasswordTextField fldPassword;
 	MyButton btnLogin, btnExit;
+	CheckBox remember;
 
 	public LoginScreen() {
 		instance = this;
@@ -76,6 +78,8 @@ public class LoginScreen {
 		fldUserName.setPromptText("User name");
 		fldPassword.setPromptText("Password");
 
+		remember = new CheckBox("Remember me");
+		
 		HBox myButtons = new HBox(20);
 		
 		Region spacing = new Region();
@@ -85,10 +89,11 @@ public class LoginScreen {
 		myButtons.setPadding(new Insets(40, 0, 0, 0));
 		myButtons.getChildren().addAll(btnLogin, spacing, btnExit);
 
-		root.getChildren().addAll(lblTitle, fldUserName, fldPassword, myButtons);
+		root.getChildren().addAll(lblTitle, fldUserName, fldPassword, remember, myButtons);
 		root.setAlignment(Pos.CENTER);
+		remember.setAlignment(Pos.BOTTOM_RIGHT);
 
-		primaryStage.setTitle("Dental Surgery Management");
+		primaryStage.setTitle("Dental Clinic");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 

@@ -44,15 +44,15 @@ public class ClinicController {
 		if (clinic == null) {
 			clinic = Clinic.getInstance();
 			clinic.setPatientList(getPatientListFromCSV());
-			clinic.setProcedureList(getProcedureListFromCSV());
+			clinic.setProcedureTypesList(getProcedureListFromCSV());
 			patients = ArrayListToObservableList(clinic.getPatients());
-			procedureTypes = ArrayListToObservableList(clinic.getProcedures());
+			procedureTypes = ArrayListToObservableList(clinic.getProcedureTypes());
 			System.out.println("  New database created from CSV with sample patients: " + patients.size());
 			System.out.println("  and sample procedures: " + procedureTypes.size());
 			saveClinicToSerial();
 		} else {
 			patients = ArrayListToObservableList(clinic.getPatients());
-			procedureTypes = ArrayListToObservableList(clinic.getProcedures());
+			procedureTypes = ArrayListToObservableList(clinic.getProcedureTypes());
 			System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedureTypes.size());
 		}
 
@@ -100,7 +100,7 @@ public class ClinicController {
 	}
 	
 	private int getPatientMaxId() {
-		int id = -1;
+		int id = 0;
 		for (Patient p : patients) {
 			if (p.getId() > id) { id = p.getId(); }
 		}
@@ -108,7 +108,7 @@ public class ClinicController {
 	}
 	
 	private int getProcedureTypeMaxId() {
-		int id = -1;
+		int id = 0;
 		for (ProcedureType p : procedureTypes) {
 			if (p.getId() > id) { id = p.getId(); }
 		}
@@ -116,7 +116,7 @@ public class ClinicController {
 	}
 	
 	private int getPaymentMaxId() {
-		int id = -1;
+		int id = 0;
 		
 		for (Patient pat : patients) {
 			for (Invoice inv : pat.getInvoices()) {
@@ -131,7 +131,7 @@ public class ClinicController {
 	}
 	
 	private int getProcedureMaxId() {
-		int id = -1;
+		int id = 0;
 		
 		for (Patient pat : patients) {
 			for (Invoice inv : pat.getInvoices()) {
@@ -146,7 +146,7 @@ public class ClinicController {
 	}
 	
 	private int getInvoiceMaxId() {
-		int id = -1;
+		int id = 0;
 
 		for (Patient pat : patients) {
 			for (Invoice inv : pat.getInvoices()) {
@@ -200,11 +200,7 @@ public class ClinicController {
 			br = new BufferedReader(new FileReader(csvFile));
 			String line;
 			while ((line = br.readLine()) != null) {
-//				System.out.println("Line:\n" + line);
 				String[] fields = line.split(fieldDelimiter, -1);
-				
-//				System.out.println(Arrays.toString(fields));
-				
 				ProcedureType proc = new ProcedureType(fields[0].trim(), fields[1].trim(), Double.parseDouble(fields[2].trim()));
 				procList.add(proc);
 			}
@@ -222,7 +218,6 @@ public class ClinicController {
 	 */
 	private Clinic getClinicFromSerial() {
 		Clinic clinic = (Clinic) FileStorage.readObject(CLINICFILENAME);
-//		System.out.println("Read clinic from serial file: " + (clinic != null));
 		return clinic;
 	}
 	
@@ -235,7 +230,7 @@ public class ClinicController {
 		ArrayList<ProcedureType> procedureList = ObservableListToArrayList(procedureTypes);
 		
 		clinic.setPatientList(patientList);
-		clinic.setProcedureList(procedureList);
+		clinic.setProcedureTypesList(procedureList);
 		
 		try {
 			FileStorage.storeObject(this.clinic, CLINICFILENAME);

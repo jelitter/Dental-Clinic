@@ -47,6 +47,7 @@ public class LoadingScreen {
 	private void go() {
 
 		primaryStage = new Stage();
+		primaryStage.setResizable(false);
 		primaryStage.getIcons().add(new Image("/assets/icon.png" ));
 
 		// Image
@@ -87,7 +88,7 @@ public class LoadingScreen {
 		lblStatus.setText("Loading database...");
 		lblStatus.autosize();
 
-		progress.getParent().minWidth(WIDTH);
+		progress.setMinWidth(root.getWidth() -80);
 
 		vbox.getChildren().add(title);
 		vbox.getChildren().add(imgv);

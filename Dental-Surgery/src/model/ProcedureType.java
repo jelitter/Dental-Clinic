@@ -14,8 +14,6 @@ public class ProcedureType implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
 	private int id;
-//	private static int _ipid = 0;
-//	private int ipid;
 	private String name, description;
 	private Double price;
 
@@ -31,11 +29,6 @@ public class ProcedureType implements Serializable {
 	public void setId(int id) { this.id = id; }
 	public static void setMaxId(int i) {	_id = i; }
 	
-//	public IntegerProperty InvoiceProcedureIdProperty() { return new SimpleIntegerProperty(ipid); }
-//	public int getInvoiceProcedureId() { return ipid; }
-//	public void setInvoiceProcedureId(int id) { this.ipid = id; }
-//	public static void setMaxInvoiceProcedureId(int id) { _ipid = id; }
-
 	public StringProperty NameProperty() { return new SimpleStringProperty(name); }
 	public String getName() {	return name; }
 	public void setName(String name) { this.name = name;	}
