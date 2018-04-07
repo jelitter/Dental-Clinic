@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 import controller.ClinicController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
@@ -30,6 +33,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import model.Invoice;
 import model.Patient;
 import model.Payment;
@@ -508,9 +512,17 @@ public class EditPatientScreen extends Stage {
 		
 		
 		// Listener to force Amount values to be numeric
+		final Tooltip tt = new Tooltip("Enter only a valid int\nor float number");
 		fldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*(\\.\\d*)?")) {
 				fldAmount.setText(oldValue);
+				tt.show(
+						fldAmount, 
+						fldAmount.localToScreen(fldAmount.getBoundsInLocal()).getMinX(), 
+						fldAmount.localToScreen(fldAmount.getBoundsInLocal()).getMaxY()); 
+				new Timeline(new KeyFrame(Duration.millis(1500), ae -> {
+					tt.hide();
+				})).play();
 			}
 		});
 		

@@ -83,6 +83,10 @@ public class Invoice implements Serializable  {
 	public double getAmountPaid() { return amountPaid; }
 	public void setAmountPaid(double amountPaid) { this.amountPaid = amountPaid; 	}
 
+	public DoubleProperty AmountPendingProperty() { return new SimpleDoubleProperty(amount - amountPaid); }
+	public double getAmountPending() { return amount - amountPaid; }
+//	public void setAmountPending(double amountPaid) { this.amountPaid = amountPaid; 	}
+	
 	public StringProperty DateProperty() {
 		return new SimpleStringProperty(new SimpleDateFormat("d-MMM-yy").format(date));
 	}
@@ -105,8 +109,9 @@ public class Invoice implements Serializable  {
 	
 	// Methods
 	
-	public DoubleProperty TotalAmountProperty() { return new SimpleDoubleProperty(getTotalAmount()); }
-
+	public DoubleProperty TotalAmountProperty() { 
+		return new SimpleDoubleProperty(getTotalAmount());
+	}
 	private double getTotalAmount() {
 		double total = 0.;
 		for (Procedure p: this.getProcedures()) {
@@ -115,13 +120,32 @@ public class Invoice implements Serializable  {
 		return total;
 	}
 	
-	public DoubleProperty TotalAmountPaidProperty() {return new SimpleDoubleProperty(getTotalPayments()); }
-	
+	public DoubleProperty TotalAmountPaidProperty() { 
+		return new SimpleDoubleProperty(getTotalPayments()); 
+	}
 	private double getTotalPayments() {
 		double total = 0.;
 		for (Payment p: this.getPayments()) {
 			total += p.getAmount();
 		}
 		return total;
+	}
+	
+	public DoubleProperty TotalAmountPendingProperty() {
+		//		return new SimpleDoubleProperty(getPendingPayments()); 
+		return new SimpleDoubleProperty( TotalAmountProperty().get() - TotalAmountPaidProperty().get() ); 
+	}
+	// private double getPendingPayments() {
+	// ret
+	// }
+	
+	
+	
+	public String toString() {
+		return "Invoice " + getId() 
+		+ " -> Total: " + TotalAmountProperty().get() 
+		+ " EUR, Pending: " + TotalAmountPendingProperty().get()
+		+ " EUR, Paid: " + TotalAmountPaidProperty().get() 
+		+ " EUR. - getAmount: "+ getAmount() +"\n";
 	}
 }

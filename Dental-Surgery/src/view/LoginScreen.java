@@ -166,7 +166,8 @@ public class LoginScreen {
 			if (!isLoginAllowed()) {
 				setStatus("Enter both username and password", Color.ORANGE);
 			} else {
-				setStatus("", Color.TRANSPARENT);
+				setStatus("Please login", Color.GREEN);
+//				setStatus("", Color.TRANSPARENT);
 			}
 		}
 	}

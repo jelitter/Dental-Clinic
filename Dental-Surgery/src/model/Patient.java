@@ -1,10 +1,15 @@
 package model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -41,6 +46,60 @@ public class Patient extends Person implements Serializable {
 	public void setInvoices(ArrayList<Invoice> invoices) { this.invoices = invoices; 	}
 	public void addInvoice(Invoice invoice) { this.invoices.add(invoice); }
 	public void removeInvoice(Invoice invoice) { this.invoices.remove(invoice); }
+
+	
+	public DoubleProperty TotalAmountProperty() {
+		return new SimpleDoubleProperty(getTotalAmount());
+	}
+	private Double getTotalAmount() {
+		Double total = 0.;
+		for (Invoice inv : getInvoices()) {
+			total += inv.TotalAmountProperty().get();
+		}
+		return total;
+	}
+	
+	public DoubleProperty TotalPaidProperty() {
+		return new SimpleDoubleProperty(getTotalPaid());
+	}
+	private Double getTotalPaid() {
+		Double total = 0.;
+		for (Invoice inv : getInvoices()) {
+			total += inv.TotalAmountPaidProperty().get();
+		}
+		return total;
+	}
+	
+	public DoubleProperty TotalPendingProperty() {
+		return new SimpleDoubleProperty(getPendingPayments());
+	}
+	private Double getPendingPayments() {
+		Double total = 0.;
+		for (Invoice inv : getInvoices()) {
+			total += inv.TotalAmountPendingProperty().get();
+		}
+		return total;
+	}
+
+	public StringProperty LastPaymentProperty() {
+		return new SimpleStringProperty(new SimpleDateFormat("d-MMM-yy").format(getLastPaymentDate()));
+	}
+	private Date getLastPaymentDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(1970, Calendar.JANUARY, 1, 0, 0, 0); // Jan 1st 1970 @00:00:00
+		Date date = cal.getTime();
+		
+		for (Invoice inv: getInvoices()) {
+			for (Payment p : inv.getPayments()) {
+				if (date.before(p.getDate())) {
+					date = p.getDate();
+				}
+			}
+		}
+		return date;
+	}
+
+
 	
 
 }

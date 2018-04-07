@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import application.Main;
 import controller.ClinicController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,6 +18,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
@@ -27,6 +30,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.ProcedureType;
 import view.elements.MyTitle;
 
@@ -183,9 +187,17 @@ public class MaintenanceScreen extends Pane {
 		fldPrice.setOnKeyReleased(e -> updateClearButton());
 		
 		// Listener to force Price values to be numeric
+		final Tooltip tt = new Tooltip("Enter only a valid int\nor float number");
 		fldPrice.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*(\\.\\d*)?")) {
 				fldPrice.setText(oldValue);
+				tt.show(
+						fldPrice, 
+						fldPrice.localToScreen(fldPrice.getBoundsInLocal()).getMinX(), 
+						fldPrice.localToScreen(fldPrice.getBoundsInLocal()).getMaxY()); 
+				new Timeline(new KeyFrame(Duration.millis(1500), ae -> {
+					tt.hide();
+				})).play();
 			}
 		});
 	}
