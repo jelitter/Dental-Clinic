@@ -7,8 +7,13 @@ import model.Payment;
 import model.Procedure;
 import model.ProcedureType;
 import view.MainScreen;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.WritableIntegerValue;
 import javafx.collections.ObservableList;
 
 
@@ -159,6 +164,33 @@ public class ClinicController {
 
 	public void save() {
 		fc.saveClinicToSerial(this);
+	}
+
+
+	public IntegerProperty TotalNumberOfProceduresProperty() {
+		int procs = 0;
+		for (Patient pat : patients) {
+			procs += pat.NumberOfProceduresProperty().get();
+		}
+		return new SimpleIntegerProperty(procs);
+	}
+	public IntegerProperty TotalNumberOfPaymentsProperty() {
+		int payms = 0;
+		for (Patient pat : patients) {
+			payms += pat.NumberOfPaymentsProperty().get();
+		}
+		return new SimpleIntegerProperty(payms);
+	}
+
+
+	public DoubleProperty TotalPendingProperty() {
+		double pending = 0.;
+		for (Patient pat : patients) { 
+			for (Invoice inv : pat.getInvoices()) {
+				pending += inv.TotalAmountPendingProperty().get();
+			}
+		}
+		return new SimpleDoubleProperty(pending);
 	}
 	
 }

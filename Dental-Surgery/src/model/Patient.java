@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.WritableDoubleValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -97,6 +98,21 @@ public class Patient extends Person implements Serializable {
 			}
 		}
 		return date;
+	}
+
+	public IntegerProperty NumberOfProceduresProperty() {
+		int procs = 0;
+		for (Invoice inv : getInvoices()) {
+			procs += inv.getProcedures().size();
+		}
+		return new SimpleIntegerProperty(procs);
+	}
+	public IntegerProperty NumberOfPaymentsProperty() {
+		int procs = 0;
+		for (Invoice inv : getInvoices()) {
+			procs += inv.getPayments().size();
+		}
+		return new SimpleIntegerProperty(procs);
 	}
 
 

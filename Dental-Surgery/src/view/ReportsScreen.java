@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,11 +25,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import model.Invoice;
 import model.Patient;
+import model.Payment;
+import model.Procedure;
 import view.elements.MyButton;
 import view.elements.MyTitle;
 
@@ -68,18 +73,82 @@ public class ReportsScreen extends Pane {
 		HBox control = new HBox(10);
 		createReportControl(control);
 		
-		VBox results = new VBox(10);
-		createReportTable(results);
+		VBox resultTable = new VBox(10);
+		createReportTable(resultTable);
 		
-		VBox.setVgrow(results, Priority.ALWAYS);
-		pane.getChildren().addAll(title, control, results, refresh);
+		ScrollPane resultText = new ScrollPane();
+		createReportText(resultText);
+		
+		VBox.setVgrow(resultTable, Priority.ALWAYS);
+		VBox.setVgrow(resultText, Priority.ALWAYS);
+		pane.getChildren().addAll(title, control, resultTable, resultText, refresh);
 		
 		refresh.setOnAction(e -> {
 			reportTable.refresh();
+			createReportText(resultText);
 		});
 
 	}
 
+	private void createReportText(ScrollPane resultText) {
+
+		TextFlow reportText = new TextFlow();
+		reportText.setStyle("-fx-background-color: WHITE;");
+		resultText.setFitToWidth(true);
+		resultText.setFitToHeight(true);
+		resultText.setPadding(new Insets(20));
+		reportText.setPadding(new Insets(40));
+		
+		Text title = new Text("Results report - " + 6 + " months.\n\n");
+		setFontH1(title);
+		
+		reportText.getChildren().addAll(title);
+		
+		Text totalProcs = new Text("Total procedures: " + controller.TotalNumberOfProceduresProperty().get() + "\n");
+		Text totalPayms = new Text("Total payments: " + controller.TotalNumberOfProceduresProperty().get() + "\n");
+		Text totalPending = new Text("Total pending: " + controller.TotalPendingProperty().get() + " EUR.\n");
+		setFontH2(totalProcs);
+		setFontH2(totalPayms);
+		setFontH2(totalPending);
+		reportText.getChildren().addAll(totalProcs, totalPayms, totalPending);
+
+		
+		for (Patient pat : reportTable.getItems()) {
+			Text name = new Text("\n" + pat.getId() + ". " + pat.getFirstName() + " " + pat.getLastName() + "\n");
+			setFontH2(name);
+			reportText.getChildren().addAll(name);
+			Text procs = new Text("\t" + pat.NumberOfProceduresProperty().get() + " procedures: " + pat.TotalAmountProperty().get() + " EUR.\n");
+			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments: " + pat.TotalPaidProperty().get() + " EUR.\n");
+			Text total = new Text("\tPending: " + pat.TotalPendingProperty().get() + " EUR.\n");
+			Text procDetails = new Text("");
+			setFontH4(procDetails);
+			for (Invoice inv : pat.getInvoices()) {
+				for (Procedure p : inv.getProcedures()) {
+					procDetails.setText(procDetails.getText() + "\n\t\t" + p.getName());;
+				}
+			}
+			
+			setFontH3(procs);
+			setFontH3(payms);
+			setFontH3(total);
+			reportText.getChildren().addAll(procs, procDetails, payms, total);
+		}
+		resultText.setContent(reportText);
+	}
+
+	private void setFontH1(Text text) {
+		text.setFont(Font.font("Arial", FontWeight.BLACK, 20));
+	}
+	private void setFontH2(Text text) {
+		text.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+	}
+	private void setFontH3(Text text) {
+		text.setFont(Font.font("Arial", FontWeight.MEDIUM, 14));
+	}
+	private void setFontH4(Text text) {
+		text.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+	}
+	
 	private void createReportControl(HBox control) {
 		CheckBox debtors = new CheckBox("Show only patients with pending invoices and no payments during the last");
 		TextField months = new TextField("6");
