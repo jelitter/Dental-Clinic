@@ -104,8 +104,8 @@ public class ReportsScreen extends Pane {
 		
 		reportText.getChildren().addAll(title);
 		
-		Text totalProcs = new Text("Total procedures: " + controller.TotalNumberOfProceduresProperty().get() + "\n");
-		Text totalPayms = new Text("Total payments: " + controller.TotalNumberOfProceduresProperty().get() + "\n");
+		Text totalProcs = new Text(controller.TotalNumberOfProceduresProperty().get() + " total procedures: " + controller.TotalAmountProperty().get()  + " EUR.\n");
+		Text totalPayms = new Text(controller.TotalNumberOfPaymentsProperty().get() + " total payments: " + controller.TotalPaidProperty().get() + " EUR.\n");
 		Text totalPending = new Text("Total pending: " + controller.TotalPendingProperty().get() + " EUR.\n");
 		setFontH2(totalProcs);
 		setFontH2(totalPayms);
@@ -114,17 +114,17 @@ public class ReportsScreen extends Pane {
 
 		
 		for (Patient pat : reportTable.getItems()) {
-			Text name = new Text("\n" + pat.getId() + ". " + pat.getFirstName() + " " + pat.getLastName() + "\n");
+			Text name = new Text("\n" + pat.getId() + ". " + pat.getFirstName() + " " + pat.getLastName());
 			setFontH2(name);
 			reportText.getChildren().addAll(name);
-			Text procs = new Text("\t" + pat.NumberOfProceduresProperty().get() + " procedures: " + pat.TotalAmountProperty().get() + " EUR.\n");
-			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments: " + pat.TotalPaidProperty().get() + " EUR.\n");
-			Text total = new Text("\tPending: " + pat.TotalPendingProperty().get() + " EUR.\n");
+			Text procs = new Text("\n\t" + pat.NumberOfProceduresProperty().get() + " procedures: " + pat.TotalAmountProperty().get() + " EUR.");
+			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments: " + pat.TotalPaidProperty().get() + " EUR.");
+			Text total = new Text("\n\tPending: " + pat.TotalPendingProperty().get() + " EUR.\n");
 			Text procDetails = new Text("");
 			setFontH4(procDetails);
 			for (Invoice inv : pat.getInvoices()) {
 				for (Procedure p : inv.getProcedures()) {
-					procDetails.setText(procDetails.getText() + "\n\t\t" + p.getName());;
+					procDetails.setText(procDetails.getText() + "\n\t\t" + p.getName());
 				}
 			}
 			

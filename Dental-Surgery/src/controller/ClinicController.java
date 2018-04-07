@@ -183,6 +183,26 @@ public class ClinicController {
 	}
 
 
+	public DoubleProperty TotalAmountProperty() {
+		double total = 0.;
+		for (Patient pat : patients) { 
+			for (Invoice inv : pat.getInvoices()) {
+				total += inv.TotalAmountProperty().get();
+			}
+		}
+		return new SimpleDoubleProperty(total);
+	}
+	
+	public DoubleProperty TotalPaidProperty() {
+		double paid = 0.;
+		for (Patient pat : patients) { 
+			for (Invoice inv : pat.getInvoices()) {
+				paid += inv.TotalAmountPaidProperty().get();
+			}
+		}
+		return new SimpleDoubleProperty(paid);
+	}
+	
 	public DoubleProperty TotalPendingProperty() {
 		double pending = 0.;
 		for (Patient pat : patients) { 
@@ -192,5 +212,8 @@ public class ClinicController {
 		}
 		return new SimpleDoubleProperty(pending);
 	}
+
+
+
 	
 }
