@@ -40,13 +40,18 @@ public class ProcedureType implements Serializable {
 	public DoubleProperty PriceProperty() { return new SimpleDoubleProperty(price); }
 	public double getPrice() { return price; }
 	public void setPrice(double price) { this.price = price; }
+	
+	public StringProperty PriceStringProperty() { return new SimpleStringProperty(String.format("%.2f", price)); }
 
+
+//	public String toString() {
+//		return String.format("Procedure: \t%s \nDescription: \t%s \nPrice: \t\t%s \n", this.getName(), this.getDescription(),
+//				String.format("%.2f", getPrice()));
+//	}
 
 	public String toString() {
-		return String.format("Procedure: \t%s \nDescription: \t%s \nPrice: \t\t%s \n", this.getName(), this.getDescription(),
-				String.format("%.2f", getPrice()));
+		return String.format("%s (%s) - %s", this.getName(), this.getDescription(), String.format("%.2f", getPrice()));
 	}
-
 
 
 }

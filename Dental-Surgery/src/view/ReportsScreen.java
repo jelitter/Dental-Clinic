@@ -5,34 +5,25 @@ import java.util.Arrays;
 import controller.ClinicController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import model.Invoice;
 import model.Patient;
-import model.Payment;
 import model.Procedure;
 import view.elements.MyButton;
 import view.elements.MyTitle;
@@ -105,8 +96,8 @@ public class ReportsScreen extends Pane {
 		reportText.getChildren().addAll(title);
 		
 		Text totalProcs = new Text(controller.TotalNumberOfProceduresProperty().get() + " total procedures: " + controller.TotalAmountProperty().get()  + " EUR.\n");
-		Text totalPayms = new Text(controller.TotalNumberOfPaymentsProperty().get() + " total payments: " + controller.TotalPaidProperty().get() + " EUR.\n");
-		Text totalPending = new Text("Total pending: " + controller.TotalPendingProperty().get() + " EUR.\n");
+		Text totalPayms = new Text(controller.TotalNumberOfPaymentsProperty().get() + " total payments  : " + controller.TotalPaidProperty().get() + " EUR.\n");
+		Text totalPending = new Text("  Total pending   : " + controller.TotalPendingProperty().get() + " EUR.\n");
 		setFontH2(totalProcs);
 		setFontH2(totalPayms);
 		setFontH2(totalPending);
@@ -118,8 +109,8 @@ public class ReportsScreen extends Pane {
 			setFontH2(name);
 			reportText.getChildren().addAll(name);
 			Text procs = new Text("\n\t" + pat.NumberOfProceduresProperty().get() + " procedures: " + pat.TotalAmountProperty().get() + " EUR.");
-			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments: " + pat.TotalPaidProperty().get() + " EUR.");
-			Text total = new Text("\n\tPending: " + pat.TotalPendingProperty().get() + " EUR.\n");
+			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments  : " + pat.TotalPaidProperty().get() + " EUR.");
+			Text total = new Text("\n\t  Pending   : " + pat.TotalPendingProperty().get() + " EUR.\n");
 			Text procDetails = new Text("");
 			setFontH4(procDetails);
 			for (Invoice inv : pat.getInvoices()) {
@@ -140,13 +131,13 @@ public class ReportsScreen extends Pane {
 		text.setFont(Font.font("Arial", FontWeight.BLACK, 20));
 	}
 	private void setFontH2(Text text) {
-		text.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+		text.setFont(Font.font("Courier New", FontWeight.BOLD, 16));
 	}
 	private void setFontH3(Text text) {
-		text.setFont(Font.font("Arial", FontWeight.MEDIUM, 14));
+		text.setFont(Font.font("Courier New", FontWeight.MEDIUM, 14));
 	}
 	private void setFontH4(Text text) {
-		text.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+		text.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 12));
 	}
 	
 	private void createReportControl(HBox control) {

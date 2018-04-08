@@ -24,6 +24,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -313,16 +314,16 @@ public class EditPatientScreen extends Stage {
 
 	private void setInvoicesTableColumns(TableView<Invoice> invoices) {
 		TableColumn<Invoice, Number> idCol = new TableColumn<Invoice,Number>("Id");
-		TableColumn<Invoice, Number> amountCol = new TableColumn<Invoice,Number>("Total");
-		TableColumn<Invoice, Number> paidCol = new TableColumn<Invoice,Number>("Paid");
+		TableColumn<Invoice, String> amountCol = new TableColumn<Invoice,String>("Total");
+		TableColumn<Invoice, String> paidCol = new TableColumn<Invoice,String>("Paid");
 		TableColumn<Invoice, String> dateCol = new TableColumn<Invoice, String>("Date");
 		TableColumn<Invoice, Boolean> isPaidCol = new TableColumn<Invoice, Boolean>("Is paid");
 		TableColumn<Invoice, Number> proceduresCol = new TableColumn<Invoice, Number>("Procedures");
 		TableColumn<Invoice, Number> paymentsCol = new TableColumn<Invoice, Number>("Payments");
 		
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
-		amountCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountProperty());
-		paidCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountPaidProperty());
+		amountCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountStringProperty());
+		paidCol.setCellValueFactory(cellData -> cellData.getValue().TotalAmountPaidStringProperty());
 		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
 		isPaidCol.setCellValueFactory(cellData -> cellData.getValue().IsPaidProperty());
 		proceduresCol.setCellValueFactory(cellData -> cellData.getValue().ProcedureNumberProperty());
@@ -389,10 +390,10 @@ public class EditPatientScreen extends Stage {
 	private void setPaymentsTableColumns(TableView<Payment> payments) {
 		TableColumn<Payment, Number> idCol = new TableColumn<Payment,Number>("Id");
 		TableColumn<Payment, String> dateCol = new TableColumn<Payment, String>("Date");
-		TableColumn<Payment, Number> amountCol = new TableColumn<Payment,Number>("Amount");
+		TableColumn<Payment, String> amountCol = new TableColumn<Payment,String>("Amount");
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		dateCol.setCellValueFactory(cellData -> cellData.getValue().DateProperty());
-		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountProperty());
+		amountCol.setCellValueFactory(cellData -> cellData.getValue().AmountStringProperty());
 		
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		dateCol.setStyle( "-fx-alignment: CENTER;");
@@ -414,12 +415,12 @@ public class EditPatientScreen extends Stage {
 		TableColumn<Procedure, Number> idCol = new TableColumn<Procedure,Number>("Id");
 		TableColumn<Procedure, String> nameCol = new TableColumn<Procedure, String>("Name");
 		TableColumn<Procedure, String> descCol = new TableColumn<Procedure, String>("Desc.");
-		TableColumn<Procedure, Number> priceCol = new TableColumn<Procedure, Number>("Price");
+		TableColumn<Procedure, String> priceCol = new TableColumn<Procedure, String>("Price");
 
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		nameCol.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		descCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
-		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
+		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceStringProperty());
 
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		priceCol.setStyle( "-fx-alignment: CENTER;");
@@ -466,8 +467,8 @@ public class EditPatientScreen extends Stage {
 
 		Stage stage = new Stage();
 		VBox root = new VBox(10);
-		int width = 250;
-		int height = 300;
+		int width = 300;
+		int height = 350;
 		
 		Scene scene = new Scene(root, width, height);
 		stage.setScene(scene);
@@ -475,7 +476,7 @@ public class EditPatientScreen extends Stage {
 		
 		stage.setWidth(width);
 		stage.setHeight(height);
-		root.setPadding(new Insets(20));
+		root.setPadding(new Insets(30));
 		root.setStyle(
 				"-fx-background-image: url(" + "'/assets/background.png'" + "); " + "-fx-background-size: cover;");
 		
@@ -493,7 +494,7 @@ public class EditPatientScreen extends Stage {
 		Text txtAmount = new Text("Amount:");
 		TextField fldAmount = new TextField();
 		fldAmount.setPromptText("Amount paid");
-		fldAmount.setText(Double.toString(inv.TotalAmountProperty().get() - inv.TotalAmountPaidProperty().get())); // Default to due amount
+		fldAmount.setText(inv.TotalAmountPendingStringProperty().get()); // Default to due amount
 		amountBox.getChildren().addAll(txtAmount, fldAmount);
 		
 		btnOkPayment = new MiniButton("Ok");
@@ -503,12 +504,15 @@ public class EditPatientScreen extends Stage {
 		buttons.getChildren().addAll(btnOkPayment, btnCancelPayment);
 		buttons.setAlignment(Pos.BOTTOM_RIGHT);
 
-		root.getChildren().addAll(paymentTitle, amountBox, dateBox, buttons);
+		Pane separator = new Pane();
+		
+		VBox.setVgrow(separator, Priority.ALWAYS);
+		root.getChildren().addAll(paymentTitle, amountBox, dateBox, separator, buttons);
 		
 		stage.getIcons().add(new Image("/assets/payment.png"));
 		stage.initOwner(this);
 		stage.initModality(Modality.APPLICATION_MODAL); 
-		stage.setTitle("Add Payment - Due: " + Double.toString(inv.TotalAmountProperty().get() - inv.TotalAmountPaidProperty().get()) + " EUR.");
+		stage.setTitle("Add Payment - Due: " + inv.TotalAmountPendingStringProperty().get() + " EUR.");
 		
 		
 		// Listener to force Amount values to be numeric

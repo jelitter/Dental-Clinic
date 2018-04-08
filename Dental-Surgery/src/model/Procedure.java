@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Procedure implements Serializable {
@@ -40,12 +41,7 @@ public class Procedure implements Serializable {
 	public DoubleProperty PriceProperty() { return getType().PriceProperty(); }
 	public double getPrice() { return getType().getPrice(); }
 	public void setPrice(double price) { getType().setPrice(price); }
-	
-
-	public static void setMaxInvoiceProcedureId(int invoiceProcedureMaxId) {
-		// TODO Auto-generated method stub
-		
+	public StringProperty PriceStringProperty() {
+		return new SimpleStringProperty(String.format("%.2f", getPrice()));
 	}
-	
-	
 }

@@ -119,6 +119,9 @@ public class Invoice implements Serializable  {
 		}
 		return total;
 	}
+	public StringProperty TotalAmountStringProperty() {
+		return new SimpleStringProperty(String.format("%.2f", getTotalAmount()));
+	}
 	
 	public DoubleProperty TotalAmountPaidProperty() { 
 		return new SimpleDoubleProperty(getTotalPayments()); 
@@ -130,14 +133,16 @@ public class Invoice implements Serializable  {
 		}
 		return total;
 	}
+	public StringProperty TotalAmountPaidStringProperty() {
+		return new SimpleStringProperty(String.format("%.2f", getTotalPayments()));
+	}
 	
 	public DoubleProperty TotalAmountPendingProperty() {
-		//		return new SimpleDoubleProperty(getPendingPayments()); 
 		return new SimpleDoubleProperty( TotalAmountProperty().get() - TotalAmountPaidProperty().get() ); 
 	}
-	// private double getPendingPayments() {
-	// ret
-	// }
+	public StringProperty TotalAmountPendingStringProperty() {
+		return new SimpleStringProperty(String.format("%.2f", TotalAmountPendingProperty().get()));
+	}
 	
 	
 	

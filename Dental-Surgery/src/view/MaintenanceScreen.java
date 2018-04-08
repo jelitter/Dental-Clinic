@@ -6,9 +6,6 @@ import application.Main;
 import controller.ClinicController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,7 +25,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.ProcedureType;
@@ -302,14 +298,15 @@ private void updateClearButton() {
 		TableColumn<ProcedureType, Number> idCol = new TableColumn<ProcedureType, Number>("Id");
 		TableColumn<ProcedureType, String> nameCol = new TableColumn<ProcedureType, String>("Name");
 		TableColumn<ProcedureType, String> descriptionCol = new TableColumn<ProcedureType, String>("Description");
-		TableColumn<ProcedureType, Number> priceCol = new TableColumn<ProcedureType, Number>("Price");
+		TableColumn<ProcedureType, String> priceCol = new TableColumn<ProcedureType, String>("Price");
 
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		nameCol.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		descriptionCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
 //		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
-		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
-//		Bindings.format("%.2f", cellData.getValue().PriceProperty()));
+		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceStringProperty());
+
+		
 		
 		tblProcedures.getColumns().addAll(Arrays.asList(idCol, nameCol, descriptionCol, priceCol));
 

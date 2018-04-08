@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.WritableIntegerValue;
 import javafx.collections.ObservableList;
 
 
