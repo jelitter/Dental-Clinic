@@ -47,6 +47,7 @@ public class ReportsScreen extends Pane {
 	private CheckBox debtors;
 	private TextField fldMonths;
 	private ScrollPane resultText;
+	private TableColumn<Patient, String> firstNameCol, lastNameCol;
 
 	public ReportsScreen() {
 		instance = this;
@@ -98,8 +99,8 @@ public class ReportsScreen extends Pane {
 
 	private void updateReport(ScrollPane resultText) {
 		setupReportFilter();
-		reportTable.refresh();
 		createReportText(resultText);
+		reportTable.refresh();
 	}
 
 	private void createReportText(ScrollPane resultText) {
@@ -118,7 +119,7 @@ public class ReportsScreen extends Pane {
 		if (debtors.isSelected()) {
 			title.setText("\nPending payments, but none during the last " + months + " months.\n");
 		} else {
-			title.setText("\nAll patients\n");
+			title.setText("\nAll patients, sorted by name\n");
 		}
 		
 		setFontH1(mainTitle);
@@ -126,9 +127,9 @@ public class ReportsScreen extends Pane {
 		
 		reportText.getChildren().addAll(mainTitle);
 		
-		Text totalProcs = new Text(controller.TotalNumberOfProceduresProperty().get() + " total procedures: " + controller.TotalAmountProperty().get()  + " EUR.\n");
-		Text totalPayms = new Text(controller.TotalNumberOfPaymentsProperty().get() + " total payments  : " + controller.TotalPaidProperty().get() + " EUR.\n");
-		Text totalPending = new Text("  Total pending   : " + controller.TotalPendingProperty().get() + " EUR.\n");
+		Text totalProcs = new Text(controller.TotalNumberOfProceduresProperty().get() + " total procedures: " + String.format("%.2f", controller.TotalAmountProperty().get())  + " EUR.\n");
+		Text totalPayms = new Text(controller.TotalNumberOfPaymentsProperty().get() + " total payments  : " + String.format("%.2f", controller.TotalPaidProperty().get()) + " EUR.\n");
+		Text totalPending = new Text("  Total pending   : " + String.format("%.2f", controller.TotalPendingProperty().get()) + " EUR.\n");
 		setFontH2(totalProcs);
 		setFontH2(totalPayms);
 		setFontH2(totalPending);
@@ -139,9 +140,9 @@ public class ReportsScreen extends Pane {
 			Text name = new Text("\n" + pat.getId() + ". " + pat.getFirstName() + " " + pat.getLastName());
 			setFontH2(name);
 			reportText.getChildren().addAll(name);
-			Text procs = new Text("\n\t" + pat.NumberOfProceduresProperty().get() + " procedures: " + pat.TotalAmountProperty().get() + " EUR.");
-			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments  : " + pat.TotalPaidProperty().get() + " EUR.");
-			Text total = new Text("\n\t  Pending   : " + pat.TotalPendingProperty().get() + " EUR.\n");
+			Text procs = new Text("\n\t" + pat.NumberOfProceduresProperty().get() + " procedures: " + String.format("%.2f", pat.TotalAmountProperty().get()) + " EUR.");
+			Text payms = new Text("\n\t" + pat.NumberOfPaymentsProperty().get() + " payments  : " + String.format("%.2f", pat.TotalPaidProperty().get()) + " EUR.");
+			Text total = new Text("\n\t  Pending   : " + String.format("%.2f", pat.TotalPendingProperty().get()) + " EUR.\n");
 			Text procDetails = new Text("");
 			setFontH4(procDetails);
 			for (Invoice inv : pat.getInvoices()) {
@@ -211,8 +212,8 @@ public class ReportsScreen extends Pane {
 		reportTable = new TableView<Patient>();
 		
 		TableColumn<Patient, Number> idCol = new TableColumn<Patient,Number>("Id");
-		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
-		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
+		firstNameCol = new TableColumn<Patient,String>("First Name");
+		lastNameCol = new TableColumn<Patient, String>("Last Name");
 		TableColumn<Patient, Number> totalCol = new TableColumn<Patient, Number>("Total");
 		TableColumn<Patient, Number> paidCol = new TableColumn<Patient, Number>("Paid");
 		TableColumn<Patient, Number> pendingCol = new TableColumn<Patient, Number>("Pending");
@@ -269,18 +270,20 @@ public class ReportsScreen extends Pane {
 				.TotalPaidPropertyLastMonths(num).get() == 0.0,
 				fldMonths.textProperty()));
 
-		FilteredList<Patient> filteredItems = new FilteredList<Patient>(FXCollections.observableList(controller.patients));
-		SortedList<Patient> filteredSortedItems = new SortedList<>(filteredItems);
+		FilteredList<Patient> filteredItems = new FilteredList<>(FXCollections.observableList(controller.patients));
+		SortedList<Patient> filteredSortedItems = new SortedList<>(filteredItems, (Patient p1, Patient p2) -> {
+			return p1.getFirstName().compareTo(p2.getFirstName());
+		});
 		
 		reportTable.setItems(filteredSortedItems);
 		filteredSortedItems.comparatorProperty().bind(reportTable.comparatorProperty());
-
+		
+		reportTable.getSortOrder().addAll(Arrays.asList(firstNameCol, lastNameCol));
+	
 		if (debtors.isSelected()) {
 			filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
 					() -> pendingPayments.get().and(noPaymentsLastMonths.get()), pendingPayments, noPaymentsLastMonths));
 		}
-	
-
 	}
 
 	private Patient tableItemSelected() {

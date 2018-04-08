@@ -78,7 +78,7 @@ public class MaintenanceScreen extends Pane {
 		setupButtons();
 		setButtonHandlers();
 		setFieldHandlers();
-		updateRemoveProcedureButton();
+		updateButtons();
 		updateClearButton();
 		
 		
@@ -88,10 +88,11 @@ public class MaintenanceScreen extends Pane {
 		
 	}
 
-	private void updateRemoveProcedureButton() {
+	private void updateButtons() {
 		ProcedureType proc = tblProcedures.getSelectionModel().getSelectedItem();
 		btnRemoveProcedure.setDisable(proc == null);
 		btnUpdateProcedure.setDisable(proc == null);
+		btnAddProcedure.setDisable(fldName.getText().isEmpty() || fldPrice.getText().isEmpty());
 	}
 
 	private void setButtonHandlers() {
@@ -107,7 +108,8 @@ public class MaintenanceScreen extends Pane {
 		String 	price = fldPrice.getText();
 		ProcedureType newProcedure = new ProcedureType(name, description, Double.parseDouble(price));
 		controller.addProcedure(newProcedure);
-		clearFields();
+//		clearFields();
+		updateButtons();
 	}
 	
 	private void updateProcedure() {
@@ -123,7 +125,8 @@ public class MaintenanceScreen extends Pane {
 			selectedProcedure.setPrice(Double.parseDouble(price));
 			
 			refreshTable();
-			clearFields();
+//			clearFields();
+			updateButtons();
 			controller.unsavedChanges();
 			
 		} catch (Exception e) {
