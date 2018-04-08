@@ -353,7 +353,8 @@ private void updateClearButton() {
 		fldId.setDisable(true);
 		fldName.setText(proc.getName());
 		fldDescription.setText(proc.getDescription());
-		fldPrice.setText(Double.toString(proc.PriceProperty().get()));
+//		fldPrice.setText(Double.toString(proc.PriceProperty().get()));
+		fldPrice.setText(proc.PriceStringProperty().get());
 
 		btnRemoveProcedure.setDisable(proc == null);
 		btnUpdateProcedure.setDisable(proc == null);

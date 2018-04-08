@@ -389,10 +389,15 @@ public class PatientsScreen extends Pane {
 		btnClear.setVisible(!updateClearButton);
 		btnSearchPatient.setDisable(updateClearButton);
 	}
-
+	
 	private void editPatient() {
+		Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
+		editPatient(selectedPatient);
+	}
+
+	public void editPatient(Patient selectedPatient) {
 		try {
-			Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
+//			Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
 			
 			
 			EditPatientScreen editPatient = new EditPatientScreen(selectedPatient);

@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -65,6 +66,7 @@ public class ReportsScreen extends Pane {
 		createReportControl(control);
 		
 		VBox resultTable = new VBox(10);
+		resultTable.setMinHeight(150);
 		createReportTable(resultTable);
 		
 		ScrollPane resultText = new ScrollPane();
@@ -202,7 +204,35 @@ public class ReportsScreen extends Pane {
         VBox.setVgrow(reportTable, Priority.ALWAYS);
         results.getChildren().addAll(reportTable);
         
+		reportTable.setOnMouseClicked(e -> {
+			Patient pat = tableItemSelected();
+			if (pat != null) {
+				if (e.getClickCount() == 2) {
+					PatientsScreen.getInstance().editPatient(pat);
+				}
+			}
+		});
+		
+		reportTable.setOnKeyReleased(e -> {
+			KeyCode key = e.getCode();
+			if (key.equals(KeyCode.UP) || key.equals(KeyCode.DOWN) || key.equals(KeyCode.PAGE_UP)
+					|| key.equals(KeyCode.PAGE_DOWN) || key.equals(KeyCode.HOME) || key.equals(KeyCode.END)) {
+				tableItemSelected();
+			} else if (key.equals(KeyCode.ENTER)) {
+				PatientsScreen.getInstance().editPatient(tableItemSelected());
+			}
+		});
+        
 	}
+	
+	private Patient tableItemSelected() {
+		Patient pat = reportTable.getSelectionModel().getSelectedItem();
+		if (pat != null) {
+			MainScreen.getInstance().setStatusText("Double click, <ENTER> or Edit button to edit Patient Id " + pat.getId());
+		}
+		return pat;
+	}
+
 
 	public VBox getPane() {
 		return pane;
