@@ -2,9 +2,11 @@ package model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javafx.beans.property.DoubleProperty;
@@ -14,6 +16,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.WritableDoubleValue;
+import javafx.beans.value.WritableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -71,6 +74,26 @@ public class Patient extends Person implements Serializable {
 		return total;
 	}
 	
+	public DoubleProperty TotalPaidPropertyLastMonths(int months) {
+
+		Calendar today = new GregorianCalendar();
+		today.setTime(new Date());
+		Calendar payDay = new GregorianCalendar();
+		
+		Double total = 0.;
+		for (Invoice inv : getInvoices()) {
+			for (Payment pay : inv.getPayments()) {
+				payDay.setTime(pay.getDate());
+				int diffYear = today.get(Calendar.YEAR) - payDay.get(Calendar.YEAR);
+				int diffMonth = diffYear * 12 + today.get(Calendar.MONTH) - payDay.get(Calendar.MONTH);
+				if (diffMonth <= months) {
+					total += pay.getAmount();
+				}
+			}
+		}
+		return new SimpleDoubleProperty(total);
+	}
+	
 	public DoubleProperty TotalPendingProperty() {
 		return new SimpleDoubleProperty(getPendingPayments());
 	}
@@ -114,7 +137,6 @@ public class Patient extends Person implements Serializable {
 		}
 		return new SimpleIntegerProperty(procs);
 	}
-
 
 	
 

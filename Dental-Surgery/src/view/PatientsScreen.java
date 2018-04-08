@@ -47,10 +47,6 @@ public class PatientsScreen extends Pane {
 	private HBox personalFields;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
-//	private FilteredList<Patient> filteredData;
-
-
-//	private FilteredList<Patient> filteredData;
 
 	public static PatientsScreen getInstance() {
 		if (instance == null) {

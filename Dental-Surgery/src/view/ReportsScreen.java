@@ -1,10 +1,17 @@
 package view;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import controller.ClinicController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -36,7 +43,10 @@ public class ReportsScreen extends Pane {
 	private TableView<Patient> reportTable;
 	private VBox pane;
 	private MyTitle title;
-	private MyButton refresh;
+	private MyButton btnRefresh;
+	private CheckBox debtors;
+	private TextField fldMonths;
+	private ScrollPane resultText;
 
 	public ReportsScreen() {
 		instance = this;
@@ -58,8 +68,8 @@ public class ReportsScreen extends Pane {
 		pane.setPadding(new Insets(20));
 		pane.setStyle("-fx-background-color: #DDEEFF");
 		title = new MyTitle("Reports");
-		refresh = new MyButton("Refresh");
-		refresh.setIcon("report.png");
+		btnRefresh = new MyButton("Refresh");
+		btnRefresh.setIcon("report.png");
 
 
 		HBox control = new HBox(10);
@@ -69,18 +79,27 @@ public class ReportsScreen extends Pane {
 		resultTable.setMinHeight(150);
 		createReportTable(resultTable);
 		
-		ScrollPane resultText = new ScrollPane();
+		resultText = new ScrollPane();
 		createReportText(resultText);
 		
 		VBox.setVgrow(resultTable, Priority.ALWAYS);
 		VBox.setVgrow(resultText, Priority.ALWAYS);
-		pane.getChildren().addAll(title, control, resultTable, resultText, refresh);
+		pane.getChildren().addAll(title, control, resultTable, resultText, btnRefresh);
 		
-		refresh.setOnAction(e -> {
-			reportTable.refresh();
-			createReportText(resultText);
+		btnRefresh.setOnAction(e -> {
+			updateReport(resultText);
 		});
 
+		debtors.setOnAction(e -> {
+			updateReport(resultText);
+		});
+
+	}
+
+	private void updateReport(ScrollPane resultText) {
+		setupReportFilter();
+		reportTable.refresh();
+		createReportText(resultText);
 	}
 
 	private void createReportText(ScrollPane resultText) {
@@ -92,10 +111,20 @@ public class ReportsScreen extends Pane {
 		resultText.setPadding(new Insets(20));
 		reportText.setPadding(new Insets(40));
 		
-		Text title = new Text("Results report - " + 6 + " months.\n\n");
+		Text mainTitle = new Text("Results report\n\n");
+		Text title = new Text("");
+		String months = fldMonths.getText().isEmpty() ? "0" : fldMonths.getText();
+		
+		if (debtors.isSelected()) {
+			title.setText("\nPending payments, but none during the last " + months + " months.\n");
+		} else {
+			title.setText("\nAll patients\n");
+		}
+		
+		setFontH1(mainTitle);
 		setFontH1(title);
 		
-		reportText.getChildren().addAll(title);
+		reportText.getChildren().addAll(mainTitle);
 		
 		Text totalProcs = new Text(controller.TotalNumberOfProceduresProperty().get() + " total procedures: " + controller.TotalAmountProperty().get()  + " EUR.\n");
 		Text totalPayms = new Text(controller.TotalNumberOfPaymentsProperty().get() + " total payments  : " + controller.TotalPaidProperty().get() + " EUR.\n");
@@ -103,7 +132,7 @@ public class ReportsScreen extends Pane {
 		setFontH2(totalProcs);
 		setFontH2(totalPayms);
 		setFontH2(totalPending);
-		reportText.getChildren().addAll(totalProcs, totalPayms, totalPending);
+		reportText.getChildren().addAll(totalProcs, totalPayms, totalPending, title);
 
 		
 		for (Patient pat : reportTable.getItems()) {
@@ -143,19 +172,19 @@ public class ReportsScreen extends Pane {
 	}
 	
 	private void createReportControl(HBox control) {
-		CheckBox debtors = new CheckBox("Show only patients with pending invoices and no payments during the last");
-		TextField months = new TextField("6");
+		debtors = new CheckBox("Show only patients with pending invoices and no payments during the last");
+		fldMonths = new TextField("6");
 		Text debtors2 = new Text("months.");
-		months.setAlignment(Pos.CENTER);
-		months.setPrefWidth(37);
+		fldMonths.setAlignment(Pos.CENTER);
+		fldMonths.setPrefWidth(37);
 		final Tooltip monthsTooltip = new Tooltip("Enter only digits");
-		months.textProperty().addListener((observable, oldValue, newValue) -> {
+		fldMonths.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
-				months.setText(oldValue);
+				fldMonths.setText(oldValue);
 				monthsTooltip.show(
-						months, 
-						months.localToScreen(months.getBoundsInLocal()).getMinX(), 
-						months.localToScreen(months.getBoundsInLocal()).getMaxY()); 
+						fldMonths, 
+						fldMonths.localToScreen(fldMonths.getBoundsInLocal()).getMinX(), 
+						fldMonths.localToScreen(fldMonths.getBoundsInLocal()).getMaxY()); 
 				new Timeline(new KeyFrame(Duration.millis(1500), ae -> {
 					monthsTooltip.hide();
 				})).play();
@@ -163,7 +192,8 @@ public class ReportsScreen extends Pane {
 			} else {
 				monthsTooltip.hide();
 			}
-			months.setPrefWidth(30 + months.getText().length() * 6);
+			fldMonths.setPrefWidth(30 + fldMonths.getText().length() * 6);
+			updateReport(resultText);
 	    });
 	
 		debtors.setFont(Font.font("Arial", 16));
@@ -172,8 +202,8 @@ public class ReportsScreen extends Pane {
 		    
 		debtors.setPrefHeight(24);
 		debtors2.prefHeight(24);
-		months.setPrefHeight(24);
-		control.getChildren().addAll(debtors, months, debtors2);
+		fldMonths.setPrefHeight(24);
+		control.getChildren().addAll(debtors, fldMonths, debtors2);
 	}
 	
 
@@ -204,6 +234,8 @@ public class ReportsScreen extends Pane {
         VBox.setVgrow(reportTable, Priority.ALWAYS);
         results.getChildren().addAll(reportTable);
         
+        setupReportFilter();
+        
 		reportTable.setOnMouseClicked(e -> {
 			Patient pat = tableItemSelected();
 			if (pat != null) {
@@ -225,6 +257,32 @@ public class ReportsScreen extends Pane {
         
 	}
 	
+	private void setupReportFilter() {
+		ObjectProperty<Predicate<Patient>> pendingPayments = new SimpleObjectProperty<>();
+		ObjectProperty<Predicate<Patient>> noPaymentsLastMonths = new SimpleObjectProperty<>();
+
+		pendingPayments.bind(Bindings.createObjectBinding(() -> patient -> patient.TotalPendingProperty().get() > 0));
+
+		int num = fldMonths.getText().isEmpty() ? 0 : Integer.parseInt(fldMonths.getText());
+		
+		noPaymentsLastMonths.bind(Bindings.createObjectBinding(() -> patient -> patient
+				.TotalPaidPropertyLastMonths(num).get() == 0.0,
+				fldMonths.textProperty()));
+
+		FilteredList<Patient> filteredItems = new FilteredList<Patient>(FXCollections.observableList(controller.patients));
+		SortedList<Patient> filteredSortedItems = new SortedList<>(filteredItems);
+		
+		reportTable.setItems(filteredSortedItems);
+		filteredSortedItems.comparatorProperty().bind(reportTable.comparatorProperty());
+
+		if (debtors.isSelected()) {
+			filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
+					() -> pendingPayments.get().and(noPaymentsLastMonths.get()), pendingPayments, noPaymentsLastMonths));
+		}
+	
+
+	}
+
 	private Patient tableItemSelected() {
 		Patient pat = reportTable.getSelectionModel().getSelectedItem();
 		if (pat != null) {
