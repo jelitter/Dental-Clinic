@@ -1,11 +1,11 @@
-# Dental Surgery
+# Dental Clinic
 ### JavaFX Project
 
 
 Work in progress. Preliminar screenshots:
 
 #### Login screen
-![Dental Surgery Login](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Login.png)
+![Dental Clinic Login](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Login.png)
 
 #### Loading screen
 ![Dental Clinic Loading](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Loading.png)
