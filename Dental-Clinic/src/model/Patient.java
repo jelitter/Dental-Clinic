@@ -2,24 +2,18 @@ package model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.WritableDoubleValue;
-import javafx.beans.value.WritableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 
 public class Patient extends Person implements Serializable {
 	
@@ -106,18 +100,17 @@ public class Patient extends Person implements Serializable {
 	}
 
 	public StringProperty LastPaymentProperty() {
-		return new SimpleStringProperty(new SimpleDateFormat("d-MMM-yy").format(getLastPaymentDate()));
+		Date lastPayment = getLastPaymentDate();
+		return new SimpleStringProperty(lastPayment == null ? "Never" : new SimpleDateFormat("d-MMM-yy").format(lastPayment));
 	}
 	private Date getLastPaymentDate() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(1970, Calendar.JANUARY, 1, 0, 0, 0); // Jan 1st 1970 @00:00:00
-		Date date = cal.getTime();
+		Date date = null;
 		
 		for (Invoice inv: getInvoices()) {
 			for (Payment p : inv.getPayments()) {
-				if (date.before(p.getDate())) {
+				if (date == null || date.before(p.getDate())) {
 					date = p.getDate();
-				}
+				} 
 			}
 		}
 		return date;
