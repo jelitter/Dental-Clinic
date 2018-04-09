@@ -32,7 +32,6 @@ public class ClinicFileController {
 			br = new BufferedReader(new FileReader(csvFile));
 			String line;
 			while ((line = br.readLine()) != null) {
-//				System.out.println("Line: " + line);
 				String[] fields = line.split(fieldDelimiter, -1);
 				Patient record = new Patient(fields[4], fields[3], fields[2], fields[0], fields[1]);
 				plist.add(record);
@@ -82,9 +81,9 @@ public class ClinicFileController {
 		
 		try {
 			FileStorage.storeObject(cc.clinic, CLINICFILENAME);
-			System.out.println("<- Data saved to: " + CLINICFILENAME);
+			// System.out.println("<- Data saved to: " + CLINICFILENAME);
 		} catch (Exception ex) {
-//			System.out.println("Error writting serial file - " + ex);
+			// System.out.println("Error writting serial file - " + ex);
 		}
 	}
 	

@@ -42,13 +42,14 @@ public class ClinicController {
 			clinic.setProcedureTypesList(fc.getProcedureListFromCSV());
 			patients = fc.getObservableList(clinic.getPatients());
 			procedureTypes = fc.getObservableList(clinic.getProcedureTypes());
-			System.out.println("  New database created from CSV with sample patients: " + patients.size());
-			System.out.println("  and sample procedures: " + procedureTypes.size());
+			// System.out.println(" New database created from CSV with sample patients: " +
+			// patients.size());
+			// System.out.println("  and sample procedures: " + procedureTypes.size());
 			fc.saveClinicToSerial(this);
 		} else {
 			patients = fc.getObservableList(clinic.getPatients());
 			procedureTypes = fc.getObservableList(clinic.getProcedureTypes());
-			System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedureTypes.size());
+			// System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedureTypes.size());
 		}
 
 		// Getting max. Ids for patients, procedure types, procedures, invoices and payments
@@ -211,8 +212,5 @@ public class ClinicController {
 		}
 		return new SimpleDoubleProperty(pending);
 	}
-
-
-
 	
 }

@@ -133,7 +133,6 @@ public class LoginScreen {
 			if (!remember.isSelected()) {
 				if (!saved.getUsername().isEmpty() && !saved.getPassword().isEmpty()) {
 					uc.saveLogin("", "");
-					System.out.println("Saven login removed");
 				}
 			}
 		});
@@ -167,7 +166,6 @@ public class LoginScreen {
 				setStatus("Enter both username and password", Color.ORANGE);
 			} else {
 				setStatus("Please login", Color.GREEN);
-//				setStatus("", Color.TRANSPARENT);
 			}
 		}
 	}
@@ -182,9 +180,7 @@ public class LoginScreen {
 			}
 			this.end();
 			LoadingScreen.getInstance();
-			System.out.println("Login allowed");
 		} else {
-			System.out.println("Login forbidden");
 			setStatus("Invalid username or password", Color.CORAL);
 		}
 	}

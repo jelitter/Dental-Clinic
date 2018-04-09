@@ -33,20 +33,16 @@ import view.elements.MyTitle;
 public class MaintenanceScreen extends Pane {
 
 	private static final double ID_WIDTH = 50.0;
-	
 	private static MaintenanceScreen instance;
 	private ClinicController controller;
 	private TableView<ProcedureType> tblProcedures;
-	
 	private HBox buttons;
 	private Button btnUpdateProcedure, btnRemoveProcedure, btnAddProcedure, btnClear;
 	private Region spacing;
 	private HBox fields;
 	private TextField fldId, fldName, fldDescription, fldPrice;
-	
 	private VBox pane;
 	private MyTitle title;
-
 	private FilteredList<ProcedureType> filteredData;
 
 	public MaintenanceScreen() {
@@ -162,12 +158,9 @@ public class MaintenanceScreen extends Pane {
 			if (result.get() == yes) {
 				tblProcedures.getItems().remove(selectedProcedure);
 			    controller.unsavedChanges();
-				System.out.println("Procedure removed");
 
-			} else if (result.get() == no) {
-				System.out.println("Procedure *not* removed");
-
-			}
+			} 
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			btnRemoveProcedure.setDisable(true);

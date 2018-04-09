@@ -49,7 +49,7 @@ public class EditPatientScreen extends Stage {
 	private final static double HEIGHT = 700;
 	
 	private ClinicController controller;
-	private Button btnSave,btnCancel;
+	private Button btnApply,btnCancel;
 	private MiniButton btnOkPayment,btnCancelPayment, btnOkProc, btnCancelProc;
 	private HBox patientDetails;
 	private TextField fldFirstName, fldLastName, fldEmail, fldPhone, fldAddress;
@@ -112,16 +112,16 @@ public class EditPatientScreen extends Stage {
 			
 
 		HBox buttons = new HBox(10);
-		btnSave = new Button("Apply");
+		btnApply = new Button("Apply");
 		btnCancel = new Button("Cancel");
-		buttons.getChildren().addAll(btnSave,btnCancel);
-		HBox.setHgrow(btnSave, Priority.ALWAYS);
+		buttons.getChildren().addAll(btnApply,btnCancel);
+		HBox.setHgrow(btnApply, Priority.ALWAYS);
 		HBox.setHgrow(btnCancel, Priority.ALWAYS);
-		btnSave.setPadding(new Insets(10, 20, 10, 20));
+		btnApply.setPadding(new Insets(10, 20, 10, 20));
 		btnCancel.setPadding(new Insets(10, 20, 10, 20));
-		btnSave.setMinWidth(120);
+		btnApply.setMinWidth(120);
 		btnCancel.setMinWidth(120);
-		btnSave.setStyle("-fx-base: LIGHTGREEN;");
+		btnApply.setStyle("-fx-base: LIGHTGREEN;");
 		btnCancel.setStyle("-fx-base: LIGHTCORAL;");
 		buttons.setAlignment(Pos.BASELINE_RIGHT);
 		buttons.setPadding(new Insets(20,0,0,0));
@@ -262,9 +262,7 @@ public class EditPatientScreen extends Stage {
 		
 		btnAddProcedure.setOnAction(e -> {
 			Invoice inv = invoices.getSelectionModel().getSelectedItem();
-			
 			addNewProcedure(inv);
-			
 			procedures.setItems(inv.ProceduresProperty());
 			refreshTable(invoices);
 			controller.unsavedChanges();
@@ -279,14 +277,11 @@ public class EditPatientScreen extends Stage {
 		});
 		
 		detailsRight.getChildren().addAll(procTitle, procedures, proceduresButtons, payTitle, payments, paymentsButtons);
-		
 		detailsLeft.setMaxHeight(Double.MAX_VALUE);
 		VBox.setVgrow(detailsLeft, Priority.ALWAYS);
 		details.getChildren().addAll(detailsLeft, detailsRight);
-		
 		HBox.setHgrow(detailsLeft, Priority.ALWAYS);
 		HBox.setHgrow(detailsRight, Priority.ALWAYS);
-		
 		return details;
 	}
 
@@ -441,7 +436,7 @@ public class EditPatientScreen extends Stage {
 
 	private void setButtonHandlers(Patient patient) {
 		
-		btnSave.setOnAction(e -> {
+		btnApply.setOnAction(e -> {
 			patient.setFirstName(fldFirstName.getText());
 			patient.setLastName(fldLastName.getText());
 			patient.setEmail(fldEmail.getText());
@@ -582,9 +577,6 @@ public class EditPatientScreen extends Stage {
 		stage.initModality(Modality.APPLICATION_MODAL); 
 		stage.setTitle("Add Procedure");
 		
-		procsCombo.setOnAction(e -> {
-//			System.out.println("Selected: " + procsCombo.getSelectionModel().getSelectedItem());
-		});
 		
 		btnOkProc.setOnAction(e -> {
 			ProcedureType pt = procsCombo.getSelectionModel().getSelectedItem();
@@ -597,9 +589,7 @@ public class EditPatientScreen extends Stage {
 			stage.close();
 		});
 		
-		
 		stage.showAndWait();
-
 	}
 	
 	protected void refreshTable(TableView<?> table) {

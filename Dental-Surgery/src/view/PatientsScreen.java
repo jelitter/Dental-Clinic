@@ -29,6 +29,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Patient;
@@ -44,7 +47,7 @@ public class PatientsScreen extends Pane {
 	private HBox buttons;
 	private Button btnSearchPatient, btnEditPatient, btnRemovePatient, btnAddPatient, btnClear;
 	private Region spacing;
-	private HBox personalFields;
+	private VBox personalFields;
 	private TextField fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber;
 	private VBox pane;
 
@@ -337,7 +340,10 @@ public class PatientsScreen extends Pane {
 
 	private void setupFields() {
 		// Fields
-		personalFields = new HBox(10);
+		personalFields = new VBox(10);
+		HBox fields = new HBox(10);
+		Text fieldsTitle = new Text("Filter or Add patient (* required fields)");
+		fieldsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 
 		fldId = new TextField("");
 		fldName = new TextField("");
@@ -345,7 +351,9 @@ public class PatientsScreen extends Pane {
 		fldEmail = new TextField("");
 		fldAddress = new TextField("");
 		fldPhoneNumber = new TextField("");
-		personalFields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
+		fields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
+		
+		personalFields.getChildren().addAll(fieldsTitle, fields);
 		
 		fldId.setMinWidth(50);
 		fldId.setPrefWidth(50);
@@ -393,26 +401,16 @@ public class PatientsScreen extends Pane {
 
 	public void editPatient(Patient selectedPatient) {
 		try {
-//			Patient selectedPatient = tblPatients.getSelectionModel().getSelectedItem();
-			
-			
 			EditPatientScreen editPatient = new EditPatientScreen(selectedPatient);
 			editPatient.initOwner(MainScreen.getInstance().getStage());
 			editPatient.initModality(Modality.APPLICATION_MODAL); 
 			editPatient.showAndWait();
 			
 			if (editPatient.wasUpdated()) {
-
 				refreshTable();
 				clearFields();
 				controller.unsavedChanges();
-				System.out.println("Changes.");
-
-			} else {
-				System.out.println("No changes.");
-
-			}
-			
+			} 			
 			
 		} catch (Exception e) {
 			System.out.println("Error updating patient - " + e.getMessage());

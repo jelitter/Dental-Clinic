@@ -47,8 +47,9 @@ public class UserFileController {
 			while ((line = br.readLine()) != null) {
 				System.out.println("User line: " + line);
 				String[] fields = line.split(fieldDelimiter, -1);
-				Dentist record = new Dentist(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5],
-						fields[6]);
+//				Dentist record = new Dentist(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5],
+//						fields[6]);
+				Dentist record = new Dentist(fields[0], fields[1]);
 				userList.add(record);
 			}
 		} catch (FileNotFoundException ex) {

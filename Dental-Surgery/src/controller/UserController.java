@@ -32,16 +32,12 @@ public class UserController implements Serializable {
 
 		if (users == null) {
 			users = fc.getUserListFromCSV();
-			System.out.println("  New user list created from CSV with sample dentists: " + users.size());
 			fc.saveUsersToSerial(users);
-		} else {
-			System.out.println("-> User list loaded from serial file. Users: " + users.size());
-		}
+		} 
 
 		// Getting max. Ids for users
 		// so new ones don't get repeated Ids.
 		Dentist.setMaxId(getDentistMaxId());
-		System.out.println("Max user Id: " + getDentistMaxId());	
 	}
 
 
