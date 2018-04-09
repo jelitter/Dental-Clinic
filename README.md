@@ -5,19 +5,19 @@
 Work in progress. Preliminar screenshots:
 
 #### Login screen
-![Dental Surgery Login](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Login.png)
+![Dental Surgery Login](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Login.png)
 
 #### Loading screen
-![Dental Surgery Loading](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Loading.png)
+![Dental Clinic Loading](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Loading.png)
 
 #### Patients screen
-![Dental Surgery Patients](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Patients.png)
+![Dental Clinic Patients](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Patients.png)
 
 #### Reports screen
-![Dental Surgery Reports](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Reports.png)
+![Dental Clinic Reports](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Reports.png)
 
 #### Procedures screen
-![Dental Surgery Procedures](https://github.com/jelitter/Dental-Surgery/blob/master/DentalSurgery-Procedures.png)
+![Dental Clinic Procedures](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Procedures.png)
 
 
 
