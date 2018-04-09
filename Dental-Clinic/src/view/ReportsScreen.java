@@ -41,7 +41,7 @@ public class ReportsScreen extends Pane {
 	private ClinicController controller;
 	private static ReportsScreen instance;
 	private TableView<Patient> reportTable;
-	private VBox pane;
+	private VBox pane, resultTable;
 	private MyTitle title;
 	private MyButton btnRefresh;
 	private CheckBox debtors;
@@ -76,7 +76,7 @@ public class ReportsScreen extends Pane {
 		HBox control = new HBox(10);
 		createReportControl(control);
 		
-		VBox resultTable = new VBox(10);
+		resultTable = new VBox(10);
 		resultTable.setMinHeight(150);
 		createReportTable(resultTable);
 		
@@ -232,6 +232,8 @@ public class ReportsScreen extends Pane {
         
         reportTable.setItems(controller.patients);
         
+        if (resultText != null)
+        	VBox.setVgrow(resultText, Priority.ALWAYS);
         VBox.setVgrow(reportTable, Priority.ALWAYS);
         results.getChildren().addAll(reportTable);
         
