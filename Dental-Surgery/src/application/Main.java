@@ -11,8 +11,6 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			LoginScreen.getInstance();
-//			 LoadingScreen.getInstance();
-//			 MainScreen.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -22,8 +20,3 @@ public class Main extends Application {
 		launch(args);
 	}
 }
-
-// TO-DO List:
-// [x] Dialog
-// [x] Menu
-// [ ] allow user to remember login on system and bypass login
