@@ -267,12 +267,8 @@ public class PatientsScreen extends Pane {
 				setPatientsTableItems();
 			    controller.unsavedChanges();
 //			    refreshTable();
-				System.out.println("Patient removed");
 
-			} else if (result.get() == no) {
-				System.out.println("Patient *not* removed");
-
-			}
+			} 
 		} catch (Exception e) {
 			System.out.println(e);
 			btnRemovePatient.setDisable(true);
@@ -280,8 +276,6 @@ public class PatientsScreen extends Pane {
 	}
 	
 	private void setButtonHandlers() {
-//		btnUpdatePatient.setOnMouseClicked(e -> updatePatient());
-		
 		btnEditPatient.setOnMouseClicked(e -> editPatient() );
 		btnRemovePatient.setOnMouseClicked(e -> removePatient());
 		btnAddPatient.setOnMouseClicked(e -> addPatient());

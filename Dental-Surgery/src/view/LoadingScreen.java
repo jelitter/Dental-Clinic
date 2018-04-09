@@ -82,7 +82,7 @@ public class LoadingScreen {
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
 
-		Text title = new Text("Dental Surgery v1.0");
+		Text title = new Text("Dental Clinic v1.0");
 		title.setStyle("-fx-font: 22 Arial; -fx-base: #dd8800;");
 
 		lblStatus.setText("Loading database...");
@@ -98,7 +98,7 @@ public class LoadingScreen {
 
 		vbox.setAlignment(Pos.TOP_CENTER);
 
-		primaryStage.setTitle("Dental Surgery Management");
+		primaryStage.setTitle("Dental Clinic");
 		primaryStage.setScene(scene);
 		show();
 

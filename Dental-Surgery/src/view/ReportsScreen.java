@@ -178,9 +178,9 @@ public class ReportsScreen extends Pane {
 		Text debtors2 = new Text("months.");
 		fldMonths.setAlignment(Pos.CENTER);
 		fldMonths.setPrefWidth(37);
-		final Tooltip monthsTooltip = new Tooltip("Enter only digits");
+		final Tooltip monthsTooltip = new Tooltip("Enter 1 to 3 digits");
 		fldMonths.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (!newValue.matches("\\d*")) {
+			if (!newValue.matches("\\d{0,3}")) {
 				fldMonths.setText(oldValue);
 				monthsTooltip.show(
 						fldMonths, 

@@ -52,6 +52,7 @@ public class MainScreen {
 	private MyButton btnPatients, btnReports, btnMaintenance; 
 	private MyButton btnSave, btnSaveQuit, btnQuit;
 	private MenuItem menuFileSave, menuFileSaveQuit, menuFileQuit;
+	private MenuItem menuOptionsSerial, menuOptionsDB;
 	private MyButton activeButton;
 	private VBox mainAreaLeft;
 	private Pane mainAreaRight;
@@ -194,7 +195,7 @@ public class MainScreen {
 			Platform.exit();
 		} else {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Quit Dental Surgery Management");
+			alert.setTitle("Quit " + APP_TITLE);
 			alert.setHeaderText("Warning: There are unsaved changes");
 			alert.setContentText("Are you sure you want to quit without saving these changes?\n ");
 			
@@ -277,10 +278,16 @@ public class MainScreen {
 		menuFileSave= new MenuItem("Save");
 		menuFileSaveQuit = new MenuItem("Save and Quit   "); 
 		menuFileQuit = new MenuItem("Quit");
-
 		setMenuIcon(menuFileSave, "save.png");
 		setMenuIcon(menuFileSaveQuit, "savequit.png");
 		setMenuIcon(menuFileQuit, "quit.png");
+
+		menuOptionsSerial = new MenuItem("Use serial file    ✔");
+		menuOptionsDB = new MenuItem("Use database");
+		setMenuIcon(menuOptionsSerial, "serial.png");
+		setMenuIcon(menuOptionsDB, "db.png");
+		menuOptionsSerial.setDisable(true);
+		menuOptionsDB.setDisable(true);
 		
 		menuFileSaveQuit.setDisable(true);
 		
@@ -293,7 +300,8 @@ public class MainScreen {
 		menuFileQuit.setOnAction(e -> quit());
 		
 		menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit, menuFileQuit);
-
+		menuOptions.getItems().addAll(menuOptionsSerial, menuOptionsDB);
+		
 		menuItems.add(menuFile);
 		menuItems.add(menuOptions);
 		menuItems.add(menuHelp);
