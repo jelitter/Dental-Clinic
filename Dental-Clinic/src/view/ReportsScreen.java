@@ -20,11 +20,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -67,9 +69,6 @@ public class ReportsScreen extends Pane {
 		controller = MainScreen.getInstance().getController();
 		pane = new VBox(10);
 		pane.setPadding(new Insets(20));
-		pane.setStyle("-fx-background-color: #DDEEFF");
-		pane.setStyle(
-				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
 		title = new MyTitle("Reports");
 		btnRefresh = new MyButton("Refresh");
 		btnRefresh.setIcon("report.png");
@@ -111,8 +110,14 @@ public class ReportsScreen extends Pane {
 		reportText.setStyle("-fx-background-color: WHITE;");
 		resultText.setFitToWidth(true);
 		resultText.setFitToHeight(true);
-		resultText.setPadding(new Insets(20));
+//		resultText.setPadding(new Insets(20));
 		reportText.setPadding(new Insets(40));
+		
+		DropShadow shadow = new DropShadow();
+		shadow.setOffsetY(0.0f);
+		shadow.setOffsetX(0.0f);
+		shadow.setColor(Color.BLACK);
+		resultText.setEffect(shadow);
 		
 		Text mainTitle = new Text("Results report\n\n");
 		Text title = new Text("");

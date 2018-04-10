@@ -87,6 +87,8 @@ public class MainScreen {
 		scene = new Scene(root, WIDTH, HEIGHT);
 		
 		root.setStyle("-fx-background-color: WHITE");
+		root.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
 		
 		setupStage();
 		setupMenu();
@@ -150,17 +152,17 @@ public class MainScreen {
 		Region spacing = new Region();
         VBox.setVgrow(spacing, Priority.ALWAYS);
 		mainAreaLeft.getChildren().addAll(btnPatients, btnReports, btnMaintenance, spacing, btnSave, btnSaveQuit, btnQuit);
-		BackgroundImage bgImage = new BackgroundImage(
-				new Image("/assets/background.png"), 
-				BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-				BackgroundPosition.CENTER, 
-				BackgroundSize.DEFAULT
-				);
-		
-		Background bg = new Background(bgImage);
-		mainAreaLeft.setBackground(bg);
-		root.setBackground(bg);
+//		BackgroundImage bgImage = new BackgroundImage(
+//				new Image("/assets/background.png"), 
+//				BackgroundRepeat.NO_REPEAT,
+//                BackgroundRepeat.NO_REPEAT,
+//				BackgroundPosition.CENTER, 
+//				BackgroundSize.DEFAULT
+//				);
+//		
+//		Background bg = new Background(bgImage);
+//		mainAreaLeft.setBackground(bg);
+//		root.setBackground(bg);
 	}
 
 	private void setupStatusBar() {

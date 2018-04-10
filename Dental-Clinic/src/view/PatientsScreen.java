@@ -69,9 +69,6 @@ public class PatientsScreen extends Pane {
 		pane = new VBox(10);
 		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
-		pane.setStyle("-fx-background-color: #DDEEFF");
-		pane.setStyle(
-				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
 
 		// Title
 		title = new MyTitle("Patients");
