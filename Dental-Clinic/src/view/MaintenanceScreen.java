@@ -66,6 +66,8 @@ public class MaintenanceScreen extends Pane {
 		pane = new VBox(10);
 		pane.setPadding(new Insets(20));
 		pane.setStyle("-fx-background-color: #DDEEFF");
+		pane.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
 
 		title = new MyTitle("Procedure List");
 		//Table
@@ -80,8 +82,6 @@ public class MaintenanceScreen extends Pane {
 		
 		pane.getChildren().addAll(title, tblProcedures, fields, buttons);
 		VBox.setVgrow(tblProcedures, Priority.ALWAYS);
-		pane.setStyle("-fx-background-color: #DDDDFF");
-		
 	}
 
 	private void updateButtons() {

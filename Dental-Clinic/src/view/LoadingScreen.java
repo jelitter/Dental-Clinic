@@ -7,15 +7,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import view.elements.MyTitle;
 
 public class LoadingScreen {
 
@@ -58,6 +61,11 @@ public class LoadingScreen {
 		imgv.setPreserveRatio(true);
 		imgv.setSmooth(true);
 		imgv.setCache(true);
+		DropShadow ds = new DropShadow();
+		ds.setOffsetY(0.0f);
+		ds.setOffsetX(0.0f);
+		ds.setColor(Color.BLACK);
+		imgv.setEffect(ds);
 
 		BorderPane root = new BorderPane();
 		VBox vbox = new VBox(10);
@@ -65,6 +73,9 @@ public class LoadingScreen {
 		root.setPrefWidth(WIDTH -80);
 		root.setTop(vbox);
 		root.setBottom(progress);
+		root.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
+
 
 		VBox.setVgrow(root, Priority.ALWAYS);
 		root.setMinWidth(WIDTH);
@@ -82,8 +93,7 @@ public class LoadingScreen {
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
 
-		Text title = new Text("Dental Clinic v1.0");
-		title.setStyle("-fx-font: 22 Arial; -fx-base: #dd8800;");
+		MyTitle title = new MyTitle("Dental Clinic v1.0");
 
 		lblStatus.setText("Loading database...");
 		lblStatus.autosize();

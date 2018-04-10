@@ -68,6 +68,8 @@ public class ReportsScreen extends Pane {
 		pane = new VBox(10);
 		pane.setPadding(new Insets(20));
 		pane.setStyle("-fx-background-color: #DDEEFF");
+		pane.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
 		title = new MyTitle("Reports");
 		btnRefresh = new MyButton("Refresh");
 		btnRefresh.setIcon("report.png");
@@ -291,7 +293,7 @@ public class ReportsScreen extends Pane {
 	private Patient tableItemSelected() {
 		Patient pat = reportTable.getSelectionModel().getSelectedItem();
 		if (pat != null) {
-			MainScreen.getInstance().setStatusText("Double click, <ENTER> or Edit button to edit Patient Id " + pat.getId());
+			MainScreen.getInstance().setStatusText("Double click or press <ENTER> to edit Patient Id " + pat.getId());
 		}
 		return pat;
 	}

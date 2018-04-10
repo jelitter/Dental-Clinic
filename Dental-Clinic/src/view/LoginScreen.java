@@ -1,19 +1,27 @@
 package view;
 
+import java.util.Arrays;
+
 import controller.UserController;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -24,6 +32,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Dentist;
+import model.ProcedureType;
 import view.elements.MyButton;
 import view.elements.MyPasswordTextField;
 import view.elements.MyTextField;
@@ -31,7 +40,7 @@ import view.elements.MyTextField;
 public class LoginScreen {
 
 	private static final int WIDTH = 500;
-	private static final int HEIGHT = 300;
+	private static final int HEIGHT = 330;
 
 	private UserController uc;
 	private static LoginScreen instance;
@@ -88,7 +97,24 @@ public class LoginScreen {
 		fldUserName.setPromptText("User name");
 		fldPassword.setPromptText("Password");
 
+		HBox loginOptions = new HBox(10);
 		remember = new CheckBox("Remember me");
+		Pane separator = new Pane();
+		
+		VBox dataSource = new VBox(10);
+		ToggleGroup radioGroup = new ToggleGroup();
+		RadioButton dataSource1 = new RadioButton("Serial File");
+		RadioButton dataSource2 = new RadioButton("Database (soon!)");
+		dataSource1.setSelected(true);
+		dataSource2.setDisable(true);
+		dataSource1.setToggleGroup(radioGroup);
+		dataSource2.setToggleGroup(radioGroup);
+		dataSource.getChildren().addAll(dataSource1, dataSource2);
+		dataSource.setPrefWidth(200);
+		loginOptions.setAlignment(Pos.TOP_CENTER);
+		loginOptions.setPadding(new Insets(10,0,0,0));
+		HBox.setHgrow(separator, Priority.ALWAYS);
+		loginOptions.getChildren().addAll(remember, separator, dataSource);
 		
 		Dentist saved = uc.loadLogin();
 		if (saved != null) {
@@ -109,10 +135,10 @@ public class LoginScreen {
         HBox.setHgrow(spacing, Priority.ALWAYS);
 		
 		myButtons.setAlignment(Pos.CENTER);
-		myButtons.setPadding(new Insets(40, 0, 0, 0));
+		myButtons.setPadding(new Insets(20, 0, 0, 0));
 		myButtons.getChildren().addAll(btnLogin, spacing, btnExit);
 
-		root.getChildren().addAll(status, fldUserName, fldPassword, remember, myButtons);
+		root.getChildren().addAll(status, fldUserName, fldPassword, loginOptions, myButtons);
 		root.setAlignment(Pos.CENTER);
 		remember.setAlignment(Pos.BOTTOM_RIGHT);
 
@@ -140,6 +166,8 @@ public class LoginScreen {
 		btnExit.setOnMouseClicked(e -> {
 			Platform.exit();
 		});
+		
+
 	}
 
 	public void end() {
