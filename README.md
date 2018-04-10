@@ -2,7 +2,7 @@
 ### JavaFX Project
 
 
-Work in progress. Preliminar screenshots:
+Screenshots of the several screens:
 
 #### Login screen
 ![Dental Clinic Login](https://github.com/jelitter/Dental-Clinic/blob/master/DentalClinic-Login.png)
