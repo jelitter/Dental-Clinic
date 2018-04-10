@@ -83,6 +83,8 @@ public class LoginScreen {
 
 		VBox root = new VBox(10);
 		root.setPadding(new Insets(20));
+		root.setStyle(
+				"-fx-background-image: url(" + "'/assets/background.png'" + "); -fx-background-size: cover;");
 		Scene scene = new Scene(root, WIDTH, HEIGHT);
 
 		fldUserName = new MyTextField();
