@@ -24,11 +24,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -152,17 +147,6 @@ public class MainScreen {
 		Region spacing = new Region();
         VBox.setVgrow(spacing, Priority.ALWAYS);
 		mainAreaLeft.getChildren().addAll(btnPatients, btnReports, btnMaintenance, spacing, btnSave, btnSaveQuit, btnQuit);
-//		BackgroundImage bgImage = new BackgroundImage(
-//				new Image("/assets/background.png"), 
-//				BackgroundRepeat.NO_REPEAT,
-//                BackgroundRepeat.NO_REPEAT,
-//				BackgroundPosition.CENTER, 
-//				BackgroundSize.DEFAULT
-//				);
-//		
-//		Background bg = new Background(bgImage);
-//		mainAreaLeft.setBackground(bg);
-//		root.setBackground(bg);
 	}
 
 	private void setupStatusBar() {
@@ -177,6 +161,7 @@ public class MainScreen {
 		primaryStage.setMinHeight(HEIGHT);
 		primaryStage.setWidth(WIDTH);
 		primaryStage.setHeight(HEIGHT);
+		// Centering window in screen
 		double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);

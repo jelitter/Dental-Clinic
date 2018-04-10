@@ -60,14 +60,11 @@ public class MaintenanceScreen extends Pane {
 	}
 
 	public void go() {
-		
 		controller = MainScreen.getInstance().getController();
-		
 		pane = new VBox(10);
 		pane.setPadding(new Insets(20));
-
 		title = new MyTitle("Procedure List");
-		//Table
+
 		createProceduresTable();
 		setupFields();
 		setupButtons();
@@ -75,7 +72,6 @@ public class MaintenanceScreen extends Pane {
 		setFieldHandlers();
 		updateButtons();
 		updateClearButton();
-		
 		
 		pane.getChildren().addAll(title, tblProcedures, fields, buttons);
 		VBox.setVgrow(tblProcedures, Priority.ALWAYS);
@@ -101,14 +97,12 @@ public class MaintenanceScreen extends Pane {
 		String 	price = fldPrice.getText();
 		ProcedureType newProcedure = new ProcedureType(name, description, Double.parseDouble(price));
 		controller.addProcedure(newProcedure);
-//		clearFields();
 		updateButtons();
 	}
 	
 	private void updateProcedure() {
 		try {
 			ProcedureType selectedProcedure = tblProcedures.getSelectionModel().getSelectedItem();
-			
 			String name = fldName.getText();
 			String 	description = fldDescription.getText();
 			String price = fldPrice.getText();
@@ -118,7 +112,6 @@ public class MaintenanceScreen extends Pane {
 			selectedProcedure.setPrice(Double.parseDouble(price));
 			
 			refreshTable();
-//			clearFields();
 			updateButtons();
 			controller.unsavedChanges();
 			
@@ -130,7 +123,6 @@ public class MaintenanceScreen extends Pane {
 	private void removeProcedure() {
 		try {
 			ProcedureType selectedProcedure = tblProcedures.getSelectionModel().getSelectedItem();
-
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Dental Surgery");
 			alert.setHeaderText("Remove Procedure from data base?");
@@ -200,7 +192,6 @@ public class MaintenanceScreen extends Pane {
 	}
 	
 private void updateClearButton() {
-		
 		Boolean updateIdField = fldName.getText().trim().isEmpty()
 				&& fldDescription.getText().trim().isEmpty() && fldPrice.getText().trim().isEmpty();
 		fldId.setDisable(!updateIdField);
@@ -296,13 +287,9 @@ private void updateClearButton() {
 		idCol.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		nameCol.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		descriptionCol.setCellValueFactory(cellData -> cellData.getValue().DescriptionProperty());
-//		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceProperty());
 		priceCol.setCellValueFactory(cellData -> cellData.getValue().PriceStringProperty());
 
-		
-		
 		tblProcedures.getColumns().addAll(Arrays.asList(idCol, nameCol, descriptionCol, priceCol));
-
 		// This hide the horizontal scrollbar, but has the side-efect of making all
 		// columns the same width
 		tblProcedures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -324,6 +311,7 @@ private void updateClearButton() {
 
 		setProcedureTableItems();
 
+		// Handlers for keyboard and mouse events on Procedures table
 		tblProcedures.setOnMouseClicked(e -> tableItemSelected());
 		tblProcedures.setOnKeyReleased(e -> {
 			KeyCode key = e.getCode();
@@ -332,7 +320,6 @@ private void updateClearButton() {
 				tableItemSelected();
 			}
 		});
-
 	}
 
 	public void setProcedureTableItems() {
@@ -341,12 +328,10 @@ private void updateClearButton() {
 	
 	private void tableItemSelected() {
 		ProcedureType proc = tblProcedures.getSelectionModel().getSelectedItem();
-//		fldId.setText(Integer.toString(proc.IdProperty().get()));
 		fldId.setText(String.valueOf(proc.getId()));
 		fldId.setDisable(true);
 		fldName.setText(proc.getName());
 		fldDescription.setText(proc.getDescription());
-//		fldPrice.setText(Double.toString(proc.PriceProperty().get()));
 		fldPrice.setText(proc.PriceStringProperty().get());
 
 		btnRemoveProcedure.setDisable(proc == null);

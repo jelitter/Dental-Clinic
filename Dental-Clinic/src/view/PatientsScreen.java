@@ -69,16 +69,10 @@ public class PatientsScreen extends Pane {
 		pane = new VBox(10);
 		pane.getChildren().clear();
 		pane.setPadding(new Insets(20));
-
-		// Title
 		title = new MyTitle("Patients");
-		
 
 		setupFields();
-
-		//Table
 		createPatientsTable();
-		
 		setupButtons();
 		setButtonHandlers();
 		setFieldHandlers();
@@ -112,9 +106,7 @@ public class PatientsScreen extends Pane {
 	}
 
 	private void createPatientsTable() {
-		
 		tblPatients = new TableView<Patient>();
-		
 		TableColumn<Patient, Number> idCol = new TableColumn<Patient,Number>("Id");
 		TableColumn<Patient, String> firstNameCol = new TableColumn<Patient,String>("First Name");
 		TableColumn<Patient, String> lastNameCol = new TableColumn<Patient, String>("Last Name");
@@ -129,12 +121,10 @@ public class PatientsScreen extends Pane {
         addressCol.setCellValueFactory(cellData -> cellData.getValue().AddressProperty());
         phoneCol.setCellValueFactory(cellData -> cellData.getValue().PhoneProperty());
         
-        
         tblPatients.getColumns().addAll(Arrays.asList(idCol, firstNameCol, lastNameCol, emailCol, addressCol, phoneCol));
 
         // Hiding horizontal scroll bar
         tblPatients.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
         
         idCol.maxWidthProperty().set(50);
         idCol.minWidthProperty().set(50);
@@ -143,13 +133,13 @@ public class PatientsScreen extends Pane {
         phoneCol.maxWidthProperty().set(130);
         phoneCol.minWidthProperty().set(130);
         phoneCol.prefWidthProperty().set(130);
-        
 		idCol.setStyle( "-fx-alignment: CENTER;");
 		phoneCol.setStyle( "-fx-alignment: CENTER;");
         
         setupDataFilter();
 		
-		
+        
+        // Handlers for mouse and keyboard on Patients table
 		tblPatients.setOnMouseClicked(e -> {
 			tableItemSelected();
 			if (e.getClickCount() == 2) {
@@ -169,7 +159,6 @@ public class PatientsScreen extends Pane {
 	}
 
 	private void setupDataFilter() {
-
 		ObjectProperty<Predicate<Patient>> firstNameFilter = new SimpleObjectProperty<>();
         ObjectProperty<Predicate<Patient>> lastNameFilter = new SimpleObjectProperty<>();
         ObjectProperty<Predicate<Patient>> emailFilter = new SimpleObjectProperty<>();
@@ -203,14 +192,12 @@ public class PatientsScreen extends Pane {
         SortedList<Patient> filteredSortedItems = new SortedList<>(filteredItems);
         tblPatients.setItems(filteredSortedItems);
         filteredSortedItems.comparatorProperty().bind(tblPatients.comparatorProperty());
-
         
 		filteredItems.predicateProperty()
 				.bind(Bindings.createObjectBinding(
 						() -> firstNameFilter.get().and(lastNameFilter.get()).and(emailFilter.get())
 								.and(addressFilter.get()).and(phoneFilter.get()),
 						firstNameFilter, lastNameFilter, emailFilter, addressFilter, phoneFilter));
-
 	}
 
 	public void setPatientsTableItems() {
@@ -260,13 +247,9 @@ public class PatientsScreen extends Pane {
 		
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
-//				tblPatients.getItems().remove(selectedPatient);
-				
 				controller.patients.removeAll(selectedPatient);
 				setPatientsTableItems();
 			    controller.unsavedChanges();
-//			    refreshTable();
-
 			} 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -345,7 +328,6 @@ public class PatientsScreen extends Pane {
 		fldAddress = new TextField("");
 		fldPhoneNumber = new TextField("");
 		fields.getChildren().addAll(fldId, fldName, fldLastName, fldEmail, fldAddress, fldPhoneNumber);
-		
 		personalFields.getChildren().addAll(fieldsTitle, fields);
 		
 		fldId.setMinWidth(50);
@@ -371,7 +353,6 @@ public class PatientsScreen extends Pane {
 
 	
 	private void updateClearButton() {
-
 		Boolean updateIdField = fldName.getText().trim().isEmpty() && fldLastName.getText().trim().isEmpty()
 				&& fldEmail.getText().trim().isEmpty() && fldAddress.getText().trim().isEmpty()
 				&& fldPhoneNumber.getText().trim().isEmpty();

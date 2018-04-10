@@ -1,18 +1,11 @@
 package view;
 
-import java.util.Arrays;
-
 import controller.UserController;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -28,11 +21,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Dentist;
-import model.ProcedureType;
 import view.elements.MyButton;
 import view.elements.MyPasswordTextField;
 import view.elements.MyTextField;
