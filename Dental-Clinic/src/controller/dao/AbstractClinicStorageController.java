@@ -18,7 +18,8 @@ public abstract class AbstractClinicStorageController {
 	
 	public abstract Clinic getClinicFromStorage();
 	public abstract void saveClinicToStorage(ClinicController clinicController);
-	public ArrayList<Patient> getPatientListFromCSV() {
+	
+	public final ArrayList<Patient> getPatientListFromCSV() {
 		ArrayList<Patient> plist = new ArrayList<Patient>();
 		String csvFile = "src/data/patients.csv";
 		String fieldDelimiter = ",";
@@ -40,7 +41,7 @@ public abstract class AbstractClinicStorageController {
 		}
 		return plist;		
 	};
-	public ArrayList<ProcedureType> getProcedureListFromCSV() {
+	public final ArrayList<ProcedureType> getProcedureListFromCSV() {
 		ArrayList<ProcedureType> procList = new ArrayList<ProcedureType>();
 		String csvFile = "src/data/procedures.csv";
 		String fieldDelimiter = "\\|";

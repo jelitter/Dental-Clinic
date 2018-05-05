@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import controller.dao.SerialFileStorage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Dentist;
@@ -16,19 +17,22 @@ public class UserFileController {
 	private static final String USERSFILENAME = "src/data/users.ser";
 	private static final String LOGINFILENAME = "src/data/login.ser";
 	private ArrayList<Dentist> users;
+	private SerialFileStorage sf;
 
 	public UserFileController() {
+		sf = new SerialFileStorage();
 		users = new ArrayList<Dentist>();
 	}
 
+
 	public ArrayList<Dentist> getUsersFromSerial() {
-		users = (ArrayList<Dentist>) SerialFileStorage.readObject(USERSFILENAME);
+		users = (ArrayList<Dentist>) sf.readObject(USERSFILENAME);
 		return users;
 	}
 
 	public void saveUsersToSerial(ArrayList<Dentist> users) {
 		try {
-			SerialFileStorage.storeObject(users, USERSFILENAME);
+			sf.storeObject(users, USERSFILENAME);
 			System.out.println("<- User data saved to: " + USERSFILENAME);
 		} catch (Exception ex) {
 			// System.out.println("Error writting serial file - " + ex);
@@ -75,10 +79,10 @@ public class UserFileController {
 
 	public void saveLogin(String user, String pass) {
 		Dentist d = new Dentist(user, pass);
-		SerialFileStorage.storeObject(d, LOGINFILENAME);
+		sf.storeObject(d, LOGINFILENAME);
 	}
 	public Dentist loadLogin() {
-		Dentist d = (Dentist) SerialFileStorage.readObject(LOGINFILENAME);
+		Dentist d = (Dentist) sf.readObject(LOGINFILENAME);
 		return d;
 	}
 

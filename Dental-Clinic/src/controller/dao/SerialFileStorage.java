@@ -1,4 +1,4 @@
-package controller;
+package controller.dao;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 
 public class SerialFileStorage {
 
-	public static void storeObject(Object o, String filename) {
+	public void storeObject(Object o, String filename) {
 		try {
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -21,7 +21,7 @@ public class SerialFileStorage {
 		}
 	}
 
-	public static Object readObject(String filename) {
+	public Object readObject(String filename) {
 		Object obj = null;
 		try {
 		

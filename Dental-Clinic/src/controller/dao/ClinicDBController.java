@@ -1,18 +1,19 @@
 package controller.dao;
 
-import java.util.ArrayList;
-
 import controller.ClinicController;
 import model.Clinic;
-import model.Patient;
-import model.ProcedureType;
 
 public class ClinicDBController extends AbstractClinicStorageController {
 
+	private DatabaseStorage db;
+	
+	public ClinicDBController() {
+		this.db = new DatabaseStorage();
+	}
+	
 	@Override
 	public Clinic getClinicFromStorage() {
-		// TODO Auto-generated method stub
-		return null;
+		return getClinicFromDB();
 	}
 
 	@Override
@@ -20,17 +21,14 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public ArrayList<Patient> getPatientListFromCSV() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	private Clinic getClinicFromDB() {
+		Clinic result = null;
+		
+		db.getDBConnection();
+		db.QueryDB("SELECT * FROM Clinic");
+		result = (Clinic) db.rs;
+		db.CloseDB();
+		return result;
 	}
-
-	@Override
-	public ArrayList<ProcedureType> getProcedureListFromCSV() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -3,14 +3,7 @@ package controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javafx.collections.ObservableList;
-import model.Clinic;
 import model.Dentist;
-import model.Invoice;
-import model.Patient;
-import model.Payment;
-import model.Procedure;
-import model.ProcedureType;
 
 public class UserController implements Serializable {
 

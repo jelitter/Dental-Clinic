@@ -2,6 +2,9 @@
 ### JavaFX Project
 
 
+#### Rough class diagram
+![Dental Clinic Class Diagram](hand-diagram.png)
+
 Screenshots of the several screens:
 
 #### Login screen
