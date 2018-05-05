@@ -7,12 +7,19 @@ import model.Payment;
 import model.Procedure;
 import model.ProcedureType;
 import view.MainScreen;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import controller.dao.ClinicFileController;
+import controller.dao.AbstractClinicStorageController;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableBooleanValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
@@ -21,8 +28,8 @@ public class ClinicController {
 	/* --------------------------------
 	 *       PROPERTIES
 	 * -------------------------------*/
-	private ClinicFileController fc;
-	protected Clinic clinic;
+	private AbstractClinicStorageController fc;
+	private Clinic clinic;
 	private Boolean isSaved;
 	public ObservableList<ProcedureType> procedureTypes;
 	public ObservableList<Patient> patients;
@@ -34,21 +41,23 @@ public class ClinicController {
 	
 	public ClinicController() {
 		fc = new ClinicFileController();
-		clinic = fc.getClinicFromSerial();
+//		fc = new ClinicDBController();
+		
+		clinic = fc.getClinicFromStorage();
 
 		if (clinic == null) {
 			clinic = Clinic.getInstance();
 			clinic.setPatientList(fc.getPatientListFromCSV());
 			clinic.setProcedureTypesList(fc.getProcedureListFromCSV());
-			patients = fc.getObservableList(clinic.getPatients());
-			procedureTypes = fc.getObservableList(clinic.getProcedureTypes());
+			patients = getObservableList(clinic.getPatients());
+			procedureTypes = getObservableList(clinic.getProcedureTypes());
 			// System.out.println(" New database created from CSV with sample patients: " +
 			// patients.size());
 			// System.out.println("  and sample procedures: " + procedureTypes.size());
-			fc.saveClinicToSerial(this);
+			fc.saveClinicToStorage(this);
 		} else {
-			patients = fc.getObservableList(clinic.getPatients());
-			procedureTypes = fc.getObservableList(clinic.getProcedureTypes());
+			patients = getObservableList(clinic.getPatients());
+			procedureTypes = getObservableList(clinic.getProcedureTypes());
 			// System.out.println("-> Database loaded from serial file. Patients: " + patients.size() + ", Procedures: " + procedureTypes.size());
 		}
 
@@ -144,7 +153,7 @@ public class ClinicController {
 	
 	public void addPatientsFromCSV() {
 		clinic.getPatients().addAll(fc.getPatientListFromCSV());
-		patients = fc.getObservableList(clinic.getPatients());
+		patients = getObservableList(clinic.getPatients());
 		setSaved(false);
 	}
 	
@@ -163,7 +172,7 @@ public class ClinicController {
 	}
 
 	public void save() {
-		fc.saveClinicToSerial(this);
+		fc.saveClinicToStorage(this);
 	}
 
 
@@ -211,6 +220,32 @@ public class ClinicController {
 			}
 		}
 		return new SimpleDoubleProperty(pending);
+	}
+	
+	public <T> ObservableList<T> getObservableList(ArrayList<T> items) {
+		return ArrayListToObservableList(items);
+	}
+	
+	private <T> ObservableList<T> ArrayListToObservableList(ArrayList<T> alist) {
+		return FXCollections.observableArrayList(alist);
+}
+
+	private <T> ArrayList<T> ObservableListToArrayList(ObservableList<T> olist) {
+		ArrayList<T> alist = (ArrayList<T>) olist.stream().collect(Collectors.toList());
+		return alist;
+	}
+
+
+	public ArrayList<Patient> patientsAsList() {
+		return ObservableListToArrayList(this.patients);
+	}
+
+	public ArrayList<ProcedureType> procedureTypesAsList() {
+		return ObservableListToArrayList(this.procedureTypes);
+	}
+	
+	public Clinic getClinic() {
+		return this.clinic;
 	}
 	
 }

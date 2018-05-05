@@ -18,7 +18,7 @@ public class Clinic implements Serializable {
 		}
 	}
 
-	public Clinic() {
+	private Clinic() {
 		instance = this;
 		go();
 	}

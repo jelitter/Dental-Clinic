@@ -22,13 +22,13 @@ public class UserFileController {
 	}
 
 	public ArrayList<Dentist> getUsersFromSerial() {
-		users = (ArrayList<Dentist>) FileStorage.readObject(USERSFILENAME);
+		users = (ArrayList<Dentist>) SerialFileStorage.readObject(USERSFILENAME);
 		return users;
 	}
 
 	public void saveUsersToSerial(ArrayList<Dentist> users) {
 		try {
-			FileStorage.storeObject(users, USERSFILENAME);
+			SerialFileStorage.storeObject(users, USERSFILENAME);
 			System.out.println("<- User data saved to: " + USERSFILENAME);
 		} catch (Exception ex) {
 			// System.out.println("Error writting serial file - " + ex);
@@ -75,10 +75,10 @@ public class UserFileController {
 
 	public void saveLogin(String user, String pass) {
 		Dentist d = new Dentist(user, pass);
-		FileStorage.storeObject(d, LOGINFILENAME);
+		SerialFileStorage.storeObject(d, LOGINFILENAME);
 	}
 	public Dentist loadLogin() {
-		Dentist d = (Dentist) FileStorage.readObject(LOGINFILENAME);
+		Dentist d = (Dentist) SerialFileStorage.readObject(LOGINFILENAME);
 		return d;
 	}
 
