@@ -17,7 +17,8 @@ public class ClinicDBController extends AbstractClinicStorageController {
 	
 	@Override
 	public Clinic getClinicFromStorage() {
-		return getClinicFromDB();
+		getClinicFromDB();
+		return Clinic.getInstance();
 	}
 
 	@Override
@@ -26,19 +27,42 @@ public class ClinicDBController extends AbstractClinicStorageController {
 
 	}
 	
-	private Clinic getClinicFromDB() {
-		Clinic result = null;
+	private void getClinicFromDB() {
 		Patient pat = null;
 		ProcedureType pt = null;
 		
 		db.getDBConnection();
 		db.QueryDB("SELECT * FROM Patients");
-		result = (Clinic) db.rs;
-		
 		try {
 			while(db.rs.next()){
-				//create your object from teh resultset here
-//				pat = db.rs.n
+				int patientId = db.rs.getInt("patientId");
+				String firstName = db.rs.getString("firstName");
+				String lastName = db.rs.getString("lastName");
+				String email = db.rs.getString("email");
+				String address = db.rs.getString("address");
+				String phone = db.rs.getString("phone");
+				
+				pat = new Patient(firstName, lastName, email, address, phone);
+				Clinic.getInstance().getPatients().add(pat);
+				pat.print();
+				
+			}
+		} catch (SQLException e) {
+			System.out.println("Error reading patient");
+			e.printStackTrace();
+		}
+		
+		db.QueryDB("SELECT * FROM ProcedureTypes");
+		try {
+			while(db.rs.next()){
+				int procedureTypeId = db.rs.getInt("procedureTypeId");
+				String name = db.rs.getString("name");
+				String description = db.rs.getString("description");
+				double price= db.rs.getDouble("price");
+				
+				pt = new ProcedureType(name, description, price);
+				Clinic.getInstance().getProcedureTypes().add(pt);
+				System.out.println(pt.toString());
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading patient");
@@ -47,6 +71,6 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		
 		
 		db.CloseDB();
-		return result;
+//		return result;
 	}
 }

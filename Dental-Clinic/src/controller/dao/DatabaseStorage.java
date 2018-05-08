@@ -16,16 +16,13 @@ public class DatabaseStorage {
 
 	// Make the connection to the database
 	public void getDBConnection() {
-		// System.out.println("Open1");
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			// conn:type://ip(localhost is 127.0.0.1):port/databasename
-			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/dentist", "root", // username
-					"");// password
-			// conn = DriverManager.getConnection (url, "root", "root");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/dentist?autoReconnect=true&useSSL=false", "root", "root");
 			st = conn.createStatement();
+			
 			// conn.setAutoCommit(false);
-		} // cathc all the exceptions
+		} // Catch all the exceptions
 		catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
 			System.out.println("Database is not available");
 			ex.printStackTrace();
