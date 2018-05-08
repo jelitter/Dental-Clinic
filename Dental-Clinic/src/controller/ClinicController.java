@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import controller.dao.ClinicFileController;
 import controller.dao.AbstractClinicStorageController;
+import controller.dao.ClinicDBController;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -28,6 +29,12 @@ public class ClinicController {
 	/* --------------------------------
 	 *       PROPERTIES
 	 * -------------------------------*/
+	
+	public final int SERIAL = 0;
+	public final int DATABASE = 1;
+	
+	private static int datasource = -1;
+	
 	private AbstractClinicStorageController fc;
 	private Clinic clinic;
 	private Boolean isSaved;
@@ -40,8 +47,9 @@ public class ClinicController {
 	 * -------------------------------*/
 	
 	public ClinicController() {
-		fc = new ClinicFileController();
-//		fc = new ClinicDBController();
+		
+		// 0: Serial File, 1: Database
+		fc = (getDataSource() == 0) ? new ClinicFileController() : new ClinicDBController();
 		
 		clinic = fc.getClinicFromStorage();
 
@@ -246,6 +254,15 @@ public class ClinicController {
 	
 	public Clinic getClinic() {
 		return this.clinic;
+	}
+	
+	// "Bridge" to set data source from login screen
+	public static void setDataSource(int source) {
+		ClinicController.datasource = source;
+	}
+	
+	public static int getDataSource() {
+		return ClinicController.datasource;
 	}
 	
 }

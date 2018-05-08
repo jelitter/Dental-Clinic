@@ -30,7 +30,7 @@ public class LoadingScreen {
 	private ProgressBar progress;
 	private ImageView imgv;
 
-	public LoadingScreen() {
+	private LoadingScreen() {
 		instance = this;
 		lblStatus = new Label();
 		progress = new ProgressBar();

@@ -1,7 +1,10 @@
 package view;
 
+import controller.ClinicController;
 import controller.UserController;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,6 +12,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
@@ -97,9 +101,9 @@ public class LoginScreen {
 		VBox dataSource = new VBox(10);
 		ToggleGroup radioGroup = new ToggleGroup();
 		RadioButton dataSource1 = new RadioButton("Serial File");
-		RadioButton dataSource2 = new RadioButton("Database (soon!)");
+		RadioButton dataSource2 = new RadioButton("Database");
 		dataSource1.setSelected(true);
-		dataSource2.setDisable(true);
+		ClinicController.setDataSource(0);
 		dataSource1.setToggleGroup(radioGroup);
 		dataSource2.setToggleGroup(radioGroup);
 		dataSource.getChildren().addAll(dataSource1, dataSource2);
@@ -158,6 +162,21 @@ public class LoginScreen {
 
 		btnExit.setOnMouseClicked(e -> {
 			Platform.exit();
+		});
+		
+		radioGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
+				// if (radioGroup.getSelectedToggle() != null) {
+				if (radioGroup.getSelectedToggle().equals(dataSource1)) {
+					// Serial file
+					System.out.println("Source: Serial File");
+					ClinicController.setDataSource(0);
+				} else if (radioGroup.getSelectedToggle().equals(dataSource2)) {
+					// Database
+					System.out.println("Source: Database");
+					ClinicController.setDataSource(1);
+				}
+			}
 		});
 		
 
