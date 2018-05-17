@@ -1,23 +1,26 @@
 package controller.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import controller.ClinicController;
 import model.Clinic;
 import model.Patient;
 import model.ProcedureType;
+import view.MainScreen;
 
 public class ClinicFileController extends AbstractClinicStorageController {
 	
 	private static final String CLINICFILENAME = "src/data/clinic.ser";
 	private SerialFileStorage sf;
+	private Clinic clinic = null;
 	
 	public ClinicFileController() {
 		sf = new SerialFileStorage();
+		clinic = (Clinic) sf.readObject(CLINICFILENAME);
 	}
 	
 	public Clinic getClinicFromStorage() {
-		Clinic clinic = (Clinic) sf.readObject(CLINICFILENAME);
 		return clinic;
 	}
 	
@@ -30,10 +33,69 @@ public class ClinicFileController extends AbstractClinicStorageController {
 		
 		try {
 			sf.storeObject(cc.getClinic(), CLINICFILENAME);
-			// System.out.println("<- Data saved to: " + CLINICFILENAME);
 		} catch (Exception ex) {
 			// System.out.println("Error writting serial file - " + ex);
 		}
 	}
+
+	@Override
+	public Patient getPatientById(int id) {
+		for (Patient p : clinic.getPatients()) {
+			if (p.getId() == id) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public ProcedureType getProcedureTypeById(int id) {
+		for (ProcedureType pt : clinic.getProcedureTypes()) {
+			if (pt.getId() == id) {
+				return pt;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<ProcedureType> getProcedureTypes() {
+		return clinic.getProcedureTypes();
+	}
+
+	@Override
+	public List<Patient> getPatients() {
+		return clinic.getPatients();
+	}
+
+	// @Override
+	// public Patient getPatientById(int id) {
+	// for (Patient p : clinic.getPatients()) {
+	// if (p.getId() == id) {
+	// return p;
+	// }
+	// }
+	// return null;
+	// }
+	//
+	// @Override
+	// public ProcedureType getProcedureTypeById(int id) {
+	// for (ProcedureType pt : clinic.getProcedureTypes()) {
+	// if (pt.getId() == id) {
+	// return pt;
+	// }
+	// }
+	// return null;
+	// }
+	//
+	// @Override
+	// public List<ProcedureType> getProcedureTypes() {
+	// return clinic.getProcedureTypes();
+	// }
+	//
+	// @Override
+	// public List<Patient> getPatients() {
+	// return clinic.getPatients();
+	// }
 
 }

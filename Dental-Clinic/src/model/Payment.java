@@ -17,21 +17,29 @@ public class Payment implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
 	private int id;
+	private int invoiceId;
 	private Date date;
 	private Double amount;
 
-	public Payment(double amount) {
-		this.setId(++_id);
-		this.setAmount(amount);
-		this.setDate(Calendar.getInstance().getTime());
+	public Payment(int invoiceId, double amount) {
+		// this.setId(++_id);
+		// this.setAmount(amount);
+		Date date = Calendar.getInstance().getTime();
+//		this.setDate(Calendar.getInstance().getTime());
+		new Payment(invoiceId, amount, date);
 	}
 	
-	public Payment(double amount, Date date) {
+	public Payment(int invoiceId, double amount, Date date) {
 		this.setId(++_id);
+		this.setInvoiceId(invoiceId);
 		this.setAmount(amount);
 		this.setDate(date);
 	}
 	
+	private void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; } 

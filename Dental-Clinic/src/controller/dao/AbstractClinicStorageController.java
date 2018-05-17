@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import controller.ClinicController;
 import model.Clinic;
@@ -63,5 +64,13 @@ public abstract class AbstractClinicStorageController {
 		}
 		return procList;
 	};
+
+	public abstract Patient getPatientById(int id);
+
+	public abstract ProcedureType getProcedureTypeById(int id);
+
+	public abstract List<ProcedureType> getProcedureTypes();
+
+	public abstract List<Patient> getPatients();
 
 }

@@ -25,12 +25,65 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		return Clinic.getInstance();
 	}
 
-	 @Override
-	 public void saveClinicToStorage(ClinicController clinicController) {
-	 // TODO Auto-generated method stub
-	
-	 }
+	@Override
+	public void saveClinicToStorage(ClinicController clinicController) {
+		// TODO Auto-generated method stub
 
+	}
+
+	// public Patient getPatientById(int id);
+
+	@Override
+	public Patient getPatientById(int id) {
+		Patient pat = null;
+		db.getDBConnection();
+		db.QueryDB("SELECT * FROM Patients WHERE patientId=" + id);
+		try {
+			while (db.rs.next()) {
+				int patientId = db.rs.getInt("patientId");
+				String firstName = db.rs.getString("firstName");
+				String lastName = db.rs.getString("lastName");
+				String email = db.rs.getString("email");
+				String address = db.rs.getString("address");
+				String phone = db.rs.getString("phone");
+
+				pat = new Patient(patientId, firstName, lastName, email, address, phone);
+				pat.print();
+			}
+		} catch (SQLException e) {
+			System.out.println("Error reading patient");
+			e.printStackTrace();
+		} finally {
+			db.CloseDB();
+		}
+		return pat;
+	}
+
+	@Override
+	public ProcedureType getProcedureTypeById(int id) {
+		ProcedureType pt = null;
+		db.getDBConnection();
+		db.QueryDB("SELECT * FROM ProcedureTypes WHERE procedureTypeId=" + id);
+		try {
+			while (db.rs.next()) {
+				int procedureTypeId = db.rs.getInt("procedureTypeId");
+				String name = db.rs.getString("name");
+				String description = db.rs.getString("description");
+				double price = db.rs.getDouble("price");
+
+				pt = new ProcedureType(procedureTypeId, name, description, price);
+				pt.print();
+			}
+		} catch (SQLException e) {
+			System.out.println("Error reading patient");
+			e.printStackTrace();
+		} finally {
+			db.CloseDB();
+		}
+		return pt;
+	}
+
+	@Override
 	public List<Patient> getPatients() {
 		Patient pat = null;
 		ObservableList<Patient> patients = FXCollections.observableArrayList();
@@ -38,12 +91,12 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		db.QueryDB("SELECT * FROM Patients");
 		try {
 			while (db.rs.next()) {
-				int patientId    = db.rs.getInt("patientId");
+				int patientId = db.rs.getInt("patientId");
 				String firstName = db.rs.getString("firstName");
-				String lastName  = db.rs.getString("lastName");
-				String email     = db.rs.getString("email");
-				String address   = db.rs.getString("address");
-				String phone     = db.rs.getString("phone");
+				String lastName = db.rs.getString("lastName");
+				String email = db.rs.getString("email");
+				String address = db.rs.getString("address");
+				String phone = db.rs.getString("phone");
 
 				pat = new Patient(patientId, firstName, lastName, email, address, phone);
 				patients.add(pat);
@@ -58,7 +111,8 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		return patients;
 	}
 
-	List<ProcedureType> getProcedureTypes() {
+	@Override
+	public	List<ProcedureType> getProcedureTypes() {
 		ProcedureType pt = null;
 		ObservableList<ProcedureType> ptypes = FXCollections.observableArrayList();
 
@@ -67,13 +121,13 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		try {
 			while (db.rs.next()) {
 				int procedureTypeId = db.rs.getInt("procedureTypeId");
-				String name          = db.rs.getString("name");
-				String description  = db.rs.getString("description");
-				double price         = db.rs.getDouble("price");
+				String name = db.rs.getString("name");
+				String description = db.rs.getString("description");
+				double price = db.rs.getDouble("price");
 
 				pt = new ProcedureType(procedureTypeId, name, description, price);
 				ptypes.add(pt);
-				System.out.println(pt.toString());
+				pt.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading patient");

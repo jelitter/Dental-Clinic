@@ -63,5 +63,9 @@ public class ProcedureType implements Serializable {
 		return String.format("%s (%s) - %s", this.getName(), this.getDescription(), String.format("%.2f", getPrice()));
 	}
 
+	public void print() {
+		System.out.println(this.toString());
+	}
+
 
 }

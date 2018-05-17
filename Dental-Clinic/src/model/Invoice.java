@@ -22,6 +22,7 @@ public class Invoice implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
 	private int id;
+	private int patientId;
 	private double amount, amountPaid;
 	private Date date; 
 	private boolean isPaid;
@@ -30,8 +31,9 @@ public class Invoice implements Serializable  {
 	
 	// Constructors
 	
-	public Invoice() {
+	public Invoice(int patientId) {
 		this.setId(++_id);
+		this.setPatientId(patientId);
 		this.setAmount(0.0);
 		this.setAmountPaid(0.0);
 		this.setDate(Calendar.getInstance().getTime());;
@@ -39,8 +41,13 @@ public class Invoice implements Serializable  {
 		this.setPayments(new ArrayList<Payment>());
 	}
 	
+	private void setPatientId(int patientId) {
+		this.patientId = patientId;
+	}
+
 	public Invoice(ArrayList<Procedure> procedures, ArrayList<Payment> payments) {
 		this.setId(++_id);
+		this.setPatientId(patientId);
 		this.setAmount(this.getTotalAmount());
 		this.setDate(Calendar.getInstance().getTime());;
 		this.setProcedures(procedures);
@@ -58,7 +65,7 @@ public class Invoice implements Serializable  {
 	}
 	
 	public void addPayment(double amount) {
-		this.getPayments().add(new Payment(amount));
+		this.getPayments().add(new Payment(this.getId(), amount));
 	}
 
 	public void addPayment(Payment payment) {

@@ -13,14 +13,20 @@ public class Procedure implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static int _id = 0;
 	private int id;
+	private int invoiceId;
 	private ProcedureType proc;
 
 	
-	public Procedure(ProcedureType proc) {
+	public Procedure(int invoiceId, ProcedureType proc) {
+		setInvoiceId(invoiceId);
 		setType(proc);
 		setId(++_id);
 	}
 	
+	private void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }

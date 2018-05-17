@@ -193,7 +193,7 @@ public class EditPatientScreen extends Stage {
 		});
 		
 		btnAddInvoice.setOnAction(e -> {
-			patient.addInvoice(new Invoice());
+			patient.addInvoice(new Invoice(patient.getId()));
 			invoices.setItems(patient.InvoicesProperty());
 			controller.unsavedChanges();
 		});
@@ -528,7 +528,7 @@ public class EditPatientScreen extends Stage {
 		btnOkPayment.setOnAction(e -> {
 			Date retDate = Date.from(date.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
 			Double amount = Double.parseDouble(fldAmount.getText());
-			Payment p = new Payment(amount, retDate);
+			Payment p = new Payment(inv.getId(), amount, retDate);
 			inv.addPayment(p);
 			stage.close();
 		});
@@ -580,7 +580,7 @@ public class EditPatientScreen extends Stage {
 		
 		btnOkProc.setOnAction(e -> {
 			ProcedureType pt = procsCombo.getSelectionModel().getSelectedItem();
-			Procedure p = new Procedure(pt);
+			Procedure p = new Procedure(inv.getId(), pt);
 			inv.addProcedure(p);
 			stage.close();
 		});

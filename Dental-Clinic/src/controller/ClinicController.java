@@ -9,6 +9,7 @@ import model.ProcedureType;
 import view.MainScreen;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import controller.dao.ClinicFileController;
@@ -40,7 +41,8 @@ public class ClinicController {
 	private Boolean isSaved;
 	public ObservableList<ProcedureType> procedureTypes;
 	public ObservableList<Patient> patients;
-
+	
+	
 	
 	/* --------------------------------
 	 *       CONSTRUCTOR
