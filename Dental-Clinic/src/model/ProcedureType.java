@@ -24,6 +24,16 @@ public class ProcedureType implements Serializable {
 		this.setId(++_id);
 	}
 
+	public ProcedureType(int procedureTypeId, String name, String description, double price) {
+		this.setName(name);
+		this.setDescription(description);
+		this.setPrice(price);
+		this.setId(procedureTypeId);
+		if (procedureTypeId > _id) {
+			_id = procedureTypeId + 1;
+		}
+	}
+
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }

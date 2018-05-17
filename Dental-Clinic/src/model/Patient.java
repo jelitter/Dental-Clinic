@@ -23,9 +23,18 @@ public class Patient extends Person implements Serializable {
 	private ArrayList<Invoice> invoices;
 
 	public Patient(String firstName, String lastName, String email, String address, String phone) {
+		 super(firstName, lastName, email, address, phone);
+		 this.setId(++_id);
+		 this.setInvoices(new ArrayList<Invoice> ());
+	}
+	
+	public Patient(int patientId, String firstName, String lastName, String email, String address, String phone) {
 		super(firstName, lastName, email, address, phone);
-		this.setId(++_id);
+		this.setId(patientId);
 		this.setInvoices(new ArrayList<Invoice> ());
+		if (patientId > _id) {
+			_id = patientId + 1;
+		}
 	}
 	
 	public Patient(String firstName, String lastName) {
@@ -34,6 +43,8 @@ public class Patient extends Person implements Serializable {
 		this.setInvoices(new ArrayList<Invoice> ());
 	}
 	
+
+
 	public IntegerProperty IdProperty() { return new SimpleIntegerProperty(id); }
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; } 

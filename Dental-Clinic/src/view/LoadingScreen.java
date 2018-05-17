@@ -122,22 +122,22 @@ public class LoadingScreen {
 		tl.setCycleCount(Timeline.INDEFINITE);
 		tl.play();
 
-		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
+		new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
 			setStatus("Organizing data...");
 		})).play();
 
-		new Timeline(new KeyFrame(Duration.millis(4000), ae -> {
+		new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
 			setStatus("Preparing stuff...");
 		})).play();
 
-		new Timeline(new KeyFrame(Duration.millis(6000), ae -> {
+		new Timeline(new KeyFrame(Duration.millis(3000), ae -> {
 			setStatus("Ready!");
 			setProgress(1F);
 			imgv.setRotate(0);
 			tl.stop();
 		})).play();
 
-		new Timeline(new KeyFrame(Duration.millis(7000), ae -> {
+		new Timeline(new KeyFrame(Duration.millis(4000), ae -> {
 			primaryStage.close();
 			MainScreen.getInstance();
 		})).play();

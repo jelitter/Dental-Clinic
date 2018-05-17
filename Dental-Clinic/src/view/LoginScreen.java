@@ -102,8 +102,10 @@ public class LoginScreen {
 		ToggleGroup radioGroup = new ToggleGroup();
 		RadioButton dataSource1 = new RadioButton("Serial File");
 		RadioButton dataSource2 = new RadioButton("Database");
-		dataSource1.setSelected(true);
-		ClinicController.setDataSource(0);
+		
+		dataSource2.setSelected(true);
+		ClinicController.setDataSource(1);
+		
 		dataSource1.setToggleGroup(radioGroup);
 		dataSource2.setToggleGroup(radioGroup);
 		dataSource.getChildren().addAll(dataSource1, dataSource2);
