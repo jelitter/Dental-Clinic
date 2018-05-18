@@ -31,7 +31,7 @@ public class DatabaseStorage {
 
 	// close the database connection
 	public void CloseDB() {
-		System.out.println("Close");
+		// System.out.println("Close");
 		try {
 			conn.close();
 		} catch (SQLException e) {

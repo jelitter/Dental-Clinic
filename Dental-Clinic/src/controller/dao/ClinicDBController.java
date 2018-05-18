@@ -142,4 +142,37 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		Clinic.getInstance().setPatientList(new ArrayList<Patient>(this.getPatients()));
 		Clinic.getInstance().setProcedureTypesList(new ArrayList<ProcedureType>(this.getProcedureTypes()));
 	}
+	
+	@Override
+	public void addPatient(Patient newPatient) {
+		String query = "INSERT INTO Patients"
+				 + " values(null, \"" + newPatient.getFirstName()
+				 + "\", \""  + newPatient.getLastName()
+				 + "\", \"" + newPatient.getEmail()
+				 + "\", \"" + newPatient.getAddress()
+				 + "\", \"" + newPatient.getPhoneNumber() + "\")";
+		System.out.println("Inserting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();		
+	}
+	
+	@Override
+	public void updatePatient(Patient patient) {
+
+		String query = "UPDATE Patients"
+				 + " SET firstName=\"" + patient.getFirstName()
+				 + "\", lastName=\""  + patient.getLastName()
+				 + "\", email=\"" + patient.getEmail()
+				 + "\", phone=\"" + patient.getPhoneNumber()
+				 + "\", address=\"" + patient.getAddress()
+				 + "\" WHERE patientId=" + patient.getId();
+		System.out.println("Updating:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();
+	}
+
+
+	
 }

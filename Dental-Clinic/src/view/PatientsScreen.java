@@ -247,7 +247,10 @@ public class PatientsScreen extends Pane {
 		
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == yes) {
-				controller.patients.removeAll(selectedPatient);
+				
+				controller.removePatient(selectedPatient);
+		
+//				controller.patients.removeAll(selectedPatient);
 				setPatientsTableItems();
 			    controller.unsavedChanges();
 			} 
@@ -380,9 +383,9 @@ public class PatientsScreen extends Pane {
 			editPatient.initModality(Modality.APPLICATION_MODAL); 
 			editPatient.showAndWait();
 			
+			refreshTable();
+			clearFields();
 			if (editPatient.wasUpdated()) {
-				refreshTable();
-				clearFields();
 				controller.unsavedChanges();
 			} 			
 			

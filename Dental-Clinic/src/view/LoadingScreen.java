@@ -1,5 +1,6 @@
 package view;
 
+import controller.ClinicController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -102,7 +103,9 @@ public class LoadingScreen {
 		vbox.getChildren().add(title);
 		vbox.getChildren().add(imgv);
 
-		vbox.getChildren().add(new Label("(Simulating DB connection)"));
+		String source = (ClinicController.getDataSource() == 0) ? "Serial File" : "Database";
+		
+		vbox.getChildren().add(new Label("Loading data from " + source));
 		vbox.getChildren().add(lblStatus);
 
 		vbox.setAlignment(Pos.TOP_CENTER);

@@ -68,34 +68,16 @@ public class ClinicFileController extends AbstractClinicStorageController {
 		return clinic.getPatients();
 	}
 
-	// @Override
-	// public Patient getPatientById(int id) {
-	// for (Patient p : clinic.getPatients()) {
-	// if (p.getId() == id) {
-	// return p;
-	// }
-	// }
-	// return null;
-	// }
-	//
-	// @Override
-	// public ProcedureType getProcedureTypeById(int id) {
-	// for (ProcedureType pt : clinic.getProcedureTypes()) {
-	// if (pt.getId() == id) {
-	// return pt;
-	// }
-	// }
-	// return null;
-	// }
-	//
-	// @Override
-	// public List<ProcedureType> getProcedureTypes() {
-	// return clinic.getProcedureTypes();
-	// }
-	//
-	// @Override
-	// public List<Patient> getPatients() {
-	// return clinic.getPatients();
-	// }
+	@Override
+	public void updatePatient(Patient patient) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addPatient(Patient newPatient) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

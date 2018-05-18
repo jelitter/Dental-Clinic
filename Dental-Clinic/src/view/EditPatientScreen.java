@@ -437,12 +437,26 @@ public class EditPatientScreen extends Stage {
 	private void setButtonHandlers(Patient patient) {
 		
 		btnApply.setOnAction(e -> {
-			patient.setFirstName(fldFirstName.getText());
-			patient.setLastName(fldLastName.getText());
-			patient.setEmail(fldEmail.getText());
-			patient.setPhoneNumber(fldPhone.getText());
-			patient.setAddress(fldAddress.getText());
-			updated = true;
+			String firstName = fldFirstName.getText(),
+					lastName = fldLastName.getText(),
+					email = fldEmail.getText(),
+					phone = fldPhone.getText(),
+					address = fldAddress.getText();
+
+			patient.setFirstName(firstName);
+			patient.setLastName(lastName);
+			patient.setEmail(email);
+			patient.setPhoneNumber(phone);
+			patient.setAddress(address);
+			
+			if (ClinicController.getDataSource() == 1) {
+				// Database
+				controller.updatePatient(patient);
+			} else {
+				// Serial File
+				updated = true;
+			}
+			
 			this.close();
 		});
 		

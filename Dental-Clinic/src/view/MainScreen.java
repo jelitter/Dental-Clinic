@@ -351,12 +351,12 @@ public class MainScreen {
 	public String getStatusText() { return statusBar.getText(); }
 	
 	public void showSaveButtons(Boolean b) {
-		btnSave.setVisible(b);
-		btnSaveQuit.setVisible(b);
-		btnSave.setDisable(!b);
-		btnSaveQuit.setDisable(!b);
-		menuFileSave.setDisable(!b);
-		menuFileSaveQuit.setDisable(!b);
+		btnSave.setVisible(b && (ClinicController.getDataSource() == 0));
+		btnSaveQuit.setVisible(b && (ClinicController.getDataSource() == 0));
+		btnSave.setDisable(!b && (ClinicController.getDataSource() == 0));
+		btnSaveQuit.setDisable(!b && (ClinicController.getDataSource() == 0));
+		menuFileSave.setDisable(!b && (ClinicController.getDataSource() == 0));
+		menuFileSaveQuit.setDisable(!b && (ClinicController.getDataSource() == 0));
 	}
 	
 	public Stage getStage() { return primaryStage; }
