@@ -275,15 +275,17 @@ public class MainScreen {
 		
 		menuFileSaveQuit.setDisable(true);
 		
-		menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
-		menuFileSaveQuit.setAccelerator(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
+		if ((ClinicController.getDataSource() == 0)) {
+			menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+			menuFileSaveQuit.setAccelerator(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
+			menuFileSave.setOnAction(e -> save(btnSave));
+			menuFileSaveQuit.setOnAction(e -> save(btnSaveQuit));
+			menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit);
+		}
 		menuFileQuit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
-
-		menuFileSave.setOnAction(e -> save(btnSave));
-		menuFileSaveQuit.setOnAction(e -> save(btnSaveQuit));
 		menuFileQuit.setOnAction(e -> quit());
 		
-		menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit, menuFileQuit);
+		menuFile.getItems().addAll(menuFileQuit);
 		menuOptions.getItems().addAll(menuOptionsDS);
 		
 		menuItems.add(menuFile);

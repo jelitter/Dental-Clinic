@@ -36,6 +36,13 @@ public class Payment implements Serializable  {
 		this.setDate(date);
 	}
 	
+	public Payment(int paymentId, int invoiceId, double amount, Date date) {
+		this.setId(paymentId);
+		this.setInvoiceId(invoiceId);
+		this.setAmount(amount);
+		this.setDate(date);
+	}
+	
 	private void setInvoiceId(int invoiceId) {
 		this.invoiceId = invoiceId;
 	}
@@ -56,5 +63,9 @@ public class Payment implements Serializable  {
 	public void setAmount(double amount) { this.amount = amount;	}
 	public StringProperty AmountStringProperty() { 
 		return new SimpleStringProperty(String.format("%.2f", getAmount()));
+	}
+
+	public void print() {
+		System.out.println(this.toString());
 	}
 }

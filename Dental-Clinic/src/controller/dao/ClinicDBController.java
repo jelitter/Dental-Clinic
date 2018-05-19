@@ -1,5 +1,6 @@
 package controller.dao;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,10 @@ import controller.ClinicController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Clinic;
+import model.Invoice;
 import model.Patient;
+import model.Payment;
+import model.Procedure;
 import model.ProcedureType;
 
 public class ClinicDBController extends AbstractClinicStorageController {
@@ -110,7 +114,88 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		}
 		return patients;
 	}
+	
+	@Override
+	public List<Invoice> getInvoices(Patient pat) {
+		Invoice inv = null;
+		ObservableList<Invoice> invoices = FXCollections.observableArrayList();
+		db.getDBConnection();
+		db.QueryDB("SELECT * FROM Invoices WHERE patientId=" + pat.getId());
+		try {
+			while (db.rs.next()) {
+				int invoiceId = db.rs.getInt("invoiceId");
+				Double amount = db.rs.getDouble("amount");
+				Double amountPaid = db.rs.getDouble("amountPaid");
+				Date invoiceDate = db.rs.getDate("invoiceDate");
 
+				inv = new Invoice(invoiceId);
+				inv.setAmount(amount);
+				inv.setAmountPaid(amountPaid);
+				inv.setDate(invoiceDate);
+				invoices.add(inv);
+				inv.print();
+			}
+		} catch (SQLException e) {
+			System.out.println("Error reading invoices for patientId " + pat.getId());
+			e.printStackTrace();
+		} finally {
+			db.CloseDB();
+		}
+		return invoices;
+	}
+	
+	@Override
+	public List<Payment> getPayments(Invoice inv) {
+		Payment paym = null;
+		ObservableList<Payment> payments = FXCollections.observableArrayList();
+		db.getDBConnection();
+		db.QueryDB("SELECT * FROM Payments WHERE invoiceId=" + inv.getId());
+		try {
+			while (db.rs.next()) {
+				int paymentId = db.rs.getInt("paymentId");
+				int invoiceId = db.rs.getInt("invoiceId");
+				Double amount = db.rs.getDouble("amount");
+				Date date = db.rs.getDate("date");
+
+				paym = new Payment(paymentId, invoiceId, amount, date);
+				payments.add(paym);
+				paym.print();
+			}
+		} catch (SQLException e) {
+			System.out.println("Error reading payments for invoiceId " + inv.getId());
+			e.printStackTrace();
+		} finally {
+			db.CloseDB();
+		}
+		return payments;
+	}
+
+	@Override
+	public List<Procedure> getProcedures(Invoice inv) {
+		Procedure proc = null;
+		ObservableList<Procedure> procedures = FXCollections.observableArrayList();
+		db.getDBConnection();
+		db.QueryDB("SELECT * FROM Procedures WHERE invoiceId=" + inv.getId());
+		try {
+			while (db.rs.next()) {
+				int procedureId = db.rs.getInt("procedureId");
+				int invoiceId = db.rs.getInt("invoiceId");
+				int procedureType =  db.rs.getInt("procedureType");
+
+				
+				proc = new Procedure(procedureId, invoiceId, procedureType);
+				procedures.add(proc);
+				proc.print();
+			}
+		} catch (SQLException e) {
+			System.out.println("Error reading procedures for invoiceId " + inv.getId());
+			e.printStackTrace();
+		} finally {
+			db.CloseDB();
+		}
+		return procedures;
+	}
+	
 	@Override
 	public	List<ProcedureType> getProcedureTypes() {
 		ProcedureType pt = null;
@@ -139,8 +224,25 @@ public class ClinicDBController extends AbstractClinicStorageController {
 	}
 
 	private void getClinicFromDB() {
-		Clinic.getInstance().setPatientList(new ArrayList<Patient>(this.getPatients()));
+		
 		Clinic.getInstance().setProcedureTypesList(new ArrayList<ProcedureType>(this.getProcedureTypes()));
+		
+		// Get all patients from Patients table
+		// For every patient get invoices list
+		//   For every invoice get payments
+		//   For every invoice get procedures
+		
+		Clinic.getInstance().setPatientList(new ArrayList<Patient>(this.getPatients()));
+
+		for (Patient pat : Clinic.getInstance().getPatients()) {
+			pat.setInvoices(new ArrayList<Invoice>(this.getInvoices(pat)));
+			for (Invoice inv : pat.getInvoices()) {
+				inv.setPayments(new ArrayList<Payment>(this.getPayments(inv)));
+				inv.setProcedures(new ArrayList<Procedure>(this.getProcedures(inv)));
+			}
+		}
+		
+		
 	}
 	
 	@Override

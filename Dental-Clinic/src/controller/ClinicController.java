@@ -173,7 +173,8 @@ public class ClinicController {
 	public void unsavedChanges() {
 		if (ClinicController.getDataSource() == 0) {
 			setSaved(false);
-			MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE + "  (Unsaved changes)");
+			MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE + " [Data source: " + ClinicController.getDataSourceString() + "] (Unsaved changes)");
+
 			String statusText = MainScreen.getInstance().getStatusText();
 			MainScreen.getInstance().setStatusText(statusText.trim() + " *");
 			MainScreen.getInstance().showSaveButtons(!isSaved());
@@ -183,7 +184,7 @@ public class ClinicController {
 	public void savedChanges() {
 		if (ClinicController.getDataSource() == 0) {
 			setSaved(true);
-			MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE);
+			MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE + " [Data source: " + ClinicController.getDataSourceString() + "]");
 			MainScreen.getInstance().setStatusText("All changes saved");
 			MainScreen.getInstance().showSaveButtons(!isSaved());
 		}
@@ -300,6 +301,16 @@ public class ClinicController {
 		fc.addInvoice(patient);
 		unsavedChanges();
 	}
+	
+	public ProcedureType getProcTypeById(int id) {
+		for (ProcedureType pt : this.procedureTypesAsList()) {
+			if (pt.getId() == id) {
+				return pt;
+			}
+		}
+		return null;
+	}
+
 }
 
 

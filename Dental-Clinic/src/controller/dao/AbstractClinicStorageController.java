@@ -9,7 +9,10 @@ import java.util.List;
 
 import controller.ClinicController;
 import model.Clinic;
+import model.Invoice;
 import model.Patient;
+import model.Payment;
+import model.Procedure;
 import model.ProcedureType;
 
 /**
@@ -70,8 +73,10 @@ public abstract class AbstractClinicStorageController {
 	public abstract ProcedureType getProcedureTypeById(int id);
 
 	public abstract List<ProcedureType> getProcedureTypes();
-
 	public abstract List<Patient> getPatients();
+	public abstract List<Invoice> getInvoices(Patient pat);
+	public abstract List<Payment> getPayments(Invoice inv);
+	public abstract List<Procedure> getProcedures(Invoice inv);
 
 	public abstract void addPatient(Patient newPatient);
 	public abstract void removePatient(Patient newPatient);

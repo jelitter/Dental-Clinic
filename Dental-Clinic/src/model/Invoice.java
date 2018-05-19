@@ -160,4 +160,8 @@ public class Invoice implements Serializable  {
 		+ " EUR, Paid: " + TotalAmountPaidProperty().get() 
 		+ " EUR. - getAmount: "+ getAmount() +"\n";
 	}
+
+	public void print() {
+		System.out.println(this.toString());
+	}
 }
