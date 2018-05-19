@@ -47,7 +47,7 @@ public class MainScreen {
 	private MyButton btnPatients, btnReports, btnMaintenance; 
 	private MyButton btnSave, btnSaveQuit, btnQuit;
 	private MenuItem menuFileSave, menuFileSaveQuit, menuFileQuit;
-	private MenuItem menuOptionsSerial, menuOptionsDB;
+	private MenuItem menuOptionsDS;
 	private MyButton activeButton;
 	private VBox mainAreaLeft;
 	private Pane mainAreaRight;
@@ -166,7 +166,7 @@ public class MainScreen {
 		double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
-		primaryStage.setTitle(APP_TITLE);
+		primaryStage.setTitle(APP_TITLE + " [Data source: " + ClinicController.getDataSourceString() + "]");
 		primaryStage.setScene(scene);
 	}
 
@@ -269,12 +269,9 @@ public class MainScreen {
 		setMenuIcon(menuFileSaveQuit, "savequit.png");
 		setMenuIcon(menuFileQuit, "quit.png");
 
-		menuOptionsSerial = new MenuItem("Use serial file    ✔");
-		menuOptionsDB = new MenuItem("Use database");
-		setMenuIcon(menuOptionsSerial, "serial.png");
-		setMenuIcon(menuOptionsDB, "db.png");
-		menuOptionsSerial.setDisable(true);
-		menuOptionsDB.setDisable(true);
+		menuOptionsDS = new MenuItem("Data source: " + ClinicController.getDataSourceString() + " ✔");
+		setMenuIcon(menuOptionsDS, ClinicController.getDataSource() == 0 ? "serial.png" : "db.png");
+		menuOptionsDS.setDisable(true);
 		
 		menuFileSaveQuit.setDisable(true);
 		
@@ -287,7 +284,7 @@ public class MainScreen {
 		menuFileQuit.setOnAction(e -> quit());
 		
 		menuFile.getItems().addAll(menuFileSave, menuFileSaveQuit, menuFileQuit);
-		menuOptions.getItems().addAll(menuOptionsSerial, menuOptionsDB);
+		menuOptions.getItems().addAll(menuOptionsDS);
 		
 		menuItems.add(menuFile);
 		menuItems.add(menuOptions);

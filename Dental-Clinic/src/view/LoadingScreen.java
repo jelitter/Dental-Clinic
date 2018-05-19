@@ -93,7 +93,7 @@ public class LoadingScreen {
 		primaryStage.setX(screenWidth / 2 - WIDTH / 2);
 		primaryStage.setY(screenHeight / 2 - HEIGHT / 2);
 
-		MyTitle title = new MyTitle("Dental Clinic v1.0");
+		MyTitle title = new MyTitle("Dental Clinic v2.0\nNow with DB!");
 
 		lblStatus.setText("Loading database...");
 		lblStatus.autosize();
@@ -103,9 +103,7 @@ public class LoadingScreen {
 		vbox.getChildren().add(title);
 		vbox.getChildren().add(imgv);
 
-		String source = (ClinicController.getDataSource() == 0) ? "Serial File" : "Database";
-		
-		vbox.getChildren().add(new Label("Loading data from " + source));
+		vbox.getChildren().add(new Label("Loading data from " + ClinicController.getDataSourceString()));
 		vbox.getChildren().add(lblStatus);
 
 		vbox.setAlignment(Pos.TOP_CENTER);

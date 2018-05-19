@@ -171,18 +171,22 @@ public class ClinicController {
 	}
 
 	public void unsavedChanges() {
-		setSaved(false);
-		MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE + "  (Unsaved changes)");
-		String statusText = MainScreen.getInstance().getStatusText();
-		MainScreen.getInstance().setStatusText(statusText.trim() + " *");
-		MainScreen.getInstance().showSaveButtons(!isSaved());
+		if (ClinicController.getDataSource() == 0) {
+			setSaved(false);
+			MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE + "  (Unsaved changes)");
+			String statusText = MainScreen.getInstance().getStatusText();
+			MainScreen.getInstance().setStatusText(statusText.trim() + " *");
+			MainScreen.getInstance().showSaveButtons(!isSaved());
+		}
 	}
 
 	public void savedChanges() {
-		setSaved(true);
-		MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE);
-		MainScreen.getInstance().setStatusText("All changes saved");
-		MainScreen.getInstance().showSaveButtons(!isSaved());
+		if (ClinicController.getDataSource() == 0) {
+			setSaved(true);
+			MainScreen.getInstance().getStage().setTitle(MainScreen.APP_TITLE);
+			MainScreen.getInstance().setStatusText("All changes saved");
+			MainScreen.getInstance().showSaveButtons(!isSaved());
+		}
 	}
 
 	public void save() {
@@ -270,6 +274,9 @@ public class ClinicController {
 	public static int getDataSource() {
 		return ClinicController.datasource;
 	}
+	public static String getDataSourceString() {
+		return ClinicController.datasource == 0 ? "Serial File" : "Database";
+	}
 
 	public void addPatient(Patient newPatient) {
 		patients.add(newPatient);
@@ -287,4 +294,15 @@ public class ClinicController {
 	public void updatePatient(Patient patient) {
 		fc.updatePatient(patient);
 	}
+
+	public void addInvoice(Patient patient) {
+		patient.addInvoice(new Invoice(patient.getId()));
+		fc.addInvoice(patient);
+		unsavedChanges();
+	}
 }
+
+
+
+
+

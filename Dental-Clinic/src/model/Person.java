@@ -10,6 +10,15 @@ public class Person implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String firstName, lastName, email, address, phone;
 
+	public Person(String firstName, String lastName) {
+		// this.setFirstName(firstName);
+		// this.setLastName(lastName);
+		// this.setAddress("");
+		// this.setEmail("");
+		// this.setPhoneNumber("");
+		this(firstName, lastName, "", "", "");
+	}
+	
 	public Person(String firstName, String lastName, String email, String address, String phoneNumber) {
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
@@ -18,13 +27,6 @@ public class Person implements Serializable {
 		this.setPhoneNumber(phoneNumber);
 	}
 
-	public Person(String firstName, String lastName) {
-		this.setFirstName(firstName);
-		this.setLastName(lastName);
-		this.setAddress("");
-		this.setEmail("");
-		this.setPhoneNumber("");
-	}
 
 	public StringProperty FirstNameProperty() { return new SimpleStringProperty(firstName); }
 	public String getFirstName() { return firstName;	}

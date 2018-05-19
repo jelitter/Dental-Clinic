@@ -193,8 +193,11 @@ public class EditPatientScreen extends Stage {
 		});
 		
 		btnAddInvoice.setOnAction(e -> {
-			patient.addInvoice(new Invoice(patient.getId()));
-			invoices.setItems(patient.InvoicesProperty());
+			// patient.addInvoice(new Invoice(patient.getId()));
+			 invoices.setItems(patient.InvoicesProperty());
+			
+			controller.addInvoice(patient);
+			
 			controller.unsavedChanges();
 		});
 		btnRemoveInvoice.setOnAction(e -> {

@@ -70,12 +70,26 @@ public class ClinicFileController extends AbstractClinicStorageController {
 
 	@Override
 	public void updatePatient(Patient patient) {
-		// TODO Auto-generated method stub
-		
+		for (Patient pat : clinic.getPatients()) {
+			if (pat.getId() == patient.getId()) {
+				pat = patient;
+				break;
+			}
+		}
 	}
 
 	@Override
 	public void addPatient(Patient newPatient) {
+		clinic.getPatients().add(newPatient);
+	}
+
+	@Override
+	public void removePatient(Patient patient) {
+		clinic.getPatients().remove(patient);
+	}
+
+	@Override
+	public void addInvoice(Patient patient) {
 		// TODO Auto-generated method stub
 		
 	}

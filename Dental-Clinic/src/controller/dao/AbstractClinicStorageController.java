@@ -76,5 +76,6 @@ public abstract class AbstractClinicStorageController {
 	public abstract void addPatient(Patient newPatient);
 	public abstract void removePatient(Patient newPatient);
 	public abstract  void updatePatient(Patient patient);
+	public abstract void addInvoice(Patient patient);
 
 }

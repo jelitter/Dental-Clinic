@@ -173,6 +173,25 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		db.CloseDB();
 	}
 
+	@Override
+	public void removePatient(Patient patient) {
+		String query = "DELETE FROM Patients WHERE patientId=" + patient.getId();
+		System.out.println("Deleting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();		
+	}
+
+	@Override
+	public void addInvoice(Patient patient) {
+		String query = "INSERT INTO Invoices (patientId) values(" + patient.getId() + ")";
+		System.out.println("Invoices - Inserting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();
+		
+	}
+
 
 	
 }
