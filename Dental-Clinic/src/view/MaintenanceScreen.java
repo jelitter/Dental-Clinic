@@ -96,7 +96,7 @@ public class MaintenanceScreen extends Pane {
 		String description = fldDescription.getText();
 		String 	price = fldPrice.getText();
 		ProcedureType newProcedure = new ProcedureType(name, description, Double.parseDouble(price));
-		controller.addProcedure(newProcedure);
+		controller.addProcedureType(newProcedure);
 		updateButtons();
 	}
 	

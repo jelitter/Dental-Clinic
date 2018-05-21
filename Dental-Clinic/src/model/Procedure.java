@@ -14,21 +14,28 @@ public class Procedure implements Serializable {
 	private static int _id = 0;
 	private int id;
 	private int invoiceId;
-	private int procedureType;
+	private ProcedureType procedureType;
 
 	
-	public Procedure(int invoiceId, int proc) {
+	public Procedure(int invoiceId, ProcedureType proc) {
 		setInvoiceId(invoiceId);
 		setType(proc);
 		setId(++_id);
 	}
 	
-	public Procedure(int procedureId, int invoiceId, int procedureType) {
+	public Procedure(int procedureId, int invoiceId, ProcedureType procedureType) {
 		setId(procedureId);
 		setInvoiceId(invoiceId);
 		setType(procedureType);
 	}
 	
+	public Procedure(int procedureId, int invoiceId, int procedureType) {
+		setId(procedureId);
+		setInvoiceId(invoiceId);
+//		setType(procedureType);	
+		this.procedureType.setId(procedureType);
+	}
+
 	private void setInvoiceId(int invoiceId) {
 		this.invoiceId = invoiceId;
 	}
@@ -39,11 +46,11 @@ public class Procedure implements Serializable {
 	public static void setMaxId(int i) {	_id  = i; }
 
 	public ProcedureType getType() { return procedureType; }
-	public void setType(int type) { this.procedureType = type; }
+	public void setType(ProcedureType type) { this.procedureType = type; }
 	
 	
 	public StringProperty NameProperty() { 
-		controller
+		
 		return getType().NameProperty(); 
 	}
 	public String getName() {	return getType().getName(); }
@@ -63,4 +70,6 @@ public class Procedure implements Serializable {
 	public void print() {
 		System.out.println(this.toString());
 	}
+
+	public int getInvoiceId() { return this.invoiceId; }
 }

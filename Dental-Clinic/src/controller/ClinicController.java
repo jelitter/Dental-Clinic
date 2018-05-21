@@ -96,11 +96,6 @@ public class ClinicController {
 		this.isSaved = b;
 	}
 
-	public void addProcedure(ProcedureType newProcedure) {
-		procedureTypes.add(newProcedure);
-		unsavedChanges();
-	}
-
 	private int getPatientMaxId() {
 		int id = 0;
 		for (Patient p : patients) {
@@ -282,24 +277,25 @@ public class ClinicController {
 	public void addPatient(Patient newPatient) {
 		patients.add(newPatient);
 		fc.addPatient(newPatient);
-		
-		unsavedChanges();
 	}
 	
 	public void removePatient(Patient patient) {
 		patients.remove(patient);
 		fc.removePatient(patient);
-		unsavedChanges();
 	}
 
 	public void updatePatient(Patient patient) {
 		fc.updatePatient(patient);
 	}
 
+	
 	public void addInvoice(Patient patient) {
 		patient.addInvoice(new Invoice(patient.getId()));
 		fc.addInvoice(patient);
-		unsavedChanges();
+	}
+	
+	public void removeInvoice(Invoice inv) {
+		fc.removeInvoice(inv);
 	}
 	
 	public ProcedureType getProcTypeById(int id) {
@@ -311,6 +307,30 @@ public class ClinicController {
 		return null;
 	}
 
+	public void addProcedureType(ProcedureType newProcedureType) {
+		procedureTypes.add(newProcedureType);
+	}
+
+	
+	public void addPayment(Payment paym) {
+		fc.addPayment(paym);
+	}
+	public void removePayment(Payment paym) {
+		fc.removePayment(paym);
+	}
+
+	
+	public void addProcedure(Procedure proc) {
+		fc.addProcedure(proc);
+	}
+
+	public void removeProcedure(Procedure proc) {
+		fc.removeProcedure(proc);
+	}
+
+	
+
+	
 }
 
 

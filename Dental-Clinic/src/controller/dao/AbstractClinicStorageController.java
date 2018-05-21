@@ -76,11 +76,35 @@ public abstract class AbstractClinicStorageController {
 	public abstract List<Patient> getPatients();
 	public abstract List<Invoice> getInvoices(Patient pat);
 	public abstract List<Payment> getPayments(Invoice inv);
-	public abstract List<Procedure> getProcedures(Invoice inv);
+	public abstract List<Procedure> getProcedures(Invoice inv, List<ProcedureType> procedureTypes);
 
 	public abstract void addPatient(Patient newPatient);
 	public abstract void removePatient(Patient newPatient);
 	public abstract  void updatePatient(Patient patient);
+	
 	public abstract void addInvoice(Patient patient);
+	public abstract void removeInvoice(Invoice invoice);
+	public abstract void updateInvoice(Invoice invoice);
+	
+	public abstract void addPayment(Payment payment);
+	public abstract void removePayment(Payment payment);
+	public abstract void updatePayment(Payment payment);
+	
+	public abstract void addProcedure(Procedure procedure);
+	public abstract void removeProcedure(Procedure procedure);
+	public abstract void updateProcedure(Procedure procedure);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,6 +2,7 @@ package controller.dao;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,7 +172,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 	}
 
 	@Override
-	public List<Procedure> getProcedures(Invoice inv) {
+	public List<Procedure> getProcedures(Invoice inv, List<ProcedureType> procedureTypes) {
 		Procedure proc = null;
 		ObservableList<Procedure> procedures = FXCollections.observableArrayList();
 		db.getDBConnection();
@@ -180,8 +181,17 @@ public class ClinicDBController extends AbstractClinicStorageController {
 			while (db.rs.next()) {
 				int procedureId = db.rs.getInt("procedureId");
 				int invoiceId = db.rs.getInt("invoiceId");
-				int procedureType =  db.rs.getInt("procedureType");
+				int procedureTypeId =  db.rs.getInt("procedureType");
 
+				
+				// Finding procedure type by Id
+				ProcedureType procedureType = null;
+				for (ProcedureType pt : procedureTypes) {
+					if (pt.getId() == procedureTypeId) {
+						procedureType = pt;
+						break;
+					}
+				}
 				
 				proc = new Procedure(procedureId, invoiceId, procedureType);
 				procedures.add(proc);
@@ -227,6 +237,8 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		
 		Clinic.getInstance().setProcedureTypesList(new ArrayList<ProcedureType>(this.getProcedureTypes()));
 		
+		ArrayList<ProcedureType> procedureTypes = Clinic.getInstance().getProcedureTypes();
+		
 		// Get all patients from Patients table
 		// For every patient get invoices list
 		//   For every invoice get payments
@@ -238,11 +250,9 @@ public class ClinicDBController extends AbstractClinicStorageController {
 			pat.setInvoices(new ArrayList<Invoice>(this.getInvoices(pat)));
 			for (Invoice inv : pat.getInvoices()) {
 				inv.setPayments(new ArrayList<Payment>(this.getPayments(inv)));
-				inv.setProcedures(new ArrayList<Procedure>(this.getProcedures(inv)));
+				inv.setProcedures(new ArrayList<Procedure>(this.getProcedures(inv, procedureTypes)));
 			}
 		}
-		
-		
 	}
 	
 	@Override
@@ -254,6 +264,15 @@ public class ClinicDBController extends AbstractClinicStorageController {
 				 + "\", \"" + newPatient.getAddress()
 				 + "\", \"" + newPatient.getPhoneNumber() + "\")";
 		System.out.println("Inserting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();		
+	}
+	
+	@Override
+	public void removePatient(Patient patient) {
+		String query = "DELETE FROM Patients WHERE patientId=" + patient.getId();
+		System.out.println("Deleting:\n" + query);
 		db.getDBConnection();
 		db.Execute(query);
 		db.CloseDB();		
@@ -275,14 +294,6 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		db.CloseDB();
 	}
 
-	@Override
-	public void removePatient(Patient patient) {
-		String query = "DELETE FROM Patients WHERE patientId=" + patient.getId();
-		System.out.println("Deleting:\n" + query);
-		db.getDBConnection();
-		db.Execute(query);
-		db.CloseDB();		
-	}
 
 	@Override
 	public void addInvoice(Patient patient) {
@@ -291,9 +302,99 @@ public class ClinicDBController extends AbstractClinicStorageController {
 		db.getDBConnection();
 		db.Execute(query);
 		db.CloseDB();
-		
+	}
+	
+	@Override
+	public void removeInvoice(Invoice invoice) {
+		String query = "DELETE FROM Invoices WHERE invoiceId=" + invoice.getId();
+		System.out.println("Deleting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();		
+	}
+	
+	@Override
+	public void updateInvoice(Invoice invoice) {
+		String query = "UPDATE Invoices"
+				 + " SET amount=\"" + invoice.getAmount()
+				 + "\", amountPaid=\""  + invoice.getAmountPaid()
+				 + "\" WHERE invoiceId=" + invoice.getId();
+		System.out.println("Updating:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();
 	}
 
+
+	@Override
+	public void addPayment(Payment payment) {
+		
+		// Converting date to SQL format
+		String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(payment.getDate());
+		   
+		String query = "INSERT INTO Payments"
+				 + " values(null, \"" + payment.getInvoiceId()
+				 + "\", \"" + payment.getAmount()
+				 + "\", \"" + date + "\")";
+//				 + "\", \"" + payment.getDate().toString() + "\")";
+		System.out.println("Payments - Inserting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();
+	}
+
+	@Override
+	public void removePayment(Payment payment) {
+		String query = "DELETE FROM Payments WHERE paymentId=" + payment.getId();
+		System.out.println("Deleting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();			
+	}
+
+	@Override
+	public void updatePayment(Payment payment) {
+		String query = "UPDATE Payments"
+				 + " SET amount=\"" + payment.getAmount()
+				 + "\", date=\""  + payment.getDate()
+				 + "\" WHERE paymentId=" + payment.getId();
+		System.out.println("Updating:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();		
+	}
+	
+
+	@Override
+	public void addProcedure(Procedure procedure) {
+		String query = "INSERT INTO Procedures"
+				 + " values(null, \"" + procedure.getInvoiceId()
+				 + "\", \"" + procedure.getType().getId() + "\")";
+		System.out.println("Procedures - Inserting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();		
+	}
+
+	@Override
+	public void removeProcedure(Procedure procedure) {
+		String query = "DELETE FROM Procedures WHERE procedureId=" + procedure.getId();
+		System.out.println("Deleting:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();			
+	}
+
+	@Override
+	public void updateProcedure(Procedure procedure) {
+		String query = "UPDATE Procedures"
+				 + " SET procedureType=\"" + procedure.getType().getId()
+				 + "\" WHERE procedureId=" + procedure.getId();
+		System.out.println("Updating:\n" + query);
+		db.getDBConnection();
+		db.Execute(query);
+		db.CloseDB();			
+	}
 
 	
 }

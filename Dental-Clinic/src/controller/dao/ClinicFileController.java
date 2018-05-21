@@ -5,7 +5,10 @@ import java.util.List;
 
 import controller.ClinicController;
 import model.Clinic;
+import model.Invoice;
 import model.Patient;
+import model.Payment;
+import model.Procedure;
 import model.ProcedureType;
 import view.MainScreen;
 
@@ -90,8 +93,43 @@ public class ClinicFileController extends AbstractClinicStorageController {
 
 	@Override
 	public void addInvoice(Patient patient) {
-		// TODO Auto-generated method stub
-		
 	}
+
+	@Override
+	public List<Invoice> getInvoices(Patient pat) {
+		return null;
+	}
+
+	@Override
+	public List<Payment> getPayments(Invoice inv) {
+		return null;
+	}
+
+	@Override
+	public List<Procedure> getProcedures(Invoice inv, List<ProcedureType> procedureTypes) { return null; }
+
+	@Override
+	public void removeInvoice(Invoice invoice) {}
+
+	@Override
+	public void updateInvoice(Invoice invoice) {}
+
+	@Override
+	public void addPayment(Payment payment) {}
+
+	@Override
+	public void removePayment(Payment payment) {}
+
+	@Override
+	public void updatePayment(Payment payment) {}
+
+	@Override
+	public void addProcedure(Procedure procedure) {}
+
+	@Override
+	public void removeProcedure(Procedure procedure) {}
+
+	@Override
+	public void updateProcedure(Procedure procedure) {}
 
 }

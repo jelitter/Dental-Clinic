@@ -68,4 +68,6 @@ public class Payment implements Serializable  {
 	public void print() {
 		System.out.println(this.toString());
 	}
+
+	public int getInvoiceId() { return this.invoiceId; }
 }

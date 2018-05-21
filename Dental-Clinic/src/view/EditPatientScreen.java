@@ -200,7 +200,9 @@ public class EditPatientScreen extends Stage {
 			controller.unsavedChanges();
 		});
 		btnRemoveInvoice.setOnAction(e -> {
-			patient.removeInvoice(invoices.getSelectionModel().getSelectedItem());
+			Invoice inv = invoices.getSelectionModel().getSelectedItem();
+			patient.removeInvoice(inv);
+			controller.removeInvoice(inv);
 			invoices.setItems(patient.InvoicesProperty());
 			procedures.setItems(null);
 			payments.setItems(null);
@@ -241,6 +243,7 @@ public class EditPatientScreen extends Stage {
 			inv.removePayment(pay);
 			payments.setItems(inv.PaymentsProperty());
 			refreshTable(invoices);
+			controller.removePayment(pay);
 			controller.unsavedChanges();
 		});
 		
@@ -275,6 +278,7 @@ public class EditPatientScreen extends Stage {
 			inv.removeProcedure(proc);
 			procedures.setItems(inv.ProceduresProperty());
 			refreshTable(invoices);
+			controller.removeProcedure(proc);
 			controller.unsavedChanges();
 		});
 		
@@ -546,6 +550,7 @@ public class EditPatientScreen extends Stage {
 			Double amount = Double.parseDouble(fldAmount.getText());
 			Payment p = new Payment(inv.getId(), amount, retDate);
 			inv.addPayment(p);
+			controller.addPayment(p);
 			stage.close();
 		});
 		btnCancelPayment.setOnAction(e -> {
@@ -598,6 +603,7 @@ public class EditPatientScreen extends Stage {
 			ProcedureType pt = procsCombo.getSelectionModel().getSelectedItem();
 			Procedure p = new Procedure(inv.getId(), pt);
 			inv.addProcedure(p);
+			controller.addProcedure(p);
 			stage.close();
 		});
 		
