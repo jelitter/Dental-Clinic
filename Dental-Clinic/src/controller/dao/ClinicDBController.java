@@ -53,7 +53,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 				String phone = db.rs.getString("phone");
 
 				pat = new Patient(patientId, firstName, lastName, email, address, phone);
-				pat.print();
+				// pat.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading patient");
@@ -77,7 +77,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 				double price = db.rs.getDouble("price");
 
 				pt = new ProcedureType(procedureTypeId, name, description, price);
-				pt.print();
+				// pt.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading patient");
@@ -105,7 +105,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 
 				pat = new Patient(patientId, firstName, lastName, email, address, phone);
 				patients.add(pat);
-				pat.print();
+				// pat.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading patient");
@@ -134,7 +134,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 				inv.setAmountPaid(amountPaid);
 				inv.setDate(invoiceDate);
 				invoices.add(inv);
-				inv.print();
+				// inv.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading invoices for patientId " + pat.getId());
@@ -160,7 +160,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 
 				paym = new Payment(paymentId, invoiceId, amount, date);
 				payments.add(paym);
-				paym.print();
+				// paym.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading payments for invoiceId " + inv.getId());
@@ -195,7 +195,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 				
 				proc = new Procedure(procedureId, invoiceId, procedureType);
 				procedures.add(proc);
-				proc.print();
+				// proc.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading procedures for invoiceId " + inv.getId());
@@ -222,7 +222,7 @@ public class ClinicDBController extends AbstractClinicStorageController {
 
 				pt = new ProcedureType(procedureTypeId, name, description, price);
 				ptypes.add(pt);
-				pt.print();
+				// pt.print();
 			}
 		} catch (SQLException e) {
 			System.out.println("Error reading patient");
